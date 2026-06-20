@@ -2,13 +2,13 @@
 
 import { useMemo, useState } from 'react';
 import { calculateResolution } from '@/lib/calculations';
-import type { Dictionary } from '@/i18n/dictionaries';
 import { NumberField } from '@/components/ui/NumberField';
 import { SelectField } from '@/components/ui/SelectField';
 import { Badge, type BadgeTone } from '@/components/ui/Badge';
 import { CalculatorShell } from './CalculatorShell';
 import { ResultPanel } from './ResultPanel';
 import { round, toNum } from './number';
+import type { CalculatorProps } from './types';
 
 export function ResolutionCalculator({
   dict,
@@ -16,13 +16,7 @@ export function ResolutionCalculator({
   eyebrow,
   title,
   desc,
-}: {
-  dict: Dictionary;
-  locale: string;
-  eyebrow: string;
-  title: string;
-  desc: string;
-}) {
+}: CalculatorProps) {
   const t = dict.calc.res;
   const [widthPx, setWidthPx] = useState('3000');
   const [heightPx, setHeightPx] = useState('2400');

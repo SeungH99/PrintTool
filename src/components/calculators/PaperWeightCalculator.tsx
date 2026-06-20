@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import { calculatePaperWeight } from '@/lib/calculations';
-import type { Dictionary } from '@/i18n/dictionaries';
+import type { CalculatorProps } from './types';
 import { NumberField } from '@/components/ui/NumberField';
 import { SelectField } from '@/components/ui/SelectField';
 import { CalculatorShell } from './CalculatorShell';
@@ -23,13 +23,7 @@ export function PaperWeightCalculator({
   eyebrow,
   title,
   desc,
-}: {
-  dict: Dictionary;
-  locale: string;
-  eyebrow: string;
-  title: string;
-  desc: string;
-}) {
+}: CalculatorProps) {
   const t = dict.calc.weight;
   const [size, setSize] = useState('A4');
   const [width, setWidth] = useState('210');

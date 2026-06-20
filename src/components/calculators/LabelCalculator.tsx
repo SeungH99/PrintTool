@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import { calculateLabel } from '@/lib/calculations';
-import type { Dictionary } from '@/i18n/dictionaries';
+import type { CalculatorProps } from './types';
 import { NumberField } from '@/components/ui/NumberField';
 import { ToggleField } from '@/components/ui/ToggleField';
 import { Badge } from '@/components/ui/Badge';
@@ -16,13 +16,7 @@ export function LabelCalculator({
   eyebrow,
   title,
   desc,
-}: {
-  dict: Dictionary;
-  locale: string;
-  eyebrow: string;
-  title: string;
-  desc: string;
-}) {
+}: CalculatorProps) {
   const t = dict.calc.label;
   const [sheetW, setSheetW] = useState('210');
   const [sheetH, setSheetH] = useState('297');

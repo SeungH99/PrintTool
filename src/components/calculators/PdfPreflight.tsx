@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { analyzePdf, type PdfAnalysis } from '@/lib/preflight/analyze';
 import { buildPreflightReport, type PreflightStatus } from '@/lib/preflight/report';
-import type { Dictionary } from '@/i18n/dictionaries';
+import type { CalculatorProps } from './types';
 import { Badge, type BadgeTone } from '@/components/ui/Badge';
 import { CalculatorHeader } from './CalculatorHeader';
 import { round } from './number';
@@ -16,13 +16,7 @@ export function PdfPreflight({
   eyebrow,
   title,
   desc,
-}: {
-  dict: Dictionary;
-  locale: string;
-  eyebrow: string;
-  title: string;
-  desc: string;
-}) {
+}: CalculatorProps) {
   const t = dict.calc.pdf;
   const [phase, setPhase] = useState<Phase>('empty');
   const [filename, setFilename] = useState('');

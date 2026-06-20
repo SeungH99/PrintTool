@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import { calculateSpine } from '@/lib/calculations';
-import type { Dictionary } from '@/i18n/dictionaries';
+import type { CalculatorProps } from './types';
 import { NumberField } from '@/components/ui/NumberField';
 import { SelectField } from '@/components/ui/SelectField';
 import { CalculatorShell } from './CalculatorShell';
@@ -21,13 +21,7 @@ export function SpineCalculator({
   eyebrow,
   title,
   desc,
-}: {
-  dict: Dictionary;
-  locale: string;
-  eyebrow: string;
-  title: string;
-  desc: string;
-}) {
+}: CalculatorProps) {
   const t = dict.calc.spine;
   const [binding, setBinding] = useState<Binding>('perfect');
   const [pages, setPages] = useState('200');
