@@ -5,6 +5,7 @@ import { Logo } from '@/components/ui/Logo';
 import { buttonClass } from '@/components/ui/buttonClass';
 import { LanguageSwitcher } from './LanguageSwitcher';
 import { ToolsMenu } from './ToolsMenu';
+import { MobileNav } from './MobileNav';
 
 export function Header({ locale, dict }: { locale: Locale; dict: Dictionary }) {
   return (
@@ -31,12 +32,15 @@ export function Header({ locale, dict }: { locale: Locale; dict: Dictionary }) {
 
         <div className="ml-auto flex flex-none items-center gap-2.5">
           <LanguageSwitcher locale={locale} />
-          <Link
-            href={`/${locale}/pdf`}
-            className={buttonClass({ variant: 'primary', shape: 'square', size: 'md' })}
-          >
-            {dict.nav.cta}
-          </Link>
+          <div className="hidden md:block">
+            <Link
+              href={`/${locale}/pdf`}
+              className={buttonClass({ variant: 'primary', shape: 'square', size: 'md' })}
+            >
+              {dict.nav.cta}
+            </Link>
+          </div>
+          <MobileNav locale={locale} dict={dict} />
         </div>
       </div>
     </header>
