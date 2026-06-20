@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import { calculatePaperWeight } from '@/lib/calculations';
+import { calculatePaperWeight, validatePaperWeight } from '@/lib/calculations';
 import type { CalculatorProps } from './types';
 import { NumberField } from '@/components/ui/NumberField';
 import { SelectField } from '@/components/ui/SelectField';
@@ -17,13 +17,7 @@ const SIZES: Record<string, [number, number]> = {
   Letter: [215.9, 279.4],
 };
 
-export function PaperWeightCalculator({
-  dict,
-  locale,
-  eyebrow,
-  title,
-  desc,
-}: CalculatorProps) {
+export function PaperWeightCalculator({ dict, locale, eyebrow, title, desc }: CalculatorProps) {
   const t = dict.calc.weight;
   const [size, setSize] = useState('A4');
   const [width, setWidth] = useState('210');
@@ -42,16 +36,17 @@ export function PaperWeightCalculator({
     }
   }
 
-  const result = useMemo(
-    () =>
-      calculatePaperWeight({
-        widthMm: toNum(width),
-        heightMm: toNum(height),
-        gsm: toNum(gsm),
-        sheets: toNum(sheets),
-      }),
-    [width, height, gsm, sheets],
-  );
+  const { result, errorMsg } = useMemo(() => {
+    const input = {
+      widthMm: toNum(width),
+      heightMm: toNum(height),
+      gsm: toNum(gsm),
+      sheets: toNum(sheets),
+    };
+    const v = validatePaperWeight(input);
+    if (!v.ok) return { result: null, errorMsg: dict.calc.errors[v.error] };
+    return { result: calculatePaperWeight(input), errorMsg: null };
+  }, [width, height, gsm, sheets, dict]);
 
   const sizeOptions = [
     ...Object.keys(SIZES).map((k) => ({ value: k, label: k })),
@@ -61,22 +56,44 @@ export function PaperWeightCalculator({
   const inputs = (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
       <SelectField label={t.size} value={size} options={sizeOptions} onChange={onSize} />
-      <NumberField label={t.width} value={width} onChange={setWidth} suffix="mm" disabled={!isCustom} />
-      <NumberField label={t.height} value={height} onChange={setHeight} suffix="mm" disabled={!isCustom} />
+      <NumberField
+        label={t.width}
+        value={width}
+        onChange={setWidth}
+        suffix="mm"
+        disabled={!isCustom}
+      />
+      <NumberField
+        label={t.height}
+        value={height}
+        onChange={setHeight}
+        suffix="mm"
+        disabled={!isCustom}
+      />
       <NumberField label={t.gsm} value={gsm} onChange={setGsm} suffix="g/m²" />
-      <NumberField label={t.sheets} value={sheets} onChange={setSheets} suffix={locale === 'ko' ? '매' : 'sheets'} />
+      <NumberField
+        label={t.sheets}
+        value={sheets}
+        onChange={setSheets}
+        suffix={locale === 'ko' ? '매' : 'sheets'}
+      />
     </div>
   );
 
   const results = (
     <ResultPanel
       resultLabel={dict.calc.result}
+      alert={errorMsg ?? undefined}
       primaryLabel={t.totalLabel}
-      primaryValue={`${round(result.totalKg, 2)} kg`}
-      rows={[
-        { label: t.perSheetLabel, value: `${round(result.perSheetG, 2)} g` },
-        { label: t.packageLabel, value: `${round(result.packageKg, 2)} kg` },
-      ]}
+      primaryValue={result ? `${round(result.totalKg, 2)} kg` : '—'}
+      rows={
+        result
+          ? [
+              { label: t.perSheetLabel, value: `${round(result.perSheetG, 2)} g` },
+              { label: t.packageLabel, value: `${round(result.packageKg, 2)} kg` },
+            ]
+          : undefined
+      }
       note={t.note}
     />
   );

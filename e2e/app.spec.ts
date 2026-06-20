@@ -41,3 +41,9 @@ test('header tools menu opens and navigates to a tool', async ({ page }) => {
   await header.getByRole('link', { name: /인쇄용 PDF 변환/ }).click();
   await expect(page).toHaveURL(/\/ko\/convert$/);
 });
+
+test('a calculator shows an error message on invalid input', async ({ page }) => {
+  await page.goto('/ko/res');
+  await page.getByLabel('가로 (픽셀)').fill('-5');
+  await expect(page.getByText('모든 값은 0보다 큰 숫자여야 합니다.')).toBeVisible();
+});

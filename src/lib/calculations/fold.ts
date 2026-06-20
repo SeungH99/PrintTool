@@ -1,4 +1,5 @@
 import type { FoldInput, FoldResult } from './types';
+import { validateFold } from './validate';
 
 interface PanelWidth {
   w: number;
@@ -11,6 +12,8 @@ interface PanelWidth {
  * widths always sum back to the finished width.
  */
 export function calculateFold(input: FoldInput): FoldResult {
+  const v = validateFold(input);
+  if (!v.ok) throw new RangeError(v.error);
   const { widthMm: W, type, innerMm } = input;
   let widths: PanelWidth[];
 

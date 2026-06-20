@@ -94,6 +94,11 @@ export const en: Dictionary = {
     guideTitle: 'Guide',
     comingSoon: 'Coming soon',
     comingSoonDesc: 'This tool is on its way. Try another calculator in the meantime.',
+    errors: {
+      positive: 'All values must be numbers greater than 0.',
+      foldInner: 'The inner-panel adjustment is larger than the panel.',
+      labelMargin: 'Margins are larger than the sheet.',
+    },
     res: {
       widthPx: 'Width (pixels)',
       heightPx: 'Height (pixels)',

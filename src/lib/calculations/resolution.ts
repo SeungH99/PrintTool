@@ -1,5 +1,6 @@
 import { inchToCm, pixelsToInches } from '@/lib/utils/units';
 import type { ResolutionInput, ResolutionResult } from './types';
+import { validateResolution } from './validate';
 
 // Print-quality DPI tiers — long-standing print convention, not a tunable.
 const HIGH_DPI = 300;
@@ -10,8 +11,9 @@ const OK_DPI = 150;
  * inches = pixels / dpi, cm = inches x 2.54. No heuristics.
  */
 export function calculateResolution(input: ResolutionInput): ResolutionResult {
+  const v = validateResolution(input);
+  if (!v.ok) throw new RangeError(v.error);
   const { widthPx, heightPx, dpi, unit } = input;
-  if (dpi <= 0) throw new RangeError('dpi must be greater than 0');
 
   const widthIn = pixelsToInches(widthPx, dpi);
   const heightIn = pixelsToInches(heightPx, dpi);
