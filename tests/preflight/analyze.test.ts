@@ -15,6 +15,7 @@ describe('analyzePdf', () => {
     expect(a.hasTrimBox).toBe(false);
     expect(a.hasBleedBox).toBe(false);
     expect(a.fontsEmbedded).toBe('unknown'); // no fonts on a blank page
+    expect(a.minImageDpi).toBeNull(); // no images on a blank page
   });
 
   it('flags standard (base-14) fonts as not embedded', async () => {

@@ -141,6 +141,11 @@ export function PdfPreflight({
                         {analysis.pageCount} {t.pages}
                       </div>
                     )}
+                    {item.key === 'resolution' && analysis.minImageDpi !== null && (
+                      <div className="mt-0.5 text-xs tabular-nums text-mute">
+                        {Math.round(analysis.minImageDpi)} DPI
+                      </div>
+                    )}
                   </div>
                   <Badge tone={status[item.status].tone}>{status[item.status].text}</Badge>
                 </div>
