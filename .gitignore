@@ -8,3 +8,22 @@ node_modules/
 .next/
 dist/
 coverage/
+
+# env (secrets — never commit)
+.env
+.env*.local
+
+# typescript / next generated
+next-env.d.ts
+*.tsbuildinfo
+
+# cloudflare / opennext / vercel build output
+.open-next/
+.wrangler/
+cloudflare-env.d.ts
+.vercel/
+
+# playwright artifacts
+test-results/
+playwright-report/
+playwright/.cache/
