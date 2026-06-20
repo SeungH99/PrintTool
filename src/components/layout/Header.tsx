@@ -29,9 +29,12 @@ export function Header({ locale, dict }: { locale: Locale; dict: Dictionary }) {
 
         <div className="ml-auto flex flex-none items-center gap-2.5">
           <LanguageSwitcher locale={locale} />
-          <a href="#tools" className={buttonClass({ variant: 'primary', shape: 'square', size: 'md' })}>
+          <Link
+            href={`/${locale}/pdf`}
+            className={buttonClass({ variant: 'primary', shape: 'square', size: 'md' })}
+          >
             {dict.nav.cta}
-          </a>
+          </Link>
         </div>
       </div>
     </header>

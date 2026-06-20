@@ -4,6 +4,8 @@ export * from './types';
 export { calculateResolution } from './resolution';
 export { calculatePaperWeight } from './paperWeight';
 export { calculateSpine, type SpineOptions } from './spine';
+export { calculateFold } from './fold';
+export { calculateLabel } from './label';
 
 export class NotImplementedError extends Error {
   constructor(what: string) {
@@ -13,12 +15,10 @@ export class NotImplementedError extends Error {
 }
 
 /**
- * PDF preflight is deferred to a dedicated task (pdf.js/pdf-lib, 6-item detection).
- * Kept as a typed seam; not implemented (ADR-0002).
+ * PDF preflight is handled in its own module/task (pdf.js, detection-only).
+ * Kept as a typed seam here for callers that import from the calculations barrel.
  */
 export function runPreflight(settings: PreflightSettings): never {
   void settings;
   throw new NotImplementedError('runPreflight');
 }
-
-// fold / label: UI is in scope, calculation is deferred entirely (ADR-0002 — 6 UI / 4 logic).
