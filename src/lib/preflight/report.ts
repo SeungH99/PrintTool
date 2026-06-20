@@ -44,13 +44,20 @@ export function buildPreflightReport(
       ? 'unknown'
       : 'warn';
 
+  const fontsStatus: PreflightStatus =
+    analysis.fontsEmbedded === 'all'
+      ? 'pass'
+      : analysis.fontsEmbedded === 'unknown'
+        ? 'unknown'
+        : 'warn';
+
   const items: PreflightItem[] = [
     { key: 'pageSize', status: 'pass' },
     { key: 'trim', status: trimStatus },
     { key: 'bleed', status: bleedStatus },
-    { key: 'resolution', status: 'unknown' },
-    { key: 'color', status: 'unknown' },
-    { key: 'fonts', status: 'unknown' },
+    { key: 'resolution', status: 'unknown' }, // image DPI: detection-limited in-browser
+    { key: 'color', status: 'unknown' }, // color mode: detection-limited in-browser
+    { key: 'fonts', status: fontsStatus },
   ];
 
   const count = (s: PreflightStatus) => items.filter((i) => i.status === s).length;
