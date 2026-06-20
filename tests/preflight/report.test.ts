@@ -10,6 +10,7 @@ const base: PdfAnalysis = {
   hasBleedBox: false,
   fontsEmbedded: 'unknown',
   minImageDpi: null,
+  colorMode: 'none',
 };
 
 const byKey = (r: ReturnType<typeof buildPreflightReport>) =>
@@ -46,5 +47,11 @@ describe('buildPreflightReport', () => {
     expect(byKey(buildPreflightReport({ ...base, minImageDpi: 400 })).resolution).toBe('pass');
     expect(byKey(buildPreflightReport({ ...base, minImageDpi: 200 })).resolution).toBe('warn');
     expect(byKey(buildPreflightReport({ ...base, minImageDpi: null })).resolution).toBe('unknown');
+  });
+
+  it('maps color mode (cmyk -> pass, rgb -> warn, none -> unknown)', () => {
+    expect(byKey(buildPreflightReport({ ...base, colorMode: 'cmyk' })).color).toBe('pass');
+    expect(byKey(buildPreflightReport({ ...base, colorMode: 'rgb' })).color).toBe('warn');
+    expect(byKey(buildPreflightReport({ ...base, colorMode: 'none' })).color).toBe('unknown');
   });
 });

@@ -1,9 +1,21 @@
-import { PDFDocument, PDFName, PDFDict, PDFArray, type PDFPageLeaf } from 'pdf-lib';
+import {
+  PDFDocument,
+  PDFName,
+  PDFDict,
+  PDFArray,
+  PDFRawStream,
+  PDFNumber,
+  type PDFObject,
+  type PDFPageLeaf,
+} from 'pdf-lib';
 import { detectMinImageDpi } from './images';
 
 const PT_PER_MM = 72 / 25.4;
 
 export type FontsEmbedded = 'all' | 'some' | 'none' | 'unknown';
+
+/** Aggregate image color space of the first page. `rgb` = at least one non-CMYK image. */
+export type ColorMode = 'cmyk' | 'rgb' | 'none' | 'unknown';
 
 export interface PdfAnalysis {
   pageCount: number;
@@ -15,6 +27,8 @@ export interface PdfAnalysis {
   fontsEmbedded: FontsEmbedded;
   /** Lowest effective image DPI on the first page (via pdf.js), or null if none/undetectable. */
   minImageDpi: number | null;
+  /** Image color space of the first page (read from /ColorSpace, not rendered pixels). */
+  colorMode: ColorMode;
 }
 
 const FONT_FILE_KEYS = ['FontFile', 'FontFile2', 'FontFile3'];
@@ -68,6 +82,72 @@ function inspectFonts(page: PDFPageLeaf): FontsEmbedded {
   }
 }
 
+type CsClass = 'cmyk' | 'rgb' | 'gray' | 'other';
+
+function csFromName(name: string): CsClass {
+  if (name.includes('CMYK')) return 'cmyk';
+  if (name.includes('RGB')) return 'rgb';
+  if (name.includes('Gray')) return 'gray';
+  return 'other';
+}
+
+function classifyColorSpace(cs: PDFObject | undefined): CsClass {
+  if (cs instanceof PDFName) return csFromName(cs.toString());
+  if (cs instanceof PDFArray) {
+    const familyObj = cs.lookup(0);
+    const family = familyObj instanceof PDFName ? familyObj.toString() : '';
+    if (family.includes('ICCBased')) {
+      const icc = cs.lookup(1);
+      const n =
+        icc instanceof PDFRawStream
+          ? icc.dict.lookupMaybe(PDFName.of('N'), PDFNumber)?.asNumber()
+          : undefined;
+      if (n === 4) return 'cmyk';
+      if (n === 3) return 'rgb';
+      if (n === 1) return 'gray';
+      return 'other';
+    }
+    if (family.includes('CalRGB')) return 'rgb';
+    if (family.includes('CalGray')) return 'gray';
+    if (family.includes('Indexed')) return classifyColorSpace(cs.lookup(1));
+    return csFromName(family);
+  }
+  return 'other';
+}
+
+/**
+ * First-page image color space, read from each image XObject's /ColorSpace dict
+ * (the source color space, not pdf.js-normalized pixels). `rgb` means at least one
+ * non-CMYK image is present; `none` when there are no images. Best-effort.
+ */
+function inspectColorMode(page: PDFPageLeaf): ColorMode {
+  try {
+    const resources = page.lookupMaybe(PDFName.of('Resources'), PDFDict);
+    const xobjects = resources?.lookupMaybe(PDFName.of('XObject'), PDFDict);
+    if (!xobjects) return 'none';
+
+    let images = 0;
+    let classified = 0;
+    let allCmyk = true;
+    for (const [key] of xobjects.entries()) {
+      const resolved = xobjects.lookup(key);
+      if (!(resolved instanceof PDFRawStream)) continue;
+      if (resolved.dict.lookupMaybe(PDFName.of('Subtype'), PDFName)?.toString() !== '/Image') continue;
+      images += 1;
+      const cs = resolved.dict.lookup(PDFName.of('ColorSpace'));
+      if (!cs) continue;
+      classified += 1;
+      if (classifyColorSpace(cs) !== 'cmyk') allCmyk = false;
+    }
+
+    if (images === 0) return 'none';
+    if (classified === 0) return 'unknown';
+    return allCmyk ? 'cmyk' : 'rgb';
+  } catch {
+    return 'unknown';
+  }
+}
+
 /**
  * Reliable, structure-only PDF analysis via pdf-lib: page count, first-page size,
  * TrimBox/BleedBox presence, and a best-effort font-embedding check. Throws if the
@@ -87,6 +167,12 @@ export async function analyzePdf(bytes: ArrayBuffer | Uint8Array): Promise<PdfAn
     }
   };
 
+  // Finish all pdf-lib reads BEFORE pdf.js runs — pdf.js can detach the byte buffer.
+  const hasTrimBox = hasBox('TrimBox');
+  const hasBleedBox = hasBox('BleedBox');
+  const fontsEmbedded = inspectFonts(first.node);
+  const colorMode = inspectColorMode(first.node);
+
   let minImageDpi: number | null = null;
   try {
     minImageDpi = await detectMinImageDpi(bytes);
@@ -98,9 +184,10 @@ export async function analyzePdf(bytes: ArrayBuffer | Uint8Array): Promise<PdfAn
     pageCount,
     pageWidthMm: width / PT_PER_MM,
     pageHeightMm: height / PT_PER_MM,
-    hasTrimBox: hasBox('TrimBox'),
-    hasBleedBox: hasBox('BleedBox'),
-    fontsEmbedded: inspectFonts(first.node),
+    hasTrimBox,
+    hasBleedBox,
+    fontsEmbedded,
     minImageDpi,
+    colorMode,
   };
 }

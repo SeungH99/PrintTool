@@ -29,7 +29,9 @@ export function imageDpi(widthPx: number, heightPx: number, ctm: Matrix): number
 }
 
 export async function detectMinImageDpi(bytes: ArrayBuffer | Uint8Array): Promise<number | null> {
-  const data = bytes instanceof Uint8Array ? bytes : new Uint8Array(bytes);
+  // Copy: pdf.js may transfer/detach the buffer, which would corrupt a shared
+  // Uint8Array still in use by pdf-lib (font/color inspection) in the caller.
+  const data = new Uint8Array(bytes instanceof Uint8Array ? bytes : new Uint8Array(bytes));
   const pdfjs = (await import('pdfjs-dist/legacy/build/pdf.mjs')) as typeof import('pdfjs-dist');
   const { getDocument, OPS } = pdfjs;
 
