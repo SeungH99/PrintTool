@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { GeistSans } from 'geist/font/sans';
 import { GeistMono } from 'geist/font/mono';
@@ -7,10 +8,40 @@ import { getDictionary } from '@/i18n/dictionaries';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { ConsentScripts } from '@/components/ads/ConsentScripts';
+import { SITE_URL } from '@/lib/site';
 import '../globals.css';
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  if (!isLocale(locale)) return {};
+  const dict = getDictionary(locale);
+  return {
+    metadataBase: new URL(SITE_URL),
+    title: { default: 'PrintReady', template: '%s · PrintReady' },
+    description: dict.home.heroDesc,
+    applicationName: 'PrintReady',
+    alternates: {
+      canonical: `/${locale}`,
+      languages: { ko: '/ko', en: '/en', 'x-default': '/ko' },
+    },
+    openGraph: {
+      title: 'PrintReady',
+      description: dict.home.heroDesc,
+      url: `/${locale}`,
+      siteName: 'PrintReady',
+      locale: locale === 'ko' ? 'ko_KR' : 'en_US',
+      type: 'website',
+    },
+    robots: { index: true, follow: true },
+  };
 }
 
 export default async function LocaleLayout({
