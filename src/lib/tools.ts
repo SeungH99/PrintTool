@@ -1,4 +1,4 @@
-export const toolIds = ['pdf', 'res', 'spine', 'weight', 'fold', 'label'] as const;
+export const toolIds = ['pdf', 'convert', 'res', 'spine', 'weight', 'fold', 'label'] as const;
 
 export type ToolId = (typeof toolIds)[number];
 
