@@ -6,12 +6,14 @@ export function NumberField({
   onChange,
   suffix,
   helper,
+  disabled,
 }: {
   label: string;
   value: string;
   onChange: (value: string) => void;
   suffix?: string;
   helper?: string;
+  disabled?: boolean;
 }) {
   return (
     <div className="flex min-w-0 flex-col gap-1.5">
@@ -22,10 +24,12 @@ export function NumberField({
           inputMode="decimal"
           value={value}
           onChange={(e) => onChange(e.target.value)}
+          disabled={disabled}
           aria-label={label}
           className={cn(
             'h-10 w-full rounded-sm border border-hairline bg-elevated px-3 text-sm text-ink outline-none transition',
             'focus:border-link focus:ring-2 focus:ring-link/20',
+            disabled && 'cursor-not-allowed bg-hairline-soft text-faint',
             suffix ? 'pr-11' : 'pr-3',
           )}
         />

@@ -7,16 +7,8 @@ import { NumberField } from '@/components/ui/NumberField';
 import { SelectField } from '@/components/ui/SelectField';
 import { Badge, type BadgeTone } from '@/components/ui/Badge';
 import { CalculatorShell } from './CalculatorShell';
-
-function toNum(value: string): number {
-  const n = parseFloat(value);
-  return Number.isFinite(n) ? n : 0;
-}
-
-function round(n: number, digits = 1): string {
-  const factor = 10 ** digits;
-  return (Math.round(n * factor) / factor).toFixed(digits);
-}
+import { ResultPanel } from './ResultPanel';
+import { round, toNum } from './number';
 
 export function ResolutionCalculator({
   dict,
@@ -68,30 +60,15 @@ export function ResolutionCalculator({
   );
 
   const results = (
-    <div className="rounded-lg border border-hairline bg-elevated p-6 shadow-[0_1px_1px_rgba(0,0,0,0.04)]">
-      <div className="mb-4 font-mono text-[11px] uppercase tracking-wider text-faint">
-        {dict.calc.result}
-      </div>
-      {result ? (
-        <>
-          <div className="mb-1.5 text-[13px] text-mute">{t.sizeLabel}</div>
-          <div className="text-4xl font-semibold tracking-tight tabular-nums text-ink">
-            {round(result.width)} × {round(result.height)} {result.unit}
-          </div>
-          {level && (
-            <div className="mt-3">
-              <Badge tone={level.tone}>{level.text}</Badge>
-            </div>
-          )}
-          <div className="mt-5 flex items-center justify-between border-t border-hairline pt-3 text-sm">
-            <span className="text-body">{t.megapixelsLabel}</span>
-            <span className="font-medium tabular-nums text-ink">{round(result.megapixels)} MP</span>
-          </div>
-        </>
-      ) : (
-        <div className="text-sm text-mute">—</div>
-      )}
-    </div>
+    <ResultPanel
+      resultLabel={dict.calc.result}
+      primaryLabel={t.sizeLabel}
+      primaryValue={
+        result ? `${round(result.width)} × ${round(result.height)} ${result.unit}` : '—'
+      }
+      badge={level ? <Badge tone={level.tone}>{level.text}</Badge> : undefined}
+      rows={result ? [{ label: t.megapixelsLabel, value: `${round(result.megapixels)} MP` }] : undefined}
+    />
   );
 
   return (

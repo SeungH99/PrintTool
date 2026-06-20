@@ -3,6 +3,8 @@ import { isLocale, locales } from '@/i18n/config';
 import { getDictionary } from '@/i18n/dictionaries';
 import { isToolId, toolIds } from '@/lib/tools';
 import { ResolutionCalculator } from '@/components/calculators/ResolutionCalculator';
+import { SpineCalculator } from '@/components/calculators/SpineCalculator';
+import { PaperWeightCalculator } from '@/components/calculators/PaperWeightCalculator';
 import { ComingSoon } from '@/components/calculators/ComingSoon';
 
 export function generateStaticParams() {
@@ -20,17 +22,11 @@ export default async function ToolPage({
   const dict = getDictionary(locale);
   const meta = dict.tools.find((entry) => entry.id === tool)!;
 
-  if (tool === 'res') {
-    return (
-      <ResolutionCalculator
-        dict={dict}
-        locale={locale}
-        eyebrow={meta.tag}
-        title={meta.title}
-        desc={meta.desc}
-      />
-    );
-  }
+  const shared = { dict, locale, eyebrow: meta.tag, title: meta.title, desc: meta.desc };
+
+  if (tool === 'res') return <ResolutionCalculator {...shared} />;
+  if (tool === 'spine') return <SpineCalculator {...shared} />;
+  if (tool === 'weight') return <PaperWeightCalculator {...shared} />;
 
   return (
     <ComingSoon
