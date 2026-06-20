@@ -32,3 +32,29 @@ export interface PreflightSettings {
   colorMode: PdfColorMode;
   checkFonts: boolean;
 }
+
+export type ResolutionLevel = 'high' | 'ok' | 'low';
+
+export interface ResolutionResult {
+  width: number;
+  height: number;
+  unit: ResolutionInput['unit'];
+  level: ResolutionLevel;
+  megapixels: number;
+}
+
+export interface SpineResult {
+  spineMm: number;
+  leaves: number;
+  /** True when the page count is not a multiple of 4 (may leave blank pages). */
+  warnPageMultiple: boolean;
+}
+
+export interface PaperWeightResult {
+  areaM2: number;
+  perSheetG: number;
+  perSheetKg: number;
+  totalKg: number;
+  /** Rough estimate (packaging overhead + box), not an exact figure. */
+  packageKg: number;
+}
