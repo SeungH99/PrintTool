@@ -1,7 +1,8 @@
 import { PDFDocument } from 'pdf-lib';
+import { MM_TO_PT, PAGE_PT, type Orientation, type StandardPageId } from './page-geometry';
 
-export type PageSizeId = 'a4' | 'letter' | 'fit';
-export type Orientation = 'auto' | 'portrait' | 'landscape';
+export type { Orientation };
+export type PageSizeId = StandardPageId | 'fit';
 
 export interface ImageToPdfOptions {
   /** Target page size. 'fit' makes the page exactly the image size (1px → 1pt). */
@@ -10,13 +11,6 @@ export interface ImageToPdfOptions {
   marginMm?: number;
   orientation?: Orientation;
 }
-
-const MM_TO_PT = 72 / 25.4;
-
-const PAGE_PT: Record<Exclude<PageSizeId, 'fit'>, { w: number; h: number }> = {
-  a4: { w: 210 * MM_TO_PT, h: 297 * MM_TO_PT },
-  letter: { w: 8.5 * 72, h: 11 * 72 },
-};
 
 /**
  * Wrap a raster image (PNG/JPEG) into a print-ready PDF, fitting it to the

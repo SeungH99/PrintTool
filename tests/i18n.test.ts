@@ -13,9 +13,14 @@ describe('i18n', () => {
     expect(getDictionary('en').nav.home).toBe('Home');
   });
 
-  it('lists all six tools in both locales', () => {
-    expect(getDictionary('ko').tools).toHaveLength(6);
-    expect(getDictionary('en').tools).toHaveLength(6);
+  it('lists all seven tools in both locales', () => {
+    expect(getDictionary('ko').tools).toHaveLength(7);
+    expect(getDictionary('en').tools).toHaveLength(7);
+  });
+
+  it('includes the convert tool in both locales', () => {
+    expect(getDictionary('ko').tools.map((t) => t.id)).toContain('convert');
+    expect(getDictionary('en').tools.map((t) => t.id)).toContain('convert');
   });
 
   it('narrows valid locale values', () => {

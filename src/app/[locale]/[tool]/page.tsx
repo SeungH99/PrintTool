@@ -11,10 +11,12 @@ import { PaperWeightCalculator } from '@/components/calculators/PaperWeightCalcu
 import { FoldCalculator } from '@/components/calculators/FoldCalculator';
 import { LabelCalculator } from '@/components/calculators/LabelCalculator';
 import { PdfPreflight } from '@/components/calculators/PdfPreflight';
+import { ConvertTool } from '@/components/calculators/ConvertTool';
 import { ComingSoon } from '@/components/calculators/ComingSoon';
 
 const CALCULATORS: Partial<Record<ToolId, ComponentType<CalculatorProps>>> = {
   pdf: PdfPreflight,
+  convert: ConvertTool,
   res: ResolutionCalculator,
   spine: SpineCalculator,
   weight: PaperWeightCalculator,
