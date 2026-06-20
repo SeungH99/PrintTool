@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { isLocale } from '@/i18n/config';
 import { getDictionary } from '@/i18n/dictionaries';
@@ -41,21 +42,25 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         <p className="m-0 mb-8 max-w-[560px] text-base text-body">{dict.home.toolsDesc}</p>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {dict.tools.map((tool) => (
-            <Card key={tool.id} className="flex h-full flex-col gap-3.5 p-6">
-              <span
-                className="flex h-11 w-11 items-center justify-center rounded-[10px] border border-hairline bg-hairline-soft font-mono text-xs text-ink"
-                aria-hidden="true"
-              >
-                {tool.tag.slice(0, 2)}
-              </span>
-              <div>
-                <h3 className="m-0 mb-1.5 text-[17px] font-semibold tracking-tight">{tool.title}</h3>
-                <p className="m-0 text-sm leading-relaxed text-body">{tool.desc}</p>
-              </div>
-              <span className="mt-auto font-mono text-[11px] uppercase tracking-wide text-mute">
-                {tool.tag}
-              </span>
-            </Card>
+            <Link key={tool.id} href={`/${locale}/${tool.id}`} className="no-underline">
+              <Card className="flex h-full flex-col gap-3.5 p-6 transition hover:border-faint hover:shadow-[0_2px_2px_rgba(0,0,0,0.04),0_8px_16px_-4px_rgba(0,0,0,0.08)]">
+                <span
+                  className="flex h-11 w-11 items-center justify-center rounded-[10px] border border-hairline bg-hairline-soft font-mono text-xs text-ink"
+                  aria-hidden="true"
+                >
+                  {tool.tag.slice(0, 2)}
+                </span>
+                <div>
+                  <h3 className="m-0 mb-1.5 text-[17px] font-semibold tracking-tight">
+                    {tool.title}
+                  </h3>
+                  <p className="m-0 text-sm leading-relaxed text-body">{tool.desc}</p>
+                </div>
+                <span className="mt-auto font-mono text-[11px] uppercase tracking-wide text-mute">
+                  {tool.tag}
+                </span>
+              </Card>
+            </Link>
           ))}
         </div>
       </section>

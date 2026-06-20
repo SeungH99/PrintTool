@@ -62,6 +62,33 @@ export const ko = {
     adNote: '동의 후 광고가 표시됩니다',
     skipToContent: '본문으로 건너뛰기',
   },
+  calc: {
+    inputs: '입력값',
+    result: '결과',
+    back: '도구 홈으로',
+    guideTitle: '가이드',
+    comingSoon: '준비 중',
+    comingSoonDesc: '이 도구는 곧 제공됩니다. 다른 계산기를 먼저 사용해 보세요.',
+    res: {
+      widthPx: '가로 (픽셀)',
+      heightPx: '세로 (픽셀)',
+      dpi: '목표 해상도 (DPI)',
+      dpiHelper: '인쇄용은 보통 300 DPI를 권장합니다',
+      unit: '단위',
+      unitCm: '센티미터 (cm)',
+      unitInch: '인치 (inch)',
+      sizeLabel: '인쇄 가능한 최대 크기',
+      qualityLabel: '품질 수준',
+      megapixelsLabel: '총 화소 수',
+      levelHigh: '고품질',
+      levelOk: '사용 가능',
+      levelLow: '해상도 부족',
+      guide: [
+        '인쇄 크기(inch) = 픽셀 수 ÷ DPI · cm = inch × 2.54',
+        '300 DPI 이상은 고품질, 150~299는 일반 인쇄, 150 미만은 확대 시 화질이 떨어집니다.',
+      ],
+    },
+  },
   langName: '한국어',
 };
 
