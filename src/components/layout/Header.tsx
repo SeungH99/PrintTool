@@ -4,6 +4,7 @@ import type { Dictionary } from '@/i18n/dictionaries';
 import { Logo } from '@/components/ui/Logo';
 import { buttonClass } from '@/components/ui/buttonClass';
 import { LanguageSwitcher } from './LanguageSwitcher';
+import { ToolsMenu } from './ToolsMenu';
 
 export function Header({ locale, dict }: { locale: Locale; dict: Dictionary }) {
   return (
@@ -25,6 +26,7 @@ export function Header({ locale, dict }: { locale: Locale; dict: Dictionary }) {
           >
             {dict.nav.home}
           </Link>
+          <ToolsMenu locale={locale} label={dict.nav.tools} tools={dict.tools} />
         </nav>
 
         <div className="ml-auto flex flex-none items-center gap-2.5">
