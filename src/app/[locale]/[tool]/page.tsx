@@ -5,6 +5,8 @@ import { isToolId, toolIds } from '@/lib/tools';
 import { ResolutionCalculator } from '@/components/calculators/ResolutionCalculator';
 import { SpineCalculator } from '@/components/calculators/SpineCalculator';
 import { PaperWeightCalculator } from '@/components/calculators/PaperWeightCalculator';
+import { FoldCalculator } from '@/components/calculators/FoldCalculator';
+import { LabelCalculator } from '@/components/calculators/LabelCalculator';
 import { ComingSoon } from '@/components/calculators/ComingSoon';
 
 export function generateStaticParams() {
@@ -27,6 +29,8 @@ export default async function ToolPage({
   if (tool === 'res') return <ResolutionCalculator {...shared} />;
   if (tool === 'spine') return <SpineCalculator {...shared} />;
   if (tool === 'weight') return <PaperWeightCalculator {...shared} />;
+  if (tool === 'fold') return <FoldCalculator {...shared} />;
+  if (tool === 'label') return <LabelCalculator {...shared} />;
 
   return (
     <ComingSoon

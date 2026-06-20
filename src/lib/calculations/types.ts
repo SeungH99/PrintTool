@@ -58,3 +58,44 @@ export interface PaperWeightResult {
   /** Rough estimate (packaging overhead + box), not an exact figure. */
   packageKg: number;
 }
+
+export type FoldType = 'half' | 'letter' | 'zfold' | 'roll';
+
+export interface FoldInput {
+  /** Finished (folded) width in mm. */
+  widthMm: number;
+  type: FoldType;
+  /** How much each inward-folding panel is narrowed, in mm. */
+  innerMm: number;
+}
+
+export interface FoldPanel {
+  index: number;
+  widthMm: number;
+  /** True for panels that fold inward and so are made slightly narrower. */
+  shorter: boolean;
+}
+
+export interface FoldResult {
+  panels: FoldPanel[];
+}
+
+export interface LabelInput {
+  sheetWmm: number;
+  sheetHmm: number;
+  labelWmm: number;
+  labelHmm: number;
+  marginMm: number;
+  gapMm: number;
+  /** Allow a 90° rotated layout if it fits more labels. */
+  rotate: boolean;
+}
+
+export interface LabelResult {
+  cols: number;
+  rows: number;
+  total: number;
+  rotated: boolean;
+  remainderWmm: number;
+  remainderHmm: number;
+}
