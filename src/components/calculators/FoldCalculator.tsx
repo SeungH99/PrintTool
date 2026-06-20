@@ -49,9 +49,30 @@ export function FoldCalculator({
     </div>
   );
 
+  const diagram = (
+    <div className="flex min-h-[110px] overflow-hidden rounded-md border border-hairline bg-hairline-soft">
+      {result.panels.map((p, i) => (
+        <div
+          key={p.index}
+          style={{ flexGrow: p.widthMm, flexBasis: 0 }}
+          className={
+            'flex flex-col items-center justify-center gap-1.5 p-2 text-center' +
+            (i < result.panels.length - 1 ? ' border-r border-dashed border-faint' : '')
+          }
+        >
+          <span className="flex h-6 w-6 items-center justify-center rounded-full border border-hairline bg-elevated font-mono text-xs text-ink">
+            {p.index}
+          </span>
+          <span className="font-mono text-xs tabular-nums text-ink">{round(p.widthMm, 1)}</span>
+        </div>
+      ))}
+    </div>
+  );
+
   const results = (
     <ResultPanel
       resultLabel={dict.calc.result}
+      diagram={diagram}
       rows={result.panels.map((p) => ({
         label: `${t.panel} ${p.index}${p.shorter ? ` · ${t.shorterNote}` : ''}`,
         value: `${round(p.widthMm, 1)} mm`,
