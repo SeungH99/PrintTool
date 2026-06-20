@@ -54,10 +54,27 @@ export const en: Dictionary = {
     tagline: 'Print-production checks and calculations, all in one place.',
     toolsHead: 'Tools',
     aboutHead: 'About',
-    about: ['Privacy policy', 'Terms of use', 'Contact'],
+    privacy: 'Privacy policy',
+    cookies: 'Cookie policy',
+    terms: 'Terms of use',
+    contact: 'Contact',
     cookieSettings: 'Cookie settings',
     copy: '© 2026 PrintReady',
     note: 'In-browser · no login',
+  },
+  policy: {
+    draftNote: 'Draft — pending legal review. Review required before publishing.',
+    privacyTitle: 'Privacy policy',
+    privacyBody: [
+      'Your files and values are processed in your browser by default and are not sent to a server.',
+      'Advertising/analytics cookies are used only after consent (CMP); nothing loads before consent.',
+      'Contact: (TBD)',
+    ],
+    cookiesTitle: 'Cookie policy',
+    cookiesBody: [
+      'Beyond essential cookies, advertising/analytics cookies follow your Google-certified CMP consent.',
+      'You can change consent anytime via "Cookie settings" in the footer.',
+    ],
   },
   common: {
     adLabel: 'Ad space',
@@ -185,7 +202,7 @@ export const en: Dictionary = {
       statusWarn: 'Not set',
       statusUnknown: 'Detection limited',
       disclaimer:
-        'This is a basic in-browser metadata check. Image resolution, color mode and font embedding are NOT precisely evaluated (detection limited), and the result is not a production guarantee. Confirm with your printer or a professional preflight tool.',
+        'This is a basic in-browser metadata check. Page size, trim/bleed and font embedding are detected, but image resolution and color mode are NOT precisely evaluated (detection limited). Font detection is best-effort and may miss some formats. The result is not a production guarantee — confirm with your printer or a professional preflight tool.',
     },
   },
   langName: 'EN',

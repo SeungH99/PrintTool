@@ -8,6 +8,7 @@ const base: PdfAnalysis = {
   pageHeightMm: 297,
   hasTrimBox: false,
   hasBleedBox: false,
+  fontsEmbedded: 'unknown',
 };
 
 const byKey = (r: ReturnType<typeof buildPreflightReport>) =>
@@ -33,5 +34,10 @@ describe('buildPreflightReport', () => {
     expect(k.trim).toBe('pass');
     expect(k.bleed).toBe('pass');
     expect(r.overall).toBe('ok');
+  });
+
+  it('maps font embedding (all -> pass, none -> warn)', () => {
+    expect(byKey(buildPreflightReport({ ...base, fontsEmbedded: 'all' })).fonts).toBe('pass');
+    expect(byKey(buildPreflightReport({ ...base, fontsEmbedded: 'none' })).fonts).toBe('warn');
   });
 });

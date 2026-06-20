@@ -52,12 +52,44 @@ export function LabelCalculator({
     </div>
   );
 
+  const ar = result.rotated
+    ? toNum(labelH) / Math.max(0.01, toNum(labelW))
+    : toNum(labelW) / Math.max(0.01, toNum(labelH));
+  const capCols = Math.min(result.cols, 14);
+  const capRows = Math.min(result.rows, 12);
+  const cellCount = Math.max(0, capCols * capRows);
+  const diagram =
+    cellCount > 0 ? (
+      <div className="rounded-md border border-hairline bg-hairline-soft p-3">
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: `repeat(${Math.max(1, capCols)}, 1fr)`,
+            gap: '4px',
+          }}
+        >
+          {Array.from({ length: cellCount }).map((_, i) => (
+            <div
+              key={i}
+              style={{
+                aspectRatio: String(ar > 0 ? ar : 1),
+                background: 'var(--color-link-soft)',
+                border: '1px solid #bcd8ff',
+                borderRadius: '2px',
+              }}
+            />
+          ))}
+        </div>
+      </div>
+    ) : undefined;
+
   const results = (
     <ResultPanel
       resultLabel={dict.calc.result}
       primaryLabel={t.totalLabel}
       primaryValue={t.unit ? `${result.total} ${t.unit}` : String(result.total)}
       badge={result.rotated ? <Badge tone="neutral">{t.rotatedBadge}</Badge> : undefined}
+      diagram={diagram}
       rows={[
         { label: t.gridLabel, value: `${result.rows} × ${result.cols}` },
         {

@@ -15,6 +15,7 @@ export function ResultPanel({
   primaryLabel,
   primaryValue,
   badge,
+  diagram,
   rows,
   note,
 }: {
@@ -23,6 +24,7 @@ export function ResultPanel({
   primaryLabel?: string;
   primaryValue?: string;
   badge?: ReactNode;
+  diagram?: ReactNode;
   rows?: ResultRow[];
   note?: string;
 }) {
@@ -50,6 +52,8 @@ export function ResultPanel({
             {badge && <div className="mt-3">{badge}</div>}
           </div>
         )}
+
+        {diagram && <div className="mb-4">{diagram}</div>}
 
         {rows && rows.length > 0 && (
           <div className="flex flex-col">

@@ -1,8 +1,12 @@
+import Link from 'next/link';
+import type { Locale } from '@/i18n/config';
 import type { Dictionary } from '@/i18n/dictionaries';
 import { Logo } from '@/components/ui/Logo';
 import { CookieSettingsButton } from './CookieSettingsButton';
 
-export function Footer({ dict }: { dict: Dictionary }) {
+export function Footer({ locale, dict }: { locale: Locale; dict: Dictionary }) {
+  const linkClass = 'text-[13px] text-body no-underline transition-colors hover:text-ink';
+
   return (
     <footer className="border-t border-hairline bg-elevated">
       <div className="mx-auto grid max-w-page grid-cols-1 gap-8 px-6 py-12 sm:grid-cols-3">
@@ -22,8 +26,10 @@ export function Footer({ dict }: { dict: Dictionary }) {
           </div>
           <ul className="m-0 flex list-none flex-col gap-2.5 p-0">
             {dict.tools.map((tool) => (
-              <li key={tool.id} className="text-[13px] text-body">
-                {tool.title}
+              <li key={tool.id}>
+                <Link href={`/${locale}/${tool.id}`} className={linkClass}>
+                  {tool.title}
+                </Link>
               </li>
             ))}
           </ul>
@@ -34,11 +40,18 @@ export function Footer({ dict }: { dict: Dictionary }) {
             {dict.footer.aboutHead}
           </div>
           <ul className="m-0 flex list-none flex-col gap-2.5 p-0">
-            {dict.footer.about.map((item) => (
-              <li key={item} className="text-[13px] text-body">
-                {item}
-              </li>
-            ))}
+            <li>
+              <Link href={`/${locale}/privacy`} className={linkClass}>
+                {dict.footer.privacy}
+              </Link>
+            </li>
+            <li>
+              <Link href={`/${locale}/cookies`} className={linkClass}>
+                {dict.footer.cookies}
+              </Link>
+            </li>
+            <li className="text-[13px] text-body">{dict.footer.terms}</li>
+            <li className="text-[13px] text-body">{dict.footer.contact}</li>
             <li>
               <CookieSettingsButton label={dict.footer.cookieSettings} />
             </li>
