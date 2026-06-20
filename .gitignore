@@ -1,0 +1,10 @@
+.claude/
+docs/
+AGENTS.md
+.obsidian/
+.trash/
+
+node_modules/
+.next/
+dist/
+coverage/
