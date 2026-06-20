@@ -21,6 +21,8 @@ export interface PreflightOptions {
   requireTrimBox?: boolean;
   /** Set false to treat a missing BleedBox as "not checked" instead of a warning. */
   requireBleed?: boolean;
+  /** Minimum acceptable image DPI (default 300). */
+  minDpi?: number;
 }
 
 /**
@@ -51,11 +53,18 @@ export function buildPreflightReport(
         ? 'unknown'
         : 'warn';
 
+  const resolutionStatus: PreflightStatus =
+    analysis.minImageDpi === null
+      ? 'unknown'
+      : analysis.minImageDpi >= (options.minDpi ?? 300)
+        ? 'pass'
+        : 'warn';
+
   const items: PreflightItem[] = [
     { key: 'pageSize', status: 'pass' },
     { key: 'trim', status: trimStatus },
     { key: 'bleed', status: bleedStatus },
-    { key: 'resolution', status: 'unknown' }, // image DPI: detection-limited in-browser
+    { key: 'resolution', status: resolutionStatus },
     { key: 'color', status: 'unknown' }, // color mode: detection-limited in-browser
     { key: 'fonts', status: fontsStatus },
   ];

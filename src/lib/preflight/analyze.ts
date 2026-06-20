@@ -1,4 +1,5 @@
 import { PDFDocument, PDFName, PDFDict, PDFArray, type PDFPageLeaf } from 'pdf-lib';
+import { detectMinImageDpi } from './images';
 
 const PT_PER_MM = 72 / 25.4;
 
@@ -12,6 +13,8 @@ export interface PdfAnalysis {
   hasBleedBox: boolean;
   /** Best-effort embedding check of the first page's fonts. `unknown` when undetectable. */
   fontsEmbedded: FontsEmbedded;
+  /** Lowest effective image DPI on the first page (via pdf.js), or null if none/undetectable. */
+  minImageDpi: number | null;
 }
 
 const FONT_FILE_KEYS = ['FontFile', 'FontFile2', 'FontFile3'];
@@ -84,6 +87,13 @@ export async function analyzePdf(bytes: ArrayBuffer | Uint8Array): Promise<PdfAn
     }
   };
 
+  let minImageDpi: number | null = null;
+  try {
+    minImageDpi = await detectMinImageDpi(bytes);
+  } catch {
+    minImageDpi = null;
+  }
+
   return {
     pageCount,
     pageWidthMm: width / PT_PER_MM,
@@ -91,5 +101,6 @@ export async function analyzePdf(bytes: ArrayBuffer | Uint8Array): Promise<PdfAn
     hasTrimBox: hasBox('TrimBox'),
     hasBleedBox: hasBox('BleedBox'),
     fontsEmbedded: inspectFonts(first.node),
+    minImageDpi,
   };
 }

@@ -9,6 +9,7 @@ const base: PdfAnalysis = {
   hasTrimBox: false,
   hasBleedBox: false,
   fontsEmbedded: 'unknown',
+  minImageDpi: null,
 };
 
 const byKey = (r: ReturnType<typeof buildPreflightReport>) =>
@@ -39,5 +40,11 @@ describe('buildPreflightReport', () => {
   it('maps font embedding (all -> pass, none -> warn)', () => {
     expect(byKey(buildPreflightReport({ ...base, fontsEmbedded: 'all' })).fonts).toBe('pass');
     expect(byKey(buildPreflightReport({ ...base, fontsEmbedded: 'none' })).fonts).toBe('warn');
+  });
+
+  it('maps image DPI against the minimum (default 300)', () => {
+    expect(byKey(buildPreflightReport({ ...base, minImageDpi: 400 })).resolution).toBe('pass');
+    expect(byKey(buildPreflightReport({ ...base, minImageDpi: 200 })).resolution).toBe('warn');
+    expect(byKey(buildPreflightReport({ ...base, minImageDpi: null })).resolution).toBe('unknown');
   });
 });
