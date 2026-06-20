@@ -33,3 +33,11 @@ test('unknown tool returns 404', async ({ page }) => {
   const res = await page.goto('/ko/zzz');
   expect(res?.status()).toBe(404);
 });
+
+test('header tools menu opens and navigates to a tool', async ({ page }) => {
+  await page.goto('/ko');
+  const header = page.getByRole('banner'); // scope to the header (home also has tool cards)
+  await header.getByRole('button', { name: /도구/ }).click();
+  await header.getByRole('link', { name: /인쇄용 PDF 변환/ }).click();
+  await expect(page).toHaveURL(/\/ko\/convert$/);
+});
