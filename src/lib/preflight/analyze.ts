@@ -91,7 +91,7 @@ function csFromName(name: string): CsClass {
   return 'other';
 }
 
-function classifyColorSpace(cs: PDFObject | undefined): CsClass {
+export function classifyColorSpace(cs: PDFObject | undefined): CsClass {
   if (cs instanceof PDFName) return csFromName(cs.toString());
   if (cs instanceof PDFArray) {
     const familyObj = cs.lookup(0);
@@ -110,6 +110,10 @@ function classifyColorSpace(cs: PDFObject | undefined): CsClass {
     if (family.includes('CalRGB')) return 'rgb';
     if (family.includes('CalGray')) return 'gray';
     if (family.includes('Indexed')) return classifyColorSpace(cs.lookup(1));
+    // Separation / DeviceN (spot colors): classify by the alternate space (index 2).
+    if (family.includes('Separation') || family.includes('DeviceN')) {
+      return classifyColorSpace(cs.lookup(2));
+    }
     return csFromName(family);
   }
   return 'other';
