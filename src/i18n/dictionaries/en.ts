@@ -205,5 +205,13 @@ export const en: Dictionary = {
         'This is a basic in-browser metadata check. Page size, trim/bleed, font embedding, image resolution and color space are detected on a best-effort basis (some formats, nested layouts or color spaces may be missed) — not a production guarantee. Confirm with your printer or a professional preflight tool.',
     },
   },
+  notFound: {
+    code: '404',
+    title: 'Page not found',
+    desc: 'This page may have moved or been removed. Jump to one of the tools below.',
+    home: 'Go home',
+    tools: 'Browse tools',
+    toolsHead: 'Quick links',
+  },
   langName: 'EN',
 };
