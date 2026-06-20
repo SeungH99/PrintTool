@@ -146,6 +146,12 @@ export function PdfPreflight({
                         {Math.round(analysis.minImageDpi)} DPI
                       </div>
                     )}
+                    {item.key === 'color' &&
+                      (analysis.colorMode === 'cmyk' || analysis.colorMode === 'rgb') && (
+                        <div className="mt-0.5 text-xs uppercase text-mute">
+                          {analysis.colorMode}
+                        </div>
+                      )}
                   </div>
                   <Badge tone={status[item.status].tone}>{status[item.status].text}</Badge>
                 </div>

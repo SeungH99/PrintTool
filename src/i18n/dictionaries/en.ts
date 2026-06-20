@@ -202,7 +202,7 @@ export const en: Dictionary = {
       statusWarn: 'Not set',
       statusUnknown: 'Detection limited',
       disclaimer:
-        'This is a basic in-browser metadata check. Page size, trim/bleed, font embedding and image resolution are detected, but color mode (CMYK/RGB) is NOT precisely evaluated (detection limited). Font and resolution detection are best-effort and may miss some cases. The result is not a production guarantee — confirm with your printer or a professional preflight tool.',
+        'This is a basic in-browser metadata check. Page size, trim/bleed, font embedding, image resolution and color space are detected on a best-effort basis (some formats, nested layouts or color spaces may be missed) — not a production guarantee. Confirm with your printer or a professional preflight tool.',
     },
   },
   langName: 'EN',

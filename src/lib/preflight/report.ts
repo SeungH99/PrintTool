@@ -60,12 +60,15 @@ export function buildPreflightReport(
         ? 'pass'
         : 'warn';
 
+  const colorStatus: PreflightStatus =
+    analysis.colorMode === 'cmyk' ? 'pass' : analysis.colorMode === 'rgb' ? 'warn' : 'unknown';
+
   const items: PreflightItem[] = [
     { key: 'pageSize', status: 'pass' },
     { key: 'trim', status: trimStatus },
     { key: 'bleed', status: bleedStatus },
     { key: 'resolution', status: resolutionStatus },
-    { key: 'color', status: 'unknown' }, // color mode: detection-limited in-browser
+    { key: 'color', status: colorStatus },
     { key: 'fonts', status: fontsStatus },
   ];
 

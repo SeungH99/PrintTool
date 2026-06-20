@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { deflateSync } from 'node:zlib';
 import { PDFDocument } from 'pdf-lib';
 import { composeMatrix, imageDpi, detectMinImageDpi } from '@/lib/preflight/images';
+import { analyzePdf } from '@/lib/preflight/analyze';
 
 // --- minimal solid-color RGB PNG builder (for a known pixel size) ---
 let CRC: number[] | null = null;
@@ -64,5 +65,16 @@ describe('detectMinImageDpi', () => {
     const doc = await PDFDocument.create();
     doc.addPage([600, 600]);
     expect(await detectMinImageDpi(await doc.save())).toBeNull();
+  });
+});
+
+describe('color mode (analyzePdf)', () => {
+  it('detects an embedded RGB image as rgb', async () => {
+    const doc = await PDFDocument.create();
+    const page = doc.addPage([200, 200]);
+    const img = await doc.embedPng(makePng(50, 50));
+    page.drawImage(img, { x: 0, y: 0, width: 50, height: 50 });
+    const a = await analyzePdf(await doc.save());
+    expect(a.colorMode).toBe('rgb');
   });
 });
