@@ -6,6 +6,7 @@ import { isLocale, locales } from '@/i18n/config';
 import { getDictionary } from '@/i18n/dictionaries';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
+import { ConsentScripts } from '@/components/ads/ConsentScripts';
 import '../globals.css';
 
 export function generateStaticParams() {
@@ -36,7 +37,8 @@ export default async function LocaleLayout({
         <main id="content" className="w-full flex-1">
           {children}
         </main>
-        <Footer dict={dict} />
+        <Footer locale={locale} dict={dict} />
+        <ConsentScripts />
       </body>
     </html>
   );

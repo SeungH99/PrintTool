@@ -1,9 +1,9 @@
 /**
- * Consent + ad-load gate interface (STUB).
- *
- * A real Google-certified CMP (e.g. Funding Choices) is OUT of scope for MVP-001
- * (see ADR-0001). This module only defines the seam the CMP will plug into and a
- * default-denied state; it does NOT collect real consent or emit Consent Mode signals.
+ * Consent + ad-load gate. The certified CMP (Google Funding Choices, configured in
+ * the AdSense console "Privacy & messaging") owns the actual consent UI; this module
+ * provides the default-denied state, the Consent Mode v2 parameter mapping, and the
+ * seam to push updates to gtag. Real consent gating requires NEXT_PUBLIC_ADSENSE_CLIENT
+ * and an AdSense account — see ADR-0001 / MVP-005.
  */
 export type ConsentCategory = 'ads' | 'analytics';
 
@@ -24,13 +24,49 @@ export function readConsent(): ConsentState {
   }
 }
 
-/**
- * STUB: the real CMP will own this UI and persist the result. For now it is a
- * no-op placeholder so the wiring (footer "cookie settings" → here) already exists.
- */
+export type ConsentSignal = 'granted' | 'denied';
+
+export interface ConsentModeParams {
+  ad_storage: ConsentSignal;
+  ad_user_data: ConsentSignal;
+  ad_personalization: ConsentSignal;
+  analytics_storage: ConsentSignal;
+}
+
+/** Pure mapping from our consent state to Google Consent Mode v2 parameters. */
+export function consentModeParams(state: ConsentState): ConsentModeParams {
+  const ads: ConsentSignal = state.ads ? 'granted' : 'denied';
+  return {
+    ad_storage: ads,
+    ad_user_data: ads,
+    ad_personalization: ads,
+    analytics_storage: state.analytics ? 'granted' : 'denied',
+  };
+}
+
+type GtagWindow = { gtag?: (...args: unknown[]) => void };
+
+/** Push a Consent Mode update to gtag. No-op if gtag is not loaded. */
+export function applyConsentMode(state: ConsentState): void {
+  if (typeof window === 'undefined') return;
+  (window as unknown as GtagWindow).gtag?.('consent', 'update', consentModeParams(state));
+}
+
+type FundingChoicesWindow = {
+  googlefc?: {
+    callbackQueue?: { push: (cb: () => void) => void };
+    showRevocationMessage?: () => void;
+  };
+};
+
+/** Re-open the CMP consent UI (Funding Choices). No-op + warning if the CMP isn't loaded. */
 export function openConsentManager(): void {
-  if (typeof window !== 'undefined') {
-    // eslint-disable-next-line no-console
-    console.warn('[consent] CMP not integrated yet (MVP-001 stub). See ADR-0001.');
+  if (typeof window === 'undefined') return;
+  const fc = (window as unknown as FundingChoicesWindow).googlefc;
+  if (fc?.callbackQueue) {
+    fc.callbackQueue.push(() => fc.showRevocationMessage?.());
+    return;
   }
+  // eslint-disable-next-line no-console
+  console.warn('[consent] CMP not loaded (set NEXT_PUBLIC_ADSENSE_CLIENT). See ADR-0001 / MVP-005.');
 }

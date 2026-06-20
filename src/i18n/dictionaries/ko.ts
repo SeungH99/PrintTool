@@ -52,10 +52,27 @@ export const ko = {
     tagline: '인쇄 제작에 필요한 검수와 계산을 한 곳에서.',
     toolsHead: '도구',
     aboutHead: '안내',
-    about: ['개인정보 처리방침', '이용약관', '문의하기'],
+    privacy: '개인정보 처리방침',
+    cookies: '쿠키 정책',
+    terms: '이용약관',
+    contact: '문의하기',
     cookieSettings: '쿠키 설정',
     copy: '© 2026 PrintReady',
     note: '브라우저 내 처리 · 로그인 불필요',
+  },
+  policy: {
+    draftNote: '초안 — 법무 검토 전입니다. 실제 게시 전 검토가 필요합니다.',
+    privacyTitle: '개인정보 처리방침',
+    privacyBody: [
+      '입력한 파일과 값은 기본적으로 브라우저 안에서 처리되며 서버로 전송되지 않습니다.',
+      '광고·분석 쿠키는 동의(CMP) 후에만 사용되며, 동의 전에는 로드되지 않습니다.',
+      '문의처: (연락처 TBD)',
+    ],
+    cookiesTitle: '쿠키 정책',
+    cookiesBody: [
+      '필수 쿠키 외 광고·분석 쿠키는 Google 인증 CMP 동의에 따릅니다.',
+      '동의는 푸터의 "쿠키 설정"에서 언제든 변경할 수 있습니다.',
+    ],
   },
   common: {
     adLabel: '광고 영역',
