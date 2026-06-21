@@ -11,6 +11,48 @@ export type ConsentState = Record<ConsentCategory, boolean>;
 
 export const defaultConsent: ConsentState = { ads: false, analytics: false };
 
+/**
+ * Regions requiring opt-in consent (GDPR / UK GDPR / Swiss FADP) — ISO 3166-2
+ * country codes. Consent Mode defaults to DENIED here (the certified CMP collects
+ * consent); visitors elsewhere get a GRANTED default so measurement/ads aren't lost
+ * for non-regulated traffic (fixes the GA4 "consent 0%" tag-quality warning).
+ * EU 27 + EEA (IS/LI/NO) + UK + Switzerland.
+ */
+export const CONSENT_REQUIRED_REGIONS = [
+  'AT',
+  'BE',
+  'BG',
+  'HR',
+  'CY',
+  'CZ',
+  'DK',
+  'EE',
+  'FI',
+  'FR',
+  'DE',
+  'GR',
+  'HU',
+  'IE',
+  'IT',
+  'LV',
+  'LT',
+  'LU',
+  'MT',
+  'NL',
+  'PL',
+  'PT',
+  'RO',
+  'SK',
+  'SI',
+  'ES',
+  'SE',
+  'IS',
+  'LI',
+  'NO',
+  'GB',
+  'CH',
+] as const;
+
 const STORAGE_KEY = 'printready.consent';
 
 export function readConsent(): ConsentState {
@@ -68,5 +110,7 @@ export function openConsentManager(): void {
     return;
   }
   // eslint-disable-next-line no-console
-  console.warn('[consent] CMP not loaded (set NEXT_PUBLIC_ADSENSE_CLIENT). See ADR-0001 / MVP-005.');
+  console.warn(
+    '[consent] CMP not loaded (set NEXT_PUBLIC_ADSENSE_CLIENT). See ADR-0001 / MVP-005.',
+  );
 }
