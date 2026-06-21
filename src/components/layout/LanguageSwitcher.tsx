@@ -12,8 +12,8 @@ const LANGS: Record<Locale, { short: string; label: string }> = {
 };
 
 /**
- * Language dropdown — mirrors the design (current locale short code → menu of
- * full names). Closes on outside click / Escape / selection.
+ * Language dropdown — globe + current short code, opening a menu of short code +
+ * full name (mirrors the design). Closes on outside click / Escape / selection.
  */
 export function LanguageSwitcher({ locale }: { locale: Locale }) {
   const pathname = usePathname();
@@ -51,10 +51,18 @@ export function LanguageSwitcher({ locale }: { locale: Locale }) {
         aria-haspopup="true"
         aria-expanded={open}
         aria-label={locale === 'ko' ? '언어 선택' : 'Select language'}
-        className="inline-flex h-8 items-center gap-1 rounded-sm border border-hairline px-2.5 text-[13px] font-medium text-body transition-colors hover:text-ink"
+        className="inline-flex h-8 items-center gap-1.5 rounded-sm border border-hairline px-2.5 text-[13px] font-medium text-body transition-colors hover:text-ink"
       >
+        <svg width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+          <circle cx="10" cy="10" r="7.5" stroke="currentColor" strokeWidth="1.4" />
+          <path
+            d="M2.5 10h15M10 2.5c2 2.2 3 5 3 7.5s-1 5.3-3 7.5c-2-2.2-3-5-3-7.5s1-5.3 3-7.5z"
+            stroke="currentColor"
+            strokeWidth="1.4"
+          />
+        </svg>
         {LANGS[locale].short}
-        <span aria-hidden="true" className="text-[10px] opacity-70">
+        <span aria-hidden="true" className="text-[9px] opacity-60">
           ▾
         </span>
       </button>
@@ -62,7 +70,7 @@ export function LanguageSwitcher({ locale }: { locale: Locale }) {
       {open && (
         <div
           role="menu"
-          className="absolute right-0 top-[calc(100%+6px)] flex w-32 flex-col gap-0.5 rounded-md border border-hairline bg-elevated p-1.5 shadow-[0_8px_28px_-6px_rgba(0,0,0,0.18)]"
+          className="absolute right-0 top-[calc(100%+6px)] flex w-44 flex-col gap-0.5 rounded-md border border-hairline bg-elevated p-1.5 shadow-[0_8px_28px_-6px_rgba(0,0,0,0.18)]"
         >
           {locales.map((l) => (
             <Link
@@ -71,13 +79,18 @@ export function LanguageSwitcher({ locale }: { locale: Locale }) {
               onClick={() => setOpen(false)}
               aria-current={l === locale ? 'true' : undefined}
               className={cn(
-                'rounded-sm px-2.5 py-1.5 text-[13px] no-underline transition-colors',
-                l === locale
-                  ? 'bg-hairline-soft font-medium text-ink'
-                  : 'text-body hover:bg-hairline-soft',
+                'flex items-center gap-2.5 rounded-sm px-2.5 py-2 no-underline transition-colors',
+                l === locale ? 'bg-hairline-soft' : 'hover:bg-hairline-soft',
               )}
             >
-              {LANGS[l].label}
+              <span className="w-[26px] flex-none font-mono text-[11px] tracking-wide text-mute">
+                {LANGS[l].short}
+              </span>
+              <span
+                className={cn('text-[13px]', l === locale ? 'font-medium text-ink' : 'text-body')}
+              >
+                {LANGS[l].label}
+              </span>
             </Link>
           ))}
         </div>
