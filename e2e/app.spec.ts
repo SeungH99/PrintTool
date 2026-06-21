@@ -92,3 +92,10 @@ test('ads.txt carries the publisher line', async ({ page }) => {
   expect(res.status()).toBe(200);
   expect(await res.text()).toMatch(/google\.com,\s*pub-7142354312657545,\s*DIRECT/);
 });
+
+test('privacy page renders the policy with a cookies section', async ({ page }) => {
+  const res = await page.goto('/ko/privacy');
+  expect(res?.status()).toBe(200);
+  await expect(page.getByRole('heading', { name: '개인정보 처리방침', level: 1 })).toBeVisible();
+  await expect(page.locator('#cookies')).toBeVisible();
+});
