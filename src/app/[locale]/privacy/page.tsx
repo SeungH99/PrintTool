@@ -1,45 +1,21 @@
-import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
+import { notFound } from 'next/navigation';
 import { isLocale } from '@/i18n/config';
-import { getDictionary } from '@/i18n/dictionaries';
+import { POLICY_HTML } from './policyHtml';
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ locale: string }>;
-}): Promise<Metadata> {
-  const { locale } = await params;
-  const dict = getDictionary(isLocale(locale) ? locale : 'ko');
-  return { title: dict.policy.privacyTitle, robots: { index: true, follow: true } };
-}
+export const metadata: Metadata = {
+  title: 'Privacy Policy',
+  robots: { index: true, follow: true },
+};
 
+// English-only policy (Termly-generated) shown on both locales — ADR-0001 / privacy task.
 export default async function PrivacyPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
-  const { policy } = getDictionary(locale);
-
   return (
-    <div className="mx-auto max-w-[760px] px-6 py-16">
-      <p className="mb-8 rounded-md border border-hairline bg-hairline-soft px-4 py-3 text-sm text-body">
-        {policy.draftNote}
-      </p>
-
-      <h1 className="m-0 text-3xl font-semibold tracking-tight">{policy.privacyTitle}</h1>
-      <p className="mt-2 text-sm text-mute">{policy.updated}</p>
-      <ul className="mt-6 flex list-disc flex-col gap-3 pl-5 leading-relaxed text-body">
-        {policy.privacyBody.map((line) => (
-          <li key={line}>{line}</li>
-        ))}
-      </ul>
-
-      <h2 id="cookies" className="mt-12 scroll-mt-20 text-2xl font-semibold tracking-tight">
-        {policy.cookiesTitle}
-      </h2>
-      <ul className="mt-6 flex list-disc flex-col gap-3 pl-5 leading-relaxed text-body">
-        {policy.cookiesBody.map((line) => (
-          <li key={line}>{line}</li>
-        ))}
-      </ul>
-    </div>
+    <article
+      className="mx-auto max-w-[820px] px-6 py-16 leading-relaxed [&_a]:underline [&_h1]:mb-1 [&_h1]:text-3xl [&_h1]:font-semibold [&_h2]:mb-3 [&_h2]:mt-10 [&_h2]:text-2xl [&_h2]:font-semibold [&_h3]:mb-2 [&_h3]:mt-6 [&_h3]:text-lg [&_h3]:font-semibold"
+      dangerouslySetInnerHTML={{ __html: POLICY_HTML }}
+    />
   );
 }

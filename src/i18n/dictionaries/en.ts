@@ -67,26 +67,6 @@ export const en: Dictionary = {
     copy: '© 2026 PrintReady',
     note: 'In-browser · no login',
   },
-  policy: {
-    updated: 'Effective: 2026-06-21',
-    draftNote:
-      'This notice is general information, not legal advice. Legal review is recommended before publishing.',
-    privacyTitle: 'Privacy policy',
-    privacyBody: [
-      'Your files and values are processed in your browser by default and are not sent to a server.',
-      'Analytics: with consent, anonymous measurement via Google Analytics 4 (pageviews · Core Web Vitals).',
-      'Advertising: with consent, Google AdSense. Nothing loads before consent (Consent Mode v2, denied by default).',
-      'Third parties: Google (Analytics · AdSense · Funding Choices CMP) policies also apply.',
-      'Your rights: withdraw consent anytime via "Cookie settings" in the footer.',
-      'Contact: sheyeon1216@gmail.com',
-    ],
-    cookiesTitle: 'Cookie policy',
-    cookiesBody: [
-      'Beyond essential cookies, advertising/analytics cookies follow your Google-certified CMP (Funding Choices) consent.',
-      'You can change consent anytime via "Cookie settings" in the footer.',
-      'In the EEA, UK, and Switzerland, advertising/analytics cookies do not load before consent.',
-    ],
-  },
   common: {
     adLabel: 'Ad space',
     adNote: 'Ads appear after consent',
