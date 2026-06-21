@@ -7,6 +7,7 @@ import { resizePdf } from '@/lib/convert/resizePdf';
 import type { CalculatorProps } from './types';
 import { CalculatorHeader } from './CalculatorHeader';
 import { SelectField } from '@/components/ui/SelectField';
+import { Dropzone } from './Dropzone';
 import { buttonClass } from '@/components/ui/buttonClass';
 
 type Phase = 'empty' | 'selected' | 'converting' | 'done' | 'error';
@@ -117,40 +118,12 @@ export function ConvertTool({ dict, locale, eyebrow, title, desc }: CalculatorPr
       <section className="mx-auto grid max-w-page gap-8 px-6 pb-16 pt-8 lg:grid-cols-[1fr_360px]">
         <div className="flex flex-col gap-5">
           {(phase === 'empty' || phase === 'error') && (
-            <label
-              onDragOver={(e) => e.preventDefault()}
-              onDrop={(e) => {
-                e.preventDefault();
-                const f = e.dataTransfer.files?.[0];
-                if (f) selectFile(f);
-              }}
-              className={`flex cursor-pointer flex-col items-center justify-center gap-3 rounded-lg border-2 border-dashed p-12 text-center transition-colors ${
-                phase === 'error' ? 'border-error bg-[#fdeaea]' : 'border-hairline bg-elevated'
-              }`}
-            >
-              <input
-                type="file"
-                accept="image/jpeg,image/png,image/webp,application/pdf,.jpg,.jpeg,.png,.webp,.pdf"
-                className="hidden"
-                onChange={(e) => {
-                  const f = e.target.files?.[0];
-                  if (f) selectFile(f);
-                }}
-              />
-              {phase === 'error' ? (
-                <>
-                  <div className="text-base font-semibold text-ink">{t.errTitle}</div>
-                  <div className="text-sm text-body">{t.errDesc}</div>
-                </>
-              ) : (
-                <div className="text-base font-semibold text-ink">{t.dropTitle}</div>
-              )}
-              <div className="text-[13px] text-mute">{t.dropOr}</div>
-              <span className="inline-flex h-9 items-center rounded-pill border border-hairline bg-elevated px-4 text-sm font-medium text-ink">
-                {t.dropBtn}
-              </span>
-              <span className="font-mono text-[11px] text-faint">{t.dropTypes}</span>
-            </label>
+            <Dropzone
+              accept="image/jpeg,image/png,image/webp,application/pdf,.jpg,.jpeg,.png,.webp,.pdf"
+              isError={phase === 'error'}
+              onFile={selectFile}
+              labels={t}
+            />
           )}
 
           {(phase === 'selected' || phase === 'converting') && file && (

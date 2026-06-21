@@ -6,17 +6,12 @@ import { buildPreflightReport, type PreflightStatus } from '@/lib/preflight/repo
 import type { CalculatorProps } from './types';
 import { Badge, type BadgeTone } from '@/components/ui/Badge';
 import { CalculatorHeader } from './CalculatorHeader';
+import { Dropzone } from './Dropzone';
 import { round } from './number';
 
 type Phase = 'empty' | 'analyzing' | 'complete' | 'error';
 
-export function PdfPreflight({
-  dict,
-  locale,
-  eyebrow,
-  title,
-  desc,
-}: CalculatorProps) {
+export function PdfPreflight({ dict, locale, eyebrow, title, desc }: CalculatorProps) {
   const t = dict.calc.pdf;
   const [phase, setPhase] = useState<Phase>('empty');
   const [filename, setFilename] = useState('');
@@ -62,40 +57,12 @@ export function PdfPreflight({
 
       <section className="mx-auto max-w-page px-6 pb-16 pt-8">
         {(phase === 'empty' || phase === 'error') && (
-          <label
-            onDragOver={(e) => e.preventDefault()}
-            onDrop={(e) => {
-              e.preventDefault();
-              const file = e.dataTransfer.files?.[0];
-              if (file) void handleFile(file);
-            }}
-            className={`flex cursor-pointer flex-col items-center justify-center gap-3 rounded-lg border-2 border-dashed p-12 text-center transition-colors ${
-              phase === 'error' ? 'border-error bg-[#fdeaea]' : 'border-hairline bg-elevated'
-            }`}
-          >
-            <input
-              type="file"
-              accept="application/pdf,.pdf"
-              className="hidden"
-              onChange={(e) => {
-                const file = e.target.files?.[0];
-                if (file) void handleFile(file);
-              }}
-            />
-            {phase === 'error' ? (
-              <>
-                <div className="text-base font-semibold text-ink">{t.errTitle}</div>
-                <div className="text-sm text-body">{t.errDesc}</div>
-              </>
-            ) : (
-              <div className="text-base font-semibold text-ink">{t.dropTitle}</div>
-            )}
-            <div className="text-[13px] text-mute">{t.dropOr}</div>
-            <span className="inline-flex h-9 items-center rounded-pill border border-hairline bg-elevated px-4 text-sm font-medium text-ink">
-              {t.dropBtn}
-            </span>
-            <span className="font-mono text-[11px] text-faint">{t.dropTypes}</span>
-          </label>
+          <Dropzone
+            accept="application/pdf,.pdf"
+            isError={phase === 'error'}
+            onFile={(f) => void handleFile(f)}
+            labels={t}
+          />
         )}
 
         {phase === 'analyzing' && (
