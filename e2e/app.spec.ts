@@ -47,3 +47,22 @@ test('a calculator shows an error message on invalid input', async ({ page }) =>
   await page.getByLabel('가로 (픽셀)').fill('-5');
   await expect(page.getByText('모든 값은 0보다 큰 숫자여야 합니다.')).toBeVisible();
 });
+
+test('page responses carry baseline security headers', async ({ page }) => {
+  const res = await page.goto('/ko');
+  const h = res?.headers() ?? {};
+  expect(h['x-frame-options']).toBe('DENY');
+  expect(h['x-content-type-options']).toBe('nosniff');
+  expect(h['referrer-policy']).toBe('strict-origin-when-cross-origin');
+  expect(h['strict-transport-security']).toContain('max-age=');
+  expect(h['permissions-policy']).toContain('camera=()');
+});
+
+test('mobile nav drawer opens and navigates to a tool', async ({ page }) => {
+  await page.setViewportSize({ width: 375, height: 667 });
+  await page.goto('/ko');
+  await page.getByRole('button', { name: 'Menu' }).click();
+  const dialog = page.getByRole('dialog');
+  await dialog.getByRole('link', { name: '인쇄용 PDF 변환' }).click();
+  await expect(page).toHaveURL(/\/ko\/convert$/);
+});

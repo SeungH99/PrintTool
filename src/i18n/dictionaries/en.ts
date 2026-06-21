@@ -252,6 +252,11 @@ export const en: Dictionary = {
       ],
     },
   },
+  error: {
+    title: 'Something went wrong',
+    desc: 'An unexpected error stopped this page from loading. Please try again.',
+    retry: 'Try again',
+  },
   notFound: {
     code: '404',
     title: 'Page not found',
