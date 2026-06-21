@@ -42,11 +42,6 @@ export async function generateMetadata({
       type: 'website',
     },
     robots: { index: true, follow: true },
-    // AdSense site verification — static <head> meta the crawler reads (the loader
-    // script is body/client). env-gated.
-    ...(process.env.NEXT_PUBLIC_ADSENSE_CLIENT
-      ? { other: { 'google-adsense-account': process.env.NEXT_PUBLIC_ADSENSE_CLIENT } }
-      : {}),
   };
 }
 

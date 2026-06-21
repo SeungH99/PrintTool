@@ -87,7 +87,7 @@ test('serves security.txt', async ({ page }) => {
 });
 
 test('ads.txt carries the publisher line', async ({ page }) => {
-  const res = await page.goto('/ads.txt');
-  expect(res?.status()).toBe(200);
-  expect(await res!.text()).toContain('pub-7142354312657545');
+  const res = await page.request.get('/ads.txt');
+  expect(res.status()).toBe(200);
+  expect(await res.text()).toMatch(/google\.com,\s*pub-7142354312657545,\s*DIRECT/);
 });
