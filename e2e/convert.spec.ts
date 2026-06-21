@@ -23,3 +23,20 @@ test('convert turns an uploaded image into a downloadable print PDF', async ({ p
   ]);
   expect(download.suggestedFilename()).toBe('poster-print.pdf');
 });
+
+test('convert accepts a WebP image (createImageBitmap decode path)', async ({ page }) => {
+  await page.goto('/ko/convert');
+
+  // 1×1 lossless WebP — exercises the WebP→createImageBitmap→canvas→PNG branch
+  // that the PNG fixture above doesn't reach.
+  const webp = Buffer.from('UklGRhoAAABXRUJQVlA4TA0AAAAvAAAAEAcQERGIiP4HAA==', 'base64');
+  await page.locator('input[type="file"]').setInputFiles({
+    name: 'art.webp',
+    mimeType: 'image/webp',
+    buffer: webp,
+  });
+
+  await expect(page.getByText('변환 설정', { exact: true })).toBeVisible();
+  await page.getByRole('button', { name: '인쇄용 PDF로 변환' }).click();
+  await expect(page.getByText('변환 완료', { exact: true })).toBeVisible({ timeout: 20000 });
+});
