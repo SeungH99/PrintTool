@@ -250,4 +250,209 @@ export const en: Dictionary = {
     toolsHead: 'Quick links',
   },
   langName: 'EN',
+  toolGuides: {
+    pdf: {
+      intro:
+        'PDF preflight checks your print file before you send it to the printer — verifying bleed, image resolution (DPI), color mode (CMYK/RGB), and font embedding. Catching problems early avoids costly reprints.',
+      body: [
+        {
+          heading: 'What gets checked',
+          text: 'Bleed, page size, image resolution (DPI), color mode, and font embedding are checked at once, each flagged as pass, warning, or needs review.',
+        },
+        {
+          heading: 'Processed safely in your browser',
+          text: 'Your PDF is analyzed entirely in the browser and never uploaded to a server, so even confidential files stay private.',
+        },
+      ],
+      faqTitle: 'Frequently asked questions',
+      faq: [
+        {
+          q: 'What is preflight?',
+          a: 'An automated check that confirms a file is print-ready — verifying resolution, color, bleed, and fonts to prevent printing errors.',
+        },
+        {
+          q: 'Why does print need CMYK?',
+          a: 'Screens use RGB while presses use CMYK ink. RGB files get converted at the printer and colors can shift, so it helps to confirm the color mode first.',
+        },
+        {
+          q: 'Why is bleed needed?',
+          a: 'Bleed adds about 3mm beyond the trim edge so no white slivers appear if the cut shifts slightly.',
+        },
+      ],
+    },
+    convert: {
+      intro:
+        'Convert to a print-ready PDF turns JPG, PNG, or WebP images and existing PDFs into a PDF sized to standard print formats like A4 or A3 — ready to send to the printer with the right page size and orientation.',
+      body: [
+        {
+          heading: 'Images to print-ready PDF',
+          text: 'Upload an image and it is placed into a PDF at the page size (A4, A3, etc.) and orientation (portrait or landscape) you choose.',
+        },
+        {
+          heading: 'Converted in your browser',
+          text: 'Conversion runs entirely in your browser, so files are never uploaded to a server. No login required.',
+        },
+      ],
+      faqTitle: 'Frequently asked questions',
+      faq: [
+        {
+          q: 'Which files can I convert?',
+          a: 'JPG, PNG, and WebP images and PDFs can be converted into a print-ready PDF.',
+        },
+        {
+          q: 'What page sizes are supported?',
+          a: 'Standard sizes such as A4 and A3 with portrait or landscape orientation.',
+        },
+        {
+          q: 'Are my uploaded files safe?',
+          a: 'Conversion happens only in your browser; files are never sent to an external server.',
+        },
+      ],
+    },
+    res: {
+      intro:
+        'The image print size calculator tells you the largest size you can print from a given pixel dimension at a target resolution (DPI). It uses print size = pixels ÷ DPI so you can check the limit before a photo turns out blurry.',
+      body: [
+        {
+          heading: 'How print size is calculated',
+          text: 'Dividing width and height in pixels by the target DPI gives the size in inches; multiplying by 2.54 gives centimeters. The higher the DPI, the smaller the print size from the same image.',
+        },
+        {
+          heading: 'Print resolution tiers',
+          text: '300 DPI is the high-quality benchmark for general printing. 150 DPI is acceptable for posters viewed from a distance; below that, prints may look blurry.',
+        },
+      ],
+      faqTitle: 'Frequently asked questions',
+      faq: [
+        {
+          q: 'What is DPI (resolution)?',
+          a: 'The number of dots (pixels) within one inch. Higher DPI is sharper but yields a smaller print size from the same pixels.',
+        },
+        {
+          q: 'Why is 300 DPI recommended for print?',
+          a: 'The eye stops resolving individual dots at around 300 DPI at normal viewing distance, making it the standard for smooth, high-quality print.',
+        },
+        {
+          q: 'How large can my photo print?',
+          a: 'Enter the pixel dimensions and it calculates the maximum print size at 300 and 150 DPI instantly.',
+        },
+      ],
+    },
+    spine: {
+      intro:
+        'The spine thickness calculator estimates a book spine from the binding type, page count, and interior/cover paper weight (GSM). Getting the spine width right keeps the title aligned on your cover design.',
+      body: [
+        {
+          heading: 'How spine thickness is calculated',
+          text: 'The number of leaves (pages ÷ 2) is multiplied by the thickness of one sheet (GSM × paper bulk) to get the text-block thickness. Values are estimates that vary by paper and bindery, so confirm with your printer.',
+        },
+        {
+          heading: 'Differences by binding',
+          text: 'Perfect binding adds the cover thickness to the text block; case (hardcover) binding adds board thickness. Saddle-stitch nests folded signatures, so there is almost no flat spine.',
+        },
+      ],
+      faqTitle: 'Frequently asked questions',
+      faq: [
+        {
+          q: 'How do you calculate spine thickness?',
+          a: 'Multiply half the page count (leaves) by the thickness of one sheet to get the text block, then add cover or board thickness depending on the binding.',
+        },
+        {
+          q: 'Why should page count be a multiple of 4?',
+          a: 'Printing and binding fold sheets into 4-page units, so a count that is not a multiple of 4 can leave blank pages.',
+        },
+        {
+          q: 'Perfect binding vs. saddle stitch?',
+          a: 'Perfect binding glues the spine and creates thickness; saddle stitch staples the center fold and has almost no spine.',
+        },
+      ],
+    },
+    weight: {
+      intro:
+        'The paper weight calculator estimates total and packaged weight from sheet size, paper weight (GSM), and quantity — useful for shipping costs, quotes, and mailing weight.',
+      body: [
+        {
+          heading: 'How paper weight is calculated',
+          text: 'GSM is grams per square meter. One sheet = area (m²) × GSM, and total weight = per-sheet weight × quantity. The per-sheet weight is exact; only the packaged weight is an estimate.',
+        },
+        {
+          heading: 'What GSM means',
+          text: 'GSM expresses paper thickness and weight — the higher the number, the thicker and heavier. Copy paper is typically 80 GSM, business cards 250 GSM or more.',
+        },
+      ],
+      faqTitle: 'Frequently asked questions',
+      faq: [
+        {
+          q: 'What is GSM?',
+          a: 'Grams per square meter — the weight of paper per m². 80 GSM means one square meter weighs 80 grams.',
+        },
+        {
+          q: 'How is paper weight calculated?',
+          a: 'Multiply the sheet area (m²) by GSM for one sheet, then by the number of sheets for the total.',
+        },
+        {
+          q: 'Can I estimate packaged weight?',
+          a: 'It also shows an approximate packaged weight by adding packaging and box weight to the paper weight.',
+        },
+      ],
+    },
+    fold: {
+      intro:
+        'The fold layout calculator gives the exact width of each panel for half folds, tri folds, roll folds, and more. Inward-folding panels must be slightly narrower so the paper folds cleanly.',
+      body: [
+        {
+          heading: 'Fold types',
+          text: 'Half fold (2 panels), Z-fold / tri-fold (3 panels), and roll fold (4 panels folded inward) each split the width differently across panels.',
+        },
+        {
+          heading: 'Why inner panels are narrower',
+          text: 'When several panels fold inward, an inner panel as wide as the outer ones would not close. Narrowing inner panels by a few mm lets the piece fold cleanly.',
+        },
+      ],
+      faqTitle: 'Frequently asked questions',
+      faq: [
+        {
+          q: 'How are fold panel widths set?',
+          a: 'Divide the finished width by the number of panels, then narrow any inward-folding panel by a few mm so it folds cleanly.',
+        },
+        {
+          q: 'Tri-fold vs. roll fold?',
+          a: 'A tri-fold folds in a Z; a roll fold curls inward in one direction, so its inner panels must be narrower.',
+        },
+        {
+          q: 'Why do panels have different widths?',
+          a: 'Panels that tuck inside must be narrower than the outer panels so they do not overlap when folded.',
+        },
+      ],
+    },
+    label: {
+      intro:
+        'The label layout calculator works out how many labels fit on a sheet and their row/column grid. Enter label size, sheet margin, and gap to find the layout that fits the most.',
+      body: [
+        {
+          heading: 'How label layout is calculated',
+          text: 'The area left after margins is divided by the label size plus gap to find how many columns and rows fit. Columns × rows is the total per sheet.',
+        },
+        {
+          heading: 'Higher yield with rotation',
+          text: 'Rotating labels 90° sometimes fits more. With rotation on, the layout that fits more is selected automatically.',
+        },
+      ],
+      faqTitle: 'Frequently asked questions',
+      faq: [
+        {
+          q: 'How many labels fit on a sheet?',
+          a: 'Enter sheet size, margins, label size, and gap, and it calculates the columns, rows, and total instantly.',
+        },
+        {
+          q: 'Does rotating labels fit more?',
+          a: 'Depending on the label ratio, a 90° rotated layout can fit more. The rotation option compares and picks the better one.',
+        },
+        {
+          q: 'Why are margins and gaps needed?',
+          a: 'They absorb printing and cutting tolerance and keep labels from touching, via sheet-edge margins and gaps between labels.',
+        },
+      ],
+    },
+  },
 };
