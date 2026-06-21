@@ -4,7 +4,7 @@ import { toolIds } from '@/lib/tools';
 import { SITE_URL } from '@/lib/site';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const paths = ['', ...toolIds.map((id) => `/${id}`), '/privacy', '/cookies'];
+  const paths = ['', ...toolIds.map((id) => `/${id}`), '/privacy'];
   const now = new Date();
 
   return locales.flatMap((locale) =>
