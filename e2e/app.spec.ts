@@ -83,6 +83,12 @@ test('exposes an OG image', async ({ page }) => {
   expect(await page.locator('meta[property="og:image"]').count()).toBeGreaterThan(0);
 });
 
+test('the OG image is served directly, not locale-redirected', async ({ page }) => {
+  const res = await page.goto('/opengraph-image');
+  expect(res?.status()).toBe(200);
+  expect(res?.headers()['content-type']).toContain('image/png');
+});
+
 test('serves security.txt', async ({ page }) => {
   const res = await page.goto('/.well-known/security.txt');
   expect(res?.status()).toBe(200);
