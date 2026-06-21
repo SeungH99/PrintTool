@@ -8,6 +8,7 @@ import { getDictionary } from '@/i18n/dictionaries';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { ConsentScripts } from '@/components/ads/ConsentScripts';
+import { WebVitals } from '@/components/analytics/WebVitals';
 import { SITE_URL } from '@/lib/site';
 import { jsonLdScriptProps } from '@/lib/jsonLd';
 import '../globals.css';
@@ -81,6 +82,7 @@ export default async function LocaleLayout({
         </main>
         <Footer locale={locale} dict={dict} />
         <ConsentScripts />
+        {process.env.NEXT_PUBLIC_GA_ID && <WebVitals />}
       </body>
     </html>
   );
