@@ -14,7 +14,7 @@ const PT_PER_MM = 72 / 25.4;
 
 export type FontsEmbedded = 'all' | 'some' | 'none' | 'unknown';
 
-/** Aggregate image color space of the first page. `rgb` = at least one non-CMYK image. */
+/** Aggregate image color space across all pages. `rgb` = at least one non-CMYK image anywhere. */
 export type ColorMode = 'cmyk' | 'rgb' | 'none' | 'unknown';
 
 export interface PdfAnalysis {
@@ -27,7 +27,7 @@ export interface PdfAnalysis {
   fontsEmbedded: FontsEmbedded;
   /** Lowest effective image DPI on the first page (via pdf.js), or null if none/undetectable. */
   minImageDpi: number | null;
-  /** Image color space of the first page (read from /ColorSpace, not rendered pixels). */
+  /** Image color space across all pages (read from /ColorSpace, not rendered pixels). */
   colorMode: ColorMode;
 }
 
@@ -120,7 +120,7 @@ export function classifyColorSpace(cs: PDFObject | undefined): CsClass {
 }
 
 /**
- * First-page image color space, read from each image XObject's /ColorSpace dict
+ * Per-page image color space, read from each image XObject's /ColorSpace dict
  * (the source color space, not pdf.js-normalized pixels). `rgb` means at least one
  * non-CMYK image is present; `none` when there are no images. Best-effort.
  */
@@ -136,7 +136,8 @@ function inspectColorMode(page: PDFPageLeaf): ColorMode {
     for (const [key] of xobjects.entries()) {
       const resolved = xobjects.lookup(key);
       if (!(resolved instanceof PDFRawStream)) continue;
-      if (resolved.dict.lookupMaybe(PDFName.of('Subtype'), PDFName)?.toString() !== '/Image') continue;
+      if (resolved.dict.lookupMaybe(PDFName.of('Subtype'), PDFName)?.toString() !== '/Image')
+        continue;
       images += 1;
       const cs = resolved.dict.lookup(PDFName.of('ColorSpace'));
       if (!cs) continue;
@@ -150,6 +151,18 @@ function inspectColorMode(page: PDFPageLeaf): ColorMode {
   } catch {
     return 'unknown';
   }
+}
+
+/**
+ * Combine per-page color modes into one verdict for the whole document. Any RGB
+ * image anywhere → `rgb` (the print risk to flag); otherwise `cmyk` if any page has
+ * CMYK images, then `unknown`, then `none` (no images at all).
+ */
+export function aggregateColorMode(modes: ColorMode[]): ColorMode {
+  if (modes.includes('rgb')) return 'rgb';
+  if (modes.includes('cmyk')) return 'cmyk';
+  if (modes.includes('unknown')) return 'unknown';
+  return 'none';
 }
 
 /**
@@ -175,7 +188,7 @@ export async function analyzePdf(bytes: ArrayBuffer | Uint8Array): Promise<PdfAn
   const hasTrimBox = hasBox('TrimBox');
   const hasBleedBox = hasBox('BleedBox');
   const fontsEmbedded = inspectFonts(first.node);
-  const colorMode = inspectColorMode(first.node);
+  const colorMode = aggregateColorMode(doc.getPages().map((p) => inspectColorMode(p.node)));
 
   let minImageDpi: number | null = null;
   try {

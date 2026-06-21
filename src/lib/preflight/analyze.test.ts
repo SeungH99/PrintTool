@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { PDFContext, PDFName, PDFArray, PDFNumber, PDFRawStream, PDFDict } from 'pdf-lib';
-import { classifyColorSpace } from './analyze';
+import { classifyColorSpace, aggregateColorMode, type ColorMode } from './analyze';
 
 const ctx = PDFContext.create();
 
@@ -47,4 +47,19 @@ describe('classifyColorSpace', () => {
     ));
 
   it('undefined → other', () => expect(classifyColorSpace(undefined)).toBe('other'));
+});
+
+describe('aggregateColorMode', () => {
+  const m = (...xs: ColorMode[]): ColorMode[] => xs;
+
+  it('any RGB page → rgb (print risk flagged)', () =>
+    expect(aggregateColorMode(m('cmyk', 'rgb', 'none'))).toBe('rgb'));
+  it('all imaged pages CMYK → cmyk', () =>
+    expect(aggregateColorMode(m('cmyk', 'none', 'cmyk'))).toBe('cmyk'));
+  it('no images on any page → none', () =>
+    expect(aggregateColorMode(m('none', 'none'))).toBe('none'));
+  it('only undetectable, no rgb/cmyk → unknown', () =>
+    expect(aggregateColorMode(m('unknown', 'none'))).toBe('unknown'));
+  it('cmyk wins over unknown', () => expect(aggregateColorMode(m('unknown', 'cmyk'))).toBe('cmyk'));
+  it('empty → none', () => expect(aggregateColorMode([])).toBe('none'));
 });
