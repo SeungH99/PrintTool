@@ -262,7 +262,7 @@ export function ConvertTool({ dict, locale, eyebrow, title, desc }: CalculatorPr
           )}
         </div>
 
-        <aside className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4">
           <p className="rounded-md border border-[#f6dca8] bg-warning-soft px-4 py-3 text-xs leading-relaxed text-[#ab570a]">
             {t.cmykNote}
           </p>
@@ -275,7 +275,7 @@ export function ConvertTool({ dict, locale, eyebrow, title, desc }: CalculatorPr
             </ul>
           </div>
           <p className="text-xs leading-relaxed text-mute">{t.disclaimer}</p>
-        </aside>
+        </div>
       </section>
     </>
   );

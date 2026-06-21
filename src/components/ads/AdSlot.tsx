@@ -30,8 +30,8 @@ export function AdSlot({ label, note }: { label: string; note: string }) {
         className="my-12 flex min-h-[120px] flex-col items-center justify-center gap-1.5 rounded-md border border-dashed border-hairline bg-hairline-soft"
         aria-hidden="true"
       >
-        <span className="font-mono text-[11px] uppercase tracking-widest text-faint">{label}</span>
-        <span className="text-xs text-faint">{note}</span>
+        <span className="font-mono text-[11px] uppercase tracking-widest text-mute">{label}</span>
+        <span className="text-xs text-mute">{note}</span>
       </div>
     );
   }
