@@ -20,4 +20,10 @@ describe('LabelCalculator', () => {
     fireEvent.click(screen.getByLabelText('라벨 회전 허용'));
     expect(screen.getByText('회전 배치 적용됨')).toBeInTheDocument();
   });
+
+  it('shows an error when margins exceed the sheet', () => {
+    render(<LabelCalculator {...props} />);
+    fireEvent.change(screen.getByLabelText('용지 여백 (mm)'), { target: { value: '200' } });
+    expect(screen.getByText('여백이 용지 크기보다 큽니다.')).toBeInTheDocument();
+  });
 });

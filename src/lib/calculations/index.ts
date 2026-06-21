@@ -6,6 +6,7 @@ export { calculatePaperWeight } from './paperWeight';
 export { calculateSpine, type SpineOptions } from './spine';
 export { calculateFold } from './fold';
 export { calculateLabel } from './label';
+export * from './validate';
 
 export class NotImplementedError extends Error {
   constructor(what: string) {

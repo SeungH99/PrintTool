@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import { calculateSpine } from '@/lib/calculations';
+import { calculateSpine, validateSpine } from '@/lib/calculations';
 import type { CalculatorProps } from './types';
 import { NumberField } from '@/components/ui/NumberField';
 import { SelectField } from '@/components/ui/SelectField';
@@ -15,29 +15,24 @@ function asBinding(value: string): Binding {
   return value === 'saddle' ? 'saddle' : value === 'case' ? 'case' : 'perfect';
 }
 
-export function SpineCalculator({
-  dict,
-  locale,
-  eyebrow,
-  title,
-  desc,
-}: CalculatorProps) {
+export function SpineCalculator({ dict, locale, eyebrow, title, desc }: CalculatorProps) {
   const t = dict.calc.spine;
   const [binding, setBinding] = useState<Binding>('perfect');
   const [pages, setPages] = useState('200');
   const [interiorGsm, setInteriorGsm] = useState('100');
   const [coverGsm, setCoverGsm] = useState('250');
 
-  const result = useMemo(
-    () =>
-      calculateSpine({
-        binding,
-        pages: toNum(pages),
-        interiorGsm: toNum(interiorGsm),
-        coverGsm: toNum(coverGsm),
-      }),
-    [binding, pages, interiorGsm, coverGsm],
-  );
+  const { result, errorMsg } = useMemo(() => {
+    const input = {
+      binding,
+      pages: toNum(pages),
+      interiorGsm: toNum(interiorGsm),
+      coverGsm: toNum(coverGsm),
+    };
+    const v = validateSpine(input);
+    if (!v.ok) return { result: null, errorMsg: dict.calc.errors[v.error] };
+    return { result: calculateSpine(input), errorMsg: null };
+  }, [binding, pages, interiorGsm, coverGsm, dict]);
 
   const inputs = (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -51,8 +46,19 @@ export function SpineCalculator({
         ]}
         onChange={(v) => setBinding(asBinding(v))}
       />
-      <NumberField label={t.pages} value={pages} onChange={setPages} suffix="pp" helper={t.pagesHelper} />
-      <NumberField label={t.interiorGsm} value={interiorGsm} onChange={setInteriorGsm} suffix="g/m²" />
+      <NumberField
+        label={t.pages}
+        value={pages}
+        onChange={setPages}
+        suffix="pp"
+        helper={t.pagesHelper}
+      />
+      <NumberField
+        label={t.interiorGsm}
+        value={interiorGsm}
+        onChange={setInteriorGsm}
+        suffix="g/m²"
+      />
       <NumberField label={t.coverGsm} value={coverGsm} onChange={setCoverGsm} suffix="g/m²" />
     </div>
   );
@@ -60,10 +66,10 @@ export function SpineCalculator({
   const results = (
     <ResultPanel
       resultLabel={dict.calc.result}
-      alert={result.warnPageMultiple ? t.warn : undefined}
+      alert={errorMsg ?? (result?.warnPageMultiple ? t.warn : undefined)}
       primaryLabel={t.spineLabel}
-      primaryValue={`${round(result.spineMm, 2)} mm`}
-      rows={[{ label: t.leavesLabel, value: String(result.leaves) }]}
+      primaryValue={result ? `${round(result.spineMm, 2)} mm` : '—'}
+      rows={result ? [{ label: t.leavesLabel, value: String(result.leaves) }] : undefined}
       note={t.note}
     />
   );

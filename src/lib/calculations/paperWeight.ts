@@ -1,4 +1,5 @@
 import type { PaperWeightInput, PaperWeightResult } from './types';
+import { validatePaperWeight } from './validate';
 
 // Package-weight estimate constants. ROUGH heuristic only — real packed weight
 // depends on packaging and carrier. Surface as an estimate, never as exact.
@@ -10,6 +11,8 @@ const BOX_WEIGHT_KG = 0.25; // nominal box / packaging tare
  * (GSM is grams per m^2); only `packageKg` is an estimate (see constants above).
  */
 export function calculatePaperWeight(input: PaperWeightInput): PaperWeightResult {
+  const v = validatePaperWeight(input);
+  if (!v.ok) throw new RangeError(v.error);
   const { widthMm, heightMm, gsm, sheets } = input;
 
   const areaM2 = (widthMm * heightMm) / 1_000_000;

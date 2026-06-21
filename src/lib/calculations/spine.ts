@@ -1,4 +1,5 @@
 import type { SpineInput, SpineResult } from './types';
+import { validateSpine } from './validate';
 
 export interface SpineOptions {
   /** Paper caliper per GSM, in mm. Default assumes typical uncoated offset bulk. */
@@ -21,6 +22,8 @@ const DEFAULT_SADDLE_FACTOR = 0.55; // nested signatures reduce the effective sp
  * the bulk/board/saddle constants are documented assumptions, overridable via `options`.
  */
 export function calculateSpine(input: SpineInput, options: SpineOptions = {}): SpineResult {
+  const v = validateSpine(input);
+  if (!v.ok) throw new RangeError(v.error);
   const { binding, pages, interiorGsm, coverGsm } = input;
   const bulk = options.bulkMmPerGsm ?? DEFAULT_BULK_MM_PER_GSM;
   const board = options.caseBoardMm ?? DEFAULT_CASE_BOARD_MM;

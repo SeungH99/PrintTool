@@ -1,4 +1,5 @@
 import type { LabelInput, LabelResult } from './types';
+import { validateLabel } from './validate';
 
 interface Grid {
   cols: number;
@@ -21,6 +22,8 @@ function fit(usableW: number, usableH: number, lw: number, lh: number, gap: numb
  * tolerance, and (optionally) a 90°-rotated layout is used when it fits more.
  */
 export function calculateLabel(input: LabelInput): LabelResult {
+  const v = validateLabel(input);
+  if (!v.ok) throw new RangeError(v.error);
   const { sheetWmm, sheetHmm, labelWmm, labelHmm, marginMm, gapMm, rotate } = input;
   const usableW = sheetWmm - 2 * marginMm;
   const usableH = sheetHmm - 2 * marginMm;

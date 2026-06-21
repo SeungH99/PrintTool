@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import { calculateResolution } from '@/lib/calculations';
+import { calculateResolution, validateResolution } from '@/lib/calculations';
 import { NumberField } from '@/components/ui/NumberField';
 import { SelectField } from '@/components/ui/SelectField';
 import { Badge, type BadgeTone } from '@/components/ui/Badge';
@@ -10,24 +10,19 @@ import { ResultPanel } from './ResultPanel';
 import { round, toNum } from './number';
 import type { CalculatorProps } from './types';
 
-export function ResolutionCalculator({
-  dict,
-  locale,
-  eyebrow,
-  title,
-  desc,
-}: CalculatorProps) {
+export function ResolutionCalculator({ dict, locale, eyebrow, title, desc }: CalculatorProps) {
   const t = dict.calc.res;
   const [widthPx, setWidthPx] = useState('3000');
   const [heightPx, setHeightPx] = useState('2400');
   const [dpi, setDpi] = useState('300');
   const [unit, setUnit] = useState<'cm' | 'inch'>('cm');
 
-  const result = useMemo(() => {
-    const d = toNum(dpi);
-    if (d <= 0) return null;
-    return calculateResolution({ widthPx: toNum(widthPx), heightPx: toNum(heightPx), dpi: d, unit });
-  }, [widthPx, heightPx, dpi, unit]);
+  const { result, errorMsg } = useMemo(() => {
+    const input = { widthPx: toNum(widthPx), heightPx: toNum(heightPx), dpi: toNum(dpi), unit };
+    const v = validateResolution(input);
+    if (!v.ok) return { result: null, errorMsg: dict.calc.errors[v.error] };
+    return { result: calculateResolution(input), errorMsg: null };
+  }, [widthPx, heightPx, dpi, unit, dict]);
 
   const levelInfo: Record<'high' | 'ok' | 'low', { text: string; tone: BadgeTone }> = {
     high: { text: t.levelHigh, tone: 'success' },
@@ -56,12 +51,15 @@ export function ResolutionCalculator({
   const results = (
     <ResultPanel
       resultLabel={dict.calc.result}
+      alert={errorMsg ?? undefined}
       primaryLabel={t.sizeLabel}
       primaryValue={
         result ? `${round(result.width)} × ${round(result.height)} ${result.unit}` : '—'
       }
       badge={level ? <Badge tone={level.tone}>{level.text}</Badge> : undefined}
-      rows={result ? [{ label: t.megapixelsLabel, value: `${round(result.megapixels)} MP` }] : undefined}
+      rows={
+        result ? [{ label: t.megapixelsLabel, value: `${round(result.megapixels)} MP` }] : undefined
+      }
     />
   );
 

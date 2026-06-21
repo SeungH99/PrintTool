@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import { calculateLabel } from '@/lib/calculations';
+import { calculateLabel, validateLabel } from '@/lib/calculations';
 import type { CalculatorProps } from './types';
 import { NumberField } from '@/components/ui/NumberField';
 import { ToggleField } from '@/components/ui/ToggleField';
@@ -10,13 +10,7 @@ import { CalculatorShell } from './CalculatorShell';
 import { ResultPanel } from './ResultPanel';
 import { round, toNum } from './number';
 
-export function LabelCalculator({
-  dict,
-  locale,
-  eyebrow,
-  title,
-  desc,
-}: CalculatorProps) {
+export function LabelCalculator({ dict, locale, eyebrow, title, desc }: CalculatorProps) {
   const t = dict.calc.label;
   const [sheetW, setSheetW] = useState('210');
   const [sheetH, setSheetH] = useState('297');
@@ -26,19 +20,20 @@ export function LabelCalculator({
   const [gap, setGap] = useState('2.5');
   const [rotate, setRotate] = useState(false);
 
-  const result = useMemo(
-    () =>
-      calculateLabel({
-        sheetWmm: toNum(sheetW),
-        sheetHmm: toNum(sheetH),
-        labelWmm: toNum(labelW),
-        labelHmm: toNum(labelH),
-        marginMm: toNum(margin),
-        gapMm: toNum(gap),
-        rotate,
-      }),
-    [sheetW, sheetH, labelW, labelH, margin, gap, rotate],
-  );
+  const { result, errorMsg } = useMemo(() => {
+    const input = {
+      sheetWmm: toNum(sheetW),
+      sheetHmm: toNum(sheetH),
+      labelWmm: toNum(labelW),
+      labelHmm: toNum(labelH),
+      marginMm: toNum(margin),
+      gapMm: toNum(gap),
+      rotate,
+    };
+    const v = validateLabel(input);
+    if (!v.ok) return { result: null, errorMsg: dict.calc.errors[v.error] };
+    return { result: calculateLabel(input), errorMsg: null };
+  }, [sheetW, sheetH, labelW, labelH, margin, gap, rotate, dict]);
 
   const inputs = (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -52,11 +47,11 @@ export function LabelCalculator({
     </div>
   );
 
-  const ar = result.rotated
+  const ar = result?.rotated
     ? toNum(labelH) / Math.max(0.01, toNum(labelW))
     : toNum(labelW) / Math.max(0.01, toNum(labelH));
-  const capCols = Math.min(result.cols, 14);
-  const capRows = Math.min(result.rows, 12);
+  const capCols = result ? Math.min(result.cols, 14) : 0;
+  const capRows = result ? Math.min(result.rows, 12) : 0;
   const cellCount = Math.max(0, capCols * capRows);
   const diagram =
     cellCount > 0 ? (
@@ -86,17 +81,22 @@ export function LabelCalculator({
   const results = (
     <ResultPanel
       resultLabel={dict.calc.result}
+      alert={errorMsg ?? undefined}
       primaryLabel={t.totalLabel}
-      primaryValue={t.unit ? `${result.total} ${t.unit}` : String(result.total)}
-      badge={result.rotated ? <Badge tone="neutral">{t.rotatedBadge}</Badge> : undefined}
+      primaryValue={result ? (t.unit ? `${result.total} ${t.unit}` : String(result.total)) : '—'}
+      badge={result?.rotated ? <Badge tone="neutral">{t.rotatedBadge}</Badge> : undefined}
       diagram={diagram}
-      rows={[
-        { label: t.gridLabel, value: `${result.rows} × ${result.cols}` },
-        {
-          label: t.remainderLabel,
-          value: `${round(result.remainderWmm, 1)} × ${round(result.remainderHmm, 1)} mm`,
-        },
-      ]}
+      rows={
+        result
+          ? [
+              { label: t.gridLabel, value: `${result.rows} × ${result.cols}` },
+              {
+                label: t.remainderLabel,
+                value: `${round(result.remainderWmm, 1)} × ${round(result.remainderHmm, 1)} mm`,
+              },
+            ]
+          : undefined
+      }
     />
   );
 

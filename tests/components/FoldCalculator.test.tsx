@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { FoldCalculator } from '@/components/calculators/FoldCalculator';
 import { ko } from '@/i18n/dictionaries/ko';
 
@@ -11,5 +11,11 @@ describe('FoldCalculator', () => {
     // outer 100, inner 97, outer 100
     expect(screen.getAllByText('100.0 mm')).toHaveLength(2);
     expect(screen.getByText('97.0 mm')).toBeInTheDocument();
+  });
+
+  it('shows an error when the inner adjustment collapses a panel', () => {
+    render(<FoldCalculator {...props} />);
+    fireEvent.change(screen.getByLabelText('안쪽 패널 보정 (mm)'), { target: { value: '200' } });
+    expect(screen.getByText('안쪽 패널 보정값이 패널 너비보다 큽니다.')).toBeInTheDocument();
   });
 });

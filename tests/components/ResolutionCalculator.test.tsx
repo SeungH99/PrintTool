@@ -24,4 +24,10 @@ describe('ResolutionCalculator', () => {
     fireEvent.change(screen.getByLabelText('목표 해상도 (DPI)'), { target: { value: '100' } });
     expect(screen.getByText('해상도 부족')).toBeInTheDocument();
   });
+
+  it('shows an error and hides the result on non-positive input', () => {
+    render(<ResolutionCalculator {...props} />);
+    fireEvent.change(screen.getByLabelText('가로 (픽셀)'), { target: { value: '-5' } });
+    expect(screen.getByText('모든 값은 0보다 큰 숫자여야 합니다.')).toBeInTheDocument();
+  });
 });

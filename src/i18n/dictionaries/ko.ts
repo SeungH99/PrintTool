@@ -92,6 +92,11 @@ export const ko = {
     guideTitle: '가이드',
     comingSoon: '준비 중',
     comingSoonDesc: '이 도구는 곧 제공됩니다. 다른 계산기를 먼저 사용해 보세요.',
+    errors: {
+      positive: '모든 값은 0보다 큰 숫자여야 합니다.',
+      foldInner: '안쪽 패널 보정값이 패널 너비보다 큽니다.',
+      labelMargin: '여백이 용지 크기보다 큽니다.',
+    },
     res: {
       widthPx: '가로 (픽셀)',
       heightPx: '세로 (픽셀)',
