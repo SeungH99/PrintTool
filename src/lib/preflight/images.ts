@@ -33,7 +33,14 @@ export async function detectMinImageDpi(bytes: ArrayBuffer | Uint8Array): Promis
   // Uint8Array still in use by pdf-lib (font/color inspection) in the caller.
   const data = new Uint8Array(bytes instanceof Uint8Array ? bytes : new Uint8Array(bytes));
   const pdfjs = (await import('pdfjs-dist/legacy/build/pdf.mjs')) as typeof import('pdfjs-dist');
-  const { getDocument, OPS } = pdfjs;
+  const { getDocument, OPS, GlobalWorkerOptions } = pdfjs;
+  // The browser needs an explicit worker — without it getDocument fails and DPI is
+  // silently lost ("감지 제한"). Next bundles the worker from the package via
+  // import.meta.url. (Node tests fall back to a fake worker, so this is browser-only.)
+  GlobalWorkerOptions.workerSrc = new URL(
+    'pdfjs-dist/legacy/build/pdf.worker.min.mjs',
+    import.meta.url,
+  ).toString();
 
   const loadingTask = getDocument({ data });
   const doc = await loadingTask.promise;
@@ -60,7 +67,12 @@ export async function detectMinImageDpi(bytes: ArrayBuffer | Uint8Array): Promis
         // no need to await the (deferred) decoded image object.
         const widthPx = args[1] as number;
         const heightPx = args[2] as number;
-        if (typeof widthPx === 'number' && typeof heightPx === 'number' && widthPx > 0 && heightPx > 0) {
+        if (
+          typeof widthPx === 'number' &&
+          typeof heightPx === 'number' &&
+          widthPx > 0 &&
+          heightPx > 0
+        ) {
           const dpi = imageDpi(widthPx, heightPx, ctm);
           if (Number.isFinite(dpi) && dpi > 0) {
             minDpi = minDpi === null ? dpi : Math.min(minDpi, dpi);
