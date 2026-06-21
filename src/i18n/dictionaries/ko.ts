@@ -60,7 +60,6 @@ export const ko = {
     aboutHead: '안내',
     privacy: '개인정보 처리방침',
     cookies: '쿠키 정책',
-    terms: '이용약관',
     contact: '문의하기',
     cookieSettings: '쿠키 설정',
     copy: '© 2026 PrintReady',
