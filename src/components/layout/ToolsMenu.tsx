@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
+import { TOOL_ICONS } from './toolIcons';
 
 interface ToolLink {
   id: string;
@@ -12,7 +13,7 @@ interface ToolLink {
 
 /**
  * Header "tools" dropdown — mirrors the design's tools menu. Lists every tool
- * with a locale-aware link, closes on outside click / Escape / selection.
+ * with a locale-aware link + icon, closes on outside click / Escape / selection.
  */
 export function ToolsMenu({
   locale,
@@ -59,27 +60,30 @@ export function ToolsMenu({
 
       {open && (
         <div className="absolute left-0 top-[calc(100%+6px)] flex w-[300px] flex-col gap-0.5 rounded-md border border-hairline bg-elevated p-1.5 shadow-[0_8px_28px_-6px_rgba(0,0,0,0.18)]">
-          {tools.map((tool) => (
-            <Link
-              key={tool.id}
-              href={`/${locale}/${tool.id}`}
-              onClick={() => setOpen(false)}
-              className="flex items-center gap-2.5 rounded-sm px-2.5 py-2 no-underline transition-colors hover:bg-hairline-soft"
-            >
-              <span
-                aria-hidden="true"
-                className="flex h-7 w-7 flex-none items-center justify-center rounded-md border border-hairline bg-hairline-soft font-mono text-[10px] text-body"
+          {tools.map((tool) => {
+            const Icon = TOOL_ICONS[tool.id];
+            return (
+              <Link
+                key={tool.id}
+                href={`/${locale}/${tool.id}`}
+                onClick={() => setOpen(false)}
+                className="flex items-center gap-2.5 rounded-sm px-2.5 py-2 no-underline transition-colors hover:bg-hairline-soft"
               >
-                {tool.tag.slice(0, 2)}
-              </span>
-              <span className="flex min-w-0 flex-col">
-                <span className="text-[13px] font-medium leading-[18px] text-ink">
-                  {tool.title}
+                <span
+                  aria-hidden="true"
+                  className="flex h-7 w-7 flex-none items-center justify-center rounded-md border border-hairline bg-hairline-soft text-body"
+                >
+                  {Icon && <Icon size={16} strokeWidth={1.5} />}
                 </span>
-                <span className="truncate text-xs leading-4 text-mute">{tool.desc}</span>
-              </span>
-            </Link>
-          ))}
+                <span className="flex min-w-0 flex-col">
+                  <span className="text-[13px] font-medium leading-[18px] text-ink">
+                    {tool.title}
+                  </span>
+                  <span className="truncate text-xs leading-4 text-mute">{tool.desc}</span>
+                </span>
+              </Link>
+            );
+          })}
         </div>
       )}
     </div>

@@ -9,7 +9,8 @@ test('renders the KO home and switches to EN', async ({ page }) => {
   await page.goto('/ko');
   await expect(page.getByRole('heading', { level: 1 })).toContainText('인쇄소에 보내기 전');
 
-  await page.getByRole('link', { name: 'EN' }).click();
+  await page.getByRole('button', { name: '언어 선택' }).click();
+  await page.getByRole('link', { name: 'English' }).click();
   await expect(page).toHaveURL(/\/en$/);
   await expect(page.getByRole('heading', { level: 1 })).toContainText('print shop');
 });
