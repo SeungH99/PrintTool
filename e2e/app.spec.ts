@@ -57,6 +57,7 @@ test('page responses carry baseline security headers', async ({ page }) => {
   expect(h['referrer-policy']).toBe('strict-origin-when-cross-origin');
   expect(h['strict-transport-security']).toContain('max-age=');
   expect(h['permissions-policy']).toContain('camera=()');
+  expect(h['content-security-policy-report-only']).toContain("default-src 'self'");
 });
 
 test('mobile nav drawer opens and navigates to a tool', async ({ page }) => {

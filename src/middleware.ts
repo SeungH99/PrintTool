@@ -1,7 +1,23 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { locales, defaultLocale } from '@/i18n/config';
 
-/** Baseline security headers on every page response. CSP lands in P2 (needs the AdSense/CMP/GA domains). */
+// Content-Security-Policy — Report-Only first: monitor violations in production, then
+// flip to enforced once clean. Allows GA / AdSense / Funding Choices (CMP). 'unsafe-inline'
+// is required for the Consent Mode default script (static export → no per-request nonce).
+const CSP_REPORT_ONLY = [
+  "default-src 'self'",
+  "base-uri 'self'",
+  "object-src 'none'",
+  "frame-ancestors 'none'",
+  "script-src 'self' 'unsafe-inline' https://*.googletagmanager.com https://*.googlesyndication.com https://*.google-analytics.com https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google",
+  "style-src 'self' 'unsafe-inline'",
+  "img-src 'self' data: https:",
+  "font-src 'self' data:",
+  "connect-src 'self' https://*.google-analytics.com https://*.googletagmanager.com https://*.googlesyndication.com https://*.google.com https://*.adtrafficquality.google",
+  'frame-src https://*.googlesyndication.com https://*.google.com https://*.doubleclick.net',
+].join('; ');
+
+/** Baseline security headers on every page response. */
 function withSecurityHeaders(res: NextResponse): NextResponse {
   res.headers.set('Strict-Transport-Security', 'max-age=63072000; includeSubDomains; preload');
   res.headers.set('X-Frame-Options', 'DENY');
@@ -11,6 +27,7 @@ function withSecurityHeaders(res: NextResponse): NextResponse {
     'Permissions-Policy',
     'camera=(), microphone=(), geolocation=(), browsing-topics=()',
   );
+  res.headers.set('Content-Security-Policy-Report-Only', CSP_REPORT_ONLY);
   return res;
 }
 
