@@ -80,3 +80,8 @@ test('exposes an OG image', async ({ page }) => {
   await page.goto('/ko');
   expect(await page.locator('meta[property="og:image"]').count()).toBeGreaterThan(0);
 });
+
+test('serves security.txt', async ({ page }) => {
+  const res = await page.goto('/.well-known/security.txt');
+  expect(res?.status()).toBe(200);
+});
