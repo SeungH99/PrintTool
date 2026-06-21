@@ -1,4 +1,1 @@
-# ads.txt placeholder — replace with your real AdSense publisher line before launch.
-# Per ADR-0001 (global-first AdSense), this file must be served at the site root.
-# Example (DO NOT ship as-is):
-# google.com, pub-0000000000000000, DIRECT, f08c47fec0942fa0
+google.com, pub-7142354312657545, DIRECT, f08c47fec0942fa0
