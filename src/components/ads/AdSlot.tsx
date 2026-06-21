@@ -4,9 +4,11 @@ import { useEffect, useRef } from 'react';
 import { useConsent } from '@/hooks/useConsent';
 
 /**
- * Ad placement that respects the consent gate. With consent denied (the default,
- * until the certified CMP grants it) or no publisher ID configured, the network is
- * NOT loaded — the space is merely reserved. See ADR-0001 / src/lib/consent/consent.ts.
+ * Manual ad-unit placeholder — currently UNUSED. The live strategy is Auto ads
+ * (ADR-0007): Google places ads automatically via adsbygoogle.js (ConsentScripts),
+ * so this component is not rendered. Kept for a fast switch back to manual placement
+ * if Auto ads cause UX/policy issues (would then need a data-ad-slot). Respects the
+ * consent gate. See ADR-0001 / ADR-0007 / src/lib/consent/consent.ts.
  */
 export function AdSlot({ label, note }: { label: string; note: string }) {
   const { ads } = useConsent();

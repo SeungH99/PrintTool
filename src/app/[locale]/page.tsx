@@ -3,7 +3,6 @@ import { notFound } from 'next/navigation';
 import { isLocale } from '@/i18n/config';
 import { getDictionary } from '@/i18n/dictionaries';
 import { Card } from '@/components/ui/Card';
-import { AdSlot } from '@/components/ads/AdSlot';
 import { buttonClass } from '@/components/ui/buttonClass';
 import { TOOL_ICONS } from '@/components/layout/toolIcons';
 
@@ -76,10 +75,6 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
           })}
         </div>
       </section>
-
-      <div className="mx-auto max-w-page px-6">
-        <AdSlot label={dict.common.adLabel} note={dict.common.adNote} />
-      </div>
     </>
   );
 }
