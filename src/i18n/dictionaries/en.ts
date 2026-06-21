@@ -61,7 +61,6 @@ export const en: Dictionary = {
     toolsHead: 'Tools',
     aboutHead: 'About',
     privacy: 'Privacy policy',
-    cookies: 'Cookie policy',
     contact: 'Contact',
     cookieSettings: 'Cookie settings',
     copy: '© 2026 PrintReady',
