@@ -1,14 +1,20 @@
 'use client';
 
 import Script from 'next/script';
-import { consentModeParams, defaultConsent, CONSENT_REQUIRED_REGIONS } from '@/lib/consent/consent';
+import {
+  consentModeParams,
+  defaultConsent,
+  gpcOptOutParams,
+  CONSENT_REQUIRED_REGIONS,
+} from '@/lib/consent/consent';
 
 /**
  * Loads Google Consent Mode v2 plus the analytics/ads tags, each gated on its own
- * env var. Consent Mode defaults to DENIED in regulated regions (EEA/UK/CH — the
- * certified CMP, Funding Choices, collects consent) and GRANTED elsewhere so
- * non-regulated traffic is still measured (GA4 tag quality). Renders nothing when
- * neither GA nor AdSense is configured (e.g. local dev) — ADR-0001 / MVP-005.
+ * env var. Defaults to DENIED in regulated regions (EEA/UK/CH — the certified CMP,
+ * Funding Choices, collects consent) and GRANTED elsewhere so non-regulated traffic
+ * is measured. A GPC (Global Privacy Control) signal forces ad signals off (CCPA
+ * "do not sell/share"). Renders nothing when neither GA nor AdSense is configured
+ * (e.g. local dev) — ADR-0001 / MVP-005.
  */
 export function ConsentScripts() {
   const client = process.env.NEXT_PUBLIC_ADSENSE_CLIENT;
@@ -22,14 +28,16 @@ export function ConsentScripts() {
     wait_for_update: 500,
   });
   const fallback = JSON.stringify(consentModeParams({ ads: true, analytics: true }));
+  const gpc = JSON.stringify(gpcOptOutParams);
 
   return (
     <>
       {/* Consent Mode default must run before any ad/analytics tag fires; beforeInteractive
-          in the (root) locale layout is the documented App Router pattern. */}
+          in the (root) locale layout is the documented App Router pattern. A GPC signal
+          (navigator.globalPrivacyControl) then forces ad signals to denied (CCPA opt-out). */}
       {/* eslint-disable-next-line @next/next/no-before-interactive-script-outside-document */}
       <Script id="consent-mode-default" strategy="beforeInteractive">
-        {`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('consent','default',${regional});gtag('consent','default',${fallback});`}
+        {`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('consent','default',${regional});gtag('consent','default',${fallback});if(navigator.globalPrivacyControl){gtag('consent','update',${gpc});}`}
       </Script>
 
       {ga && (

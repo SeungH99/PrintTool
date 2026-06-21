@@ -86,6 +86,16 @@ export function consentModeParams(state: ConsentState): ConsentModeParams {
   };
 }
 
+/**
+ * GPC (Global Privacy Control) opt-out — advertising signals forced to denied for the
+ * CCPA "do not sell/share" browser signal. Analytics (measurement) is left untouched.
+ */
+export const gpcOptOutParams = {
+  ad_storage: 'denied',
+  ad_user_data: 'denied',
+  ad_personalization: 'denied',
+} as const;
+
 type GtagWindow = { gtag?: (...args: unknown[]) => void };
 
 /** Push a Consent Mode update to gtag. No-op if gtag is not loaded. */
