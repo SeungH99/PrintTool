@@ -66,10 +66,21 @@ export default async function LocaleLayout({
     inLanguage: locale === 'ko' ? 'ko-KR' : 'en-US',
   };
 
+  // Organization entity so Google links the "PrintReady" brand to this domain.
+  // Add brand social profiles to sameAs when they exist (strong brand signal).
+  const organizationJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: 'PrintReady',
+    url: SITE_URL,
+    logo: `${SITE_URL}/icon.svg`,
+  };
+
   return (
     <html lang={locale} className={`${GeistSans.variable} ${GeistMono.variable}`}>
       <body className="flex min-h-screen flex-col bg-canvas font-sans text-ink antialiased">
         <script {...jsonLdScriptProps(websiteJsonLd)} />
+        <script {...jsonLdScriptProps(organizationJsonLd)} />
         <a
           href="#content"
           className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-sm focus:border focus:border-hairline focus:bg-elevated focus:px-3 focus:py-2 focus:text-ink"
