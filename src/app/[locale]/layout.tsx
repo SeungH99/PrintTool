@@ -9,6 +9,7 @@ import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { ConsentScripts } from '@/components/ads/ConsentScripts';
 import { SITE_URL } from '@/lib/site';
+import { jsonLdScriptProps } from '@/lib/jsonLd';
 import '../globals.css';
 
 export function generateStaticParams() {
@@ -55,9 +56,19 @@ export default async function LocaleLayout({
   if (!isLocale(locale)) notFound();
   const dict = getDictionary(locale);
 
+  const websiteJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: 'PrintReady',
+    url: `${SITE_URL}/${locale}`,
+    description: dict.home.heroDesc,
+    inLanguage: locale === 'ko' ? 'ko-KR' : 'en-US',
+  };
+
   return (
     <html lang={locale} className={`${GeistSans.variable} ${GeistMono.variable}`}>
       <body className="flex min-h-screen flex-col bg-canvas font-sans text-ink antialiased">
+        <script {...jsonLdScriptProps(websiteJsonLd)} />
         <a
           href="#content"
           className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-sm focus:border focus:border-hairline focus:bg-elevated focus:px-3 focus:py-2 focus:text-ink"

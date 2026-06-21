@@ -66,3 +66,17 @@ test('mobile nav drawer opens and navigates to a tool', async ({ page }) => {
   await dialog.getByRole('link', { name: '인쇄용 PDF 변환' }).click();
   await expect(page).toHaveURL(/\/ko\/convert$/);
 });
+
+test('serves a web manifest and JSON-LD structured data', async ({ page }) => {
+  const m = await page.goto('/manifest.webmanifest');
+  expect(m?.status()).toBe(200);
+  await page.goto('/ko');
+  expect(await page.locator('script[type="application/ld+json"]').count()).toBeGreaterThan(0);
+  await page.goto('/ko/spine');
+  expect(await page.locator('script[type="application/ld+json"]').count()).toBeGreaterThan(0);
+});
+
+test('exposes an OG image', async ({ page }) => {
+  await page.goto('/ko');
+  expect(await page.locator('meta[property="og:image"]').count()).toBeGreaterThan(0);
+});
