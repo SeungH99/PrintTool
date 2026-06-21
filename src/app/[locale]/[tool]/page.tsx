@@ -4,6 +4,7 @@ import { getDictionary } from '@/i18n/dictionaries';
 import type { ComponentType } from 'react';
 import type { Metadata } from 'next';
 import { isToolId, toolIds, type ToolId } from '@/lib/tools';
+import { jsonLdScriptProps } from '@/lib/jsonLd';
 import type { CalculatorProps } from '@/components/calculators/types';
 import { ResolutionCalculator } from '@/components/calculators/ResolutionCalculator';
 import { SpineCalculator } from '@/components/calculators/SpineCalculator';
@@ -58,18 +59,33 @@ export default async function ToolPage({
     desc: meta.desc,
   };
 
+  const appJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'SoftwareApplication',
+    name: meta.title,
+    description: meta.desc,
+    applicationCategory: 'UtilitiesApplication',
+    operatingSystem: 'Web',
+    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+  };
   const Calculator = CALCULATORS[tool];
-  if (Calculator) return <Calculator {...shared} />;
 
   return (
-    <ComingSoon
-      eyebrow={meta.tag}
-      title={meta.title}
-      desc={meta.desc}
-      backHref={`/${locale}`}
-      backLabel={dict.calc.back}
-      comingSoon={dict.calc.comingSoon}
-      comingSoonDesc={dict.calc.comingSoonDesc}
-    />
+    <>
+      <script {...jsonLdScriptProps(appJsonLd)} />
+      {Calculator ? (
+        <Calculator {...shared} />
+      ) : (
+        <ComingSoon
+          eyebrow={meta.tag}
+          title={meta.title}
+          desc={meta.desc}
+          backHref={`/${locale}`}
+          backLabel={dict.calc.back}
+          comingSoon={dict.calc.comingSoon}
+          comingSoonDesc={dict.calc.comingSoonDesc}
+        />
+      )}
+    </>
   );
 }
