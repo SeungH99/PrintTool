@@ -29,6 +29,7 @@ export async function generateMetadata({
     metadataBase: new URL(SITE_URL),
     title: { default: 'PrintReady', template: '%s · PrintReady' },
     description: dict.home.heroDesc,
+    keywords: dict.home.keywords,
     applicationName: 'PrintReady',
     alternates: {
       canonical: `/${locale}`,

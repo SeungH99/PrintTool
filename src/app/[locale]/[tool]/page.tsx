@@ -37,8 +37,15 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale, tool } = await params;
   if (!isLocale(locale) || !isToolId(tool)) return {};
-  const meta = getDictionary(locale).tools.find((entry) => entry.id === tool);
-  return meta ? { title: meta.title, description: meta.desc } : {};
+  const dict = getDictionary(locale);
+  const meta = dict.tools.find((entry) => entry.id === tool);
+  return meta
+    ? {
+        title: meta.title,
+        description: meta.desc,
+        keywords: [meta.title, meta.tag, ...dict.home.keywords.slice(0, 4)],
+      }
+    : {};
 }
 
 export default async function ToolPage({
