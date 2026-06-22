@@ -11,6 +11,20 @@ export const en: Dictionary = {
     ctaSecondary: 'Browse calculators',
     toolsTitle: 'Pick a tool and start right away',
     toolsDesc: 'From preflight to calculation — every step of print production, covered.',
+    keywords: [
+      'print preflight',
+      'PDF preflight',
+      'print file check',
+      'print-ready PDF conversion',
+      'spine width calculator',
+      'paper weight calculator',
+      'fold layout calculator',
+      'label layout calculator',
+      'image print size',
+      'DPI checker',
+      'CMYK RGB color check',
+      'bleed trim check',
+    ],
   },
   tools: [
     {
