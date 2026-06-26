@@ -38,6 +38,8 @@ export async function generateMetadata({
       description: dict.home.heroDesc,
     }),
     robots: { index: true, follow: true },
+    // Naver Search Advisor ownership verification (public token, not a secret).
+    verification: { other: { 'naver-site-verification': '72a59826c05560acc7fd9e3ea0f91e7e47d32903' } },
   };
 }
 
