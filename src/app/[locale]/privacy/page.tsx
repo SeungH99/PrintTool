@@ -1,12 +1,25 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { isLocale } from '@/i18n/config';
+import { getDictionary } from '@/i18n/dictionaries';
+import { localizedAlternates } from '@/lib/metadata';
 import { POLICY_HTML } from './policyHtml';
 
-export const metadata: Metadata = {
-  title: 'Privacy Policy',
-  robots: { index: true, follow: true },
-};
+// Per-locale alternates so /ko/privacy and /en/privacy self-canonicalize instead of
+// inheriting the layout's home canonical (Next replaces nested metadata wholesale).
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  if (!isLocale(locale)) return {};
+  return {
+    title: getDictionary(locale).footer.privacy,
+    robots: { index: true, follow: true },
+    alternates: localizedAlternates(locale, '/privacy'),
+  };
+}
 
 // English-only policy (Termly-generated) shown on both locales — ADR-0001 / privacy task.
 export default async function PrivacyPage({ params }: { params: Promise<{ locale: string }> }) {
