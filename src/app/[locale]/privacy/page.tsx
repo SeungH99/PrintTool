@@ -14,8 +14,10 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params;
   if (!isLocale(locale)) return {};
+  const dict = getDictionary(locale);
   return {
-    title: getDictionary(locale).footer.privacy,
+    title: dict.footer.privacy,
+    description: dict.footer.privacyDesc,
     robots: { index: true, follow: true },
     alternates: localizedAlternates(locale, '/privacy'),
   };
