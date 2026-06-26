@@ -76,6 +76,8 @@ export const en: Dictionary = {
     toolsHead: 'Tools',
     aboutHead: 'About',
     privacy: 'Privacy policy',
+    privacyDesc:
+      'PrintReady privacy policy — uploaded files are processed locally in your browser, never sent to a server.',
     contact: 'Contact',
     cookieSettings: 'Cookie settings',
     copy: '© 2026 PrintReady',

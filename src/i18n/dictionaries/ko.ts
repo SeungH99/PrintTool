@@ -74,6 +74,8 @@ export const ko = {
     toolsHead: '도구',
     aboutHead: '안내',
     privacy: '개인정보 처리방침',
+    privacyDesc:
+      'PrintReady 개인정보 처리방침 — 업로드 파일은 브라우저에서 로컬 처리되며 서버로 전송되지 않습니다.',
     contact: '문의하기',
     cookieSettings: '쿠키 설정',
     copy: '© 2026 PrintReady',
