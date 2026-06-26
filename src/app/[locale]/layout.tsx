@@ -11,6 +11,7 @@ import { ConsentScripts } from '@/components/ads/ConsentScripts';
 import { WebVitals } from '@/components/analytics/WebVitals';
 import { SITE_URL } from '@/lib/site';
 import { jsonLdScriptProps } from '@/lib/jsonLd';
+import { localizedAlternates, localizedOpenGraph } from '@/lib/metadata';
 import '../globals.css';
 
 export function generateStaticParams() {
@@ -27,22 +28,15 @@ export async function generateMetadata({
   const dict = getDictionary(locale);
   return {
     metadataBase: new URL(SITE_URL),
-    title: { default: 'PrintReady', template: '%s · PrintReady' },
+    title: { default: dict.home.metaTitle, template: '%s · PrintReady' },
     description: dict.home.heroDesc,
     keywords: dict.home.keywords,
     applicationName: 'PrintReady',
-    alternates: {
-      canonical: `/${locale}`,
-      languages: { ko: '/ko', en: '/en', 'x-default': '/ko' },
-    },
-    openGraph: {
-      title: 'PrintReady',
+    alternates: localizedAlternates(locale),
+    openGraph: localizedOpenGraph(locale, {
+      title: dict.home.metaTitle,
       description: dict.home.heroDesc,
-      url: `/${locale}`,
-      siteName: 'PrintReady',
-      locale: locale === 'ko' ? 'ko_KR' : 'en_US',
-      type: 'website',
-    },
+    }),
     robots: { index: true, follow: true },
   };
 }

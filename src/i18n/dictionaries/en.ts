@@ -3,6 +3,7 @@ import type { Dictionary } from './ko';
 export const en: Dictionary = {
   nav: { home: 'Home', tools: 'Tools', cta: 'Check PDF' },
   home: {
+    metaTitle: 'Print Preflight & Spec Calculators · PrintReady',
     eyebrow: 'Print production toolkit',
     heroTitle: 'Check your files and specs before they reach the print shop',
     heroDesc:

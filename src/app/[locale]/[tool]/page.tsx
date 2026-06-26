@@ -5,6 +5,7 @@ import type { ComponentType } from 'react';
 import type { Metadata } from 'next';
 import { isToolId, toolIds, type ToolId } from '@/lib/tools';
 import { jsonLdScriptProps } from '@/lib/jsonLd';
+import { localizedAlternates, localizedOpenGraph } from '@/lib/metadata';
 import type { CalculatorProps } from '@/components/calculators/types';
 import { ResolutionCalculator } from '@/components/calculators/ResolutionCalculator';
 import { SpineCalculator } from '@/components/calculators/SpineCalculator';
@@ -44,6 +45,12 @@ export async function generateMetadata({
         title: meta.title,
         description: meta.desc,
         keywords: [meta.title, meta.tag, ...dict.home.keywords.slice(0, 4)],
+        alternates: localizedAlternates(locale, `/${tool}`),
+        openGraph: localizedOpenGraph(locale, {
+          title: meta.title,
+          description: meta.desc,
+          subpath: `/${tool}`,
+        }),
       }
     : {};
 }

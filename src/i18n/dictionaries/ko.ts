@@ -1,6 +1,7 @@
 export const ko = {
   nav: { home: '홈', tools: '도구', cta: 'PDF 검사' },
   home: {
+    metaTitle: '인쇄 파일 검사 & 규격 계산기 · PrintReady',
     eyebrow: '인쇄 제작 툴킷',
     heroTitle: '인쇄소에 보내기 전, 파일과 규격을 먼저 확인하세요',
     heroDesc:
