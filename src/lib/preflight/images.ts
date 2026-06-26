@@ -34,13 +34,17 @@ export async function detectMinImageDpi(bytes: ArrayBuffer | Uint8Array): Promis
   const data = new Uint8Array(bytes instanceof Uint8Array ? bytes : new Uint8Array(bytes));
   const pdfjs = (await import('pdfjs-dist/legacy/build/pdf.mjs')) as typeof import('pdfjs-dist');
   const { getDocument, OPS, GlobalWorkerOptions } = pdfjs;
-  // The browser needs an explicit worker — without it getDocument fails and DPI is
-  // silently lost ("감지 제한"). Next bundles the worker from the package via
-  // import.meta.url. (Node tests fall back to a fake worker, so this is browser-only.)
-  GlobalWorkerOptions.workerSrc = new URL(
-    'pdfjs-dist/legacy/build/pdf.worker.min.mjs',
-    import.meta.url,
-  ).toString();
+  // Set the bundled worker URL only in a real browser (where `Worker` exists). Next
+  // emits the asset from this `new URL(..., import.meta.url)`. In Node (tests) there
+  // is no Worker, so pdf.js runs its main-thread fake worker — and assigning an http:
+  // workerSrc (vite resolves import.meta.url to http) breaks that fallback with
+  // "Only URLs with a scheme in: file and data are supported by the default ESM loader".
+  if (typeof Worker !== 'undefined') {
+    GlobalWorkerOptions.workerSrc = new URL(
+      'pdfjs-dist/legacy/build/pdf.worker.min.mjs',
+      import.meta.url,
+    ).toString();
+  }
 
   const loadingTask = getDocument({ data });
   const doc = await loadingTask.promise;
