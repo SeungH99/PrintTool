@@ -10,7 +10,14 @@ import {
   cmsFLAGS_BLACKPOINTCOMPENSATION,
   cmsInfoDescription,
 } from 'lcms-wasm';
-import { buildEngine, hexToRgb, rgbToHex, type Lcms, type LcmsConstants } from '@/lib/color/cmyk';
+import {
+  buildEngine,
+  gamutClipDistance,
+  hexToRgb,
+  rgbToHex,
+  type Lcms,
+  type LcmsConstants,
+} from '@/lib/color/cmyk';
 
 const CONSTS: LcmsConstants = {
   INTENT_RELATIVE_COLORIMETRIC,
@@ -69,5 +76,13 @@ describe('CMYK ICC engine (Ghostscript default_cmyk profile)', () => {
     expect(Math.abs(r1 - r0)).toBeLessThan(25);
     expect(Math.abs(g1 - g0)).toBeLessThan(25);
     expect(Math.abs(b1 - b0)).toBeLessThan(25);
+  });
+
+  it('flags a saturated sRGB primary as out of gamut, a neutral grey as in gamut', async () => {
+    const e = await engine();
+    // Pure sRGB green sits well outside the small Ghostscript CMYK gamut.
+    expect(gamutClipDistance(e, [0, 255, 0])).toBeGreaterThan(20);
+    // A mid grey is reproducible and round-trips tightly.
+    expect(gamutClipDistance(e, [128, 128, 128])).toBeLessThan(20);
   });
 });

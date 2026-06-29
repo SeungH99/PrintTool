@@ -357,9 +357,9 @@ export const ko = {
     },
     color: {
       hex: 'HEX',
-      hexLabel: 'HEX',
-      rgbLabel: 'RGB',
-      cmykLabel: 'CMYK',
+      gamutWarn: '이 화면 색은 CMYK 색역을 벗어나, 인쇄 시 가장 가까운 색으로 표현됩니다.',
+      gamutBadge: '색역 초과',
+      copy: '복사',
       loading: '프로파일 로딩 중…',
       errorLoad: '색상 엔진을 불러오지 못했습니다. 새로고침 후 다시 시도해 주세요.',
       note: 'ICC 프로파일 기반 변환입니다. 실제 인쇄 색은 인쇄소 프로파일·용지에 따라 달라질 수 있습니다.',

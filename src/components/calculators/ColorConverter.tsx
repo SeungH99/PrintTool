@@ -5,8 +5,72 @@ import type { CalculatorProps } from './types';
 import { CalculatorShell } from './CalculatorShell';
 import { ResultPanel } from './ResultPanel';
 import { NumberField } from '@/components/ui/NumberField';
-import { buildEngine, hexToRgb, rgbToHex, type ColorEngine, type Lcms } from '@/lib/color/cmyk';
+import { Badge } from '@/components/ui/Badge';
+import { CopyButton } from '@/components/ui/CopyButton';
+import {
+  buildEngine,
+  gamutClipDistance,
+  hexToRgb,
+  rgbToHex,
+  type ColorEngine,
+  type Lcms,
+  type RGB,
+} from '@/lib/color/cmyk';
 import { round, toNum } from './number';
+
+interface ColorT {
+  gamutBadge: string;
+  copy: string;
+}
+
+/** Enlarged swatch + copyable HEX/RGB/CMYK values, with an out-of-gamut badge. */
+function ColorResult({
+  rgb,
+  hex,
+  cmyk,
+  outOfGamut,
+  t,
+}: {
+  rgb: RGB;
+  hex: string;
+  cmyk: string;
+  outOfGamut: boolean;
+  t: ColorT;
+}) {
+  const rows = [
+    { key: 'HEX', value: hex },
+    { key: 'RGB', value: `${rgb[0]}, ${rgb[1]}, ${rgb[2]}` },
+    { key: 'CMYK', value: cmyk },
+  ];
+  return (
+    <div className="flex flex-col gap-4">
+      <div
+        className="relative h-32 w-full rounded-md border border-hairline"
+        style={{ backgroundColor: `rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})` }}
+      >
+        {outOfGamut && (
+          <span className="absolute right-2 top-2">
+            <Badge tone="warning">{t.gamutBadge}</Badge>
+          </span>
+        )}
+      </div>
+      <div className="flex flex-col">
+        {rows.map((r) => (
+          <div
+            key={r.key}
+            className="flex items-center gap-3 border-t border-hairline py-2.5 first:border-t-0"
+          >
+            <span className="w-12 flex-none text-[13px] text-mute">{r.key}</span>
+            <span className="flex-1 truncate text-right font-mono text-sm tabular-nums text-ink">
+              {r.value}
+            </span>
+            <CopyButton value={r.value} label={`${r.key} ${t.copy}`} />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 type LcmsModule = {
   instantiate: (opts?: { locateFile?: (f: string) => string }) => Promise<unknown>;
@@ -56,6 +120,8 @@ export function ColorConverter({ dict, locale, eyebrow, title, desc }: Calculato
   const [k, setK] = useState('25');
   // null = not editing → field mirrors the CMYK-derived hex; string = user's in-progress edit.
   const [hexEdit, setHexEdit] = useState<string | null>(null);
+  // True when a typed hex falls outside the CMYK profile gamut (round-trip clips it).
+  const [outOfGamut, setOutOfGamut] = useState(false);
 
   useEffect(() => {
     let alive = true;
@@ -103,6 +169,14 @@ export function ColorConverter({ dict, locale, eyebrow, title, desc }: Calculato
   );
   const hexOut = rgb ? rgbToHex(rgb[0], rgb[1], rgb[2]) : '—';
 
+  // Editing the CMYK channels directly makes ink the source of truth — always in gamut.
+  function onCmyk(set: (v: string) => void) {
+    return (v: string) => {
+      set(v);
+      setOutOfGamut(false);
+    };
+  }
+
   function applyHex(v: string) {
     setHexEdit(v);
     const parsed = hexToRgb(v);
@@ -112,16 +186,18 @@ export function ColorConverter({ dict, locale, eyebrow, title, desc }: Calculato
       setM(String(cmyk[1]));
       setY(String(cmyk[2]));
       setK(String(cmyk[3]));
+      // A large round-trip shift means the screen colour was clipped to the print gamut.
+      setOutOfGamut(gamutClipDistance(engine, parsed) > 20);
     }
   }
 
   const inputs = (
     <div className="flex flex-col gap-4">
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-        <NumberField label="C" value={c} onChange={setC} suffix="%" />
-        <NumberField label="M" value={m} onChange={setM} suffix="%" />
-        <NumberField label="Y" value={y} onChange={setY} suffix="%" />
-        <NumberField label="K" value={k} onChange={setK} suffix="%" />
+        <NumberField label="C" value={c} onChange={onCmyk(setC)} suffix="%" />
+        <NumberField label="M" value={m} onChange={onCmyk(setM)} suffix="%" />
+        <NumberField label="Y" value={y} onChange={onCmyk(setY)} suffix="%" />
+        <NumberField label="K" value={k} onChange={onCmyk(setK)} suffix="%" />
       </div>
       <HexField
         label={t.hex}
@@ -132,31 +208,21 @@ export function ColorConverter({ dict, locale, eyebrow, title, desc }: Calculato
     </div>
   );
 
-  const swatch = (
-    <div
-      className="h-24 w-full rounded-md border border-hairline"
-      style={{ backgroundColor: rgb ? `rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})` : 'transparent' }}
-      aria-hidden="true"
-    />
-  );
+  const cmykStr = `${round(toNum(c), 0)}, ${round(toNum(m), 0)}, ${round(toNum(y), 0)}, ${round(toNum(k), 0)}`;
+
+  let alertMsg: string | undefined;
+  if (status === 'error') alertMsg = t.errorLoad;
+  else if (status === 'ready' && outOfGamut) alertMsg = t.gamutWarn;
 
   const results = (
     <ResultPanel
       resultLabel={dict.calc.result}
-      alert={status === 'error' ? t.errorLoad : undefined}
-      primaryLabel={t.hexLabel}
-      primaryValue={status === 'ready' ? hexOut : status === 'loading' ? t.loading : '—'}
-      diagram={status === 'ready' ? swatch : undefined}
-      rows={
-        status === 'ready' && rgb
-          ? [
-              { label: t.rgbLabel, value: `${rgb[0]}, ${rgb[1]}, ${rgb[2]}` },
-              {
-                label: t.cmykLabel,
-                value: `${round(toNum(c), 0)}, ${round(toNum(m), 0)}, ${round(toNum(y), 0)}, ${round(toNum(k), 0)}`,
-              },
-            ]
-          : undefined
+      alert={alertMsg}
+      primaryValue={status === 'loading' ? t.loading : undefined}
+      diagram={
+        status === 'ready' && rgb ? (
+          <ColorResult rgb={rgb} hex={hexOut} cmyk={cmykStr} outOfGamut={outOfGamut} t={t} />
+        ) : undefined
       }
       note={status === 'ready' && profileName ? `${t.note} (${profileName})` : t.note}
     />

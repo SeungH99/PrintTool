@@ -359,9 +359,9 @@ export const en: Dictionary = {
     },
     color: {
       hex: 'HEX',
-      hexLabel: 'HEX',
-      rgbLabel: 'RGB',
-      cmykLabel: 'CMYK',
+      gamutWarn: 'This screen colour is outside the CMYK gamut and will print as the nearest reproducible colour.',
+      gamutBadge: 'Out of gamut',
+      copy: 'Copy',
       loading: 'Loading profile…',
       errorLoad: 'Could not load the color engine. Refresh and try again.',
       note: 'ICC profile-based conversion. The actual printed color depends on your printer’s profile and paper.',
