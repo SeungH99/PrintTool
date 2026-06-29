@@ -8,6 +8,9 @@ import { CalculatorShell } from './CalculatorShell';
 import { ResultPanel } from './ResultPanel';
 import { toNum } from './number';
 
+/** Common booklet page counts offered as quick-pick chips. */
+const QUICK_PAGES = [8, 12, 16, 20, 24, 32];
+
 interface SpreadT {
   outer: string;
   inner: string;
@@ -58,6 +61,28 @@ export function BookletCalculator({ dict, locale, eyebrow, title, desc }: Calcul
         suffix={t.pagesUnit}
         helper={t.pagesHelper}
       />
+      <div className="flex flex-col gap-2">
+        <span className="text-[13px] text-mute">{t.quickPick}</span>
+        <div className="flex flex-wrap gap-2">
+          {QUICK_PAGES.map((n) => {
+            const active = toNum(pages) === n;
+            return (
+              <button
+                key={n}
+                type="button"
+                onClick={() => setPages(String(n))}
+                className={`rounded-full border px-3 py-1 text-[13px] tabular-nums transition-colors ${
+                  active
+                    ? 'border-link bg-link-soft text-link-deep'
+                    : 'border-hairline text-body hover:border-link hover:text-link'
+                }`}
+              >
+                {n}
+              </button>
+            );
+          })}
+        </div>
+      </div>
     </div>
   );
 

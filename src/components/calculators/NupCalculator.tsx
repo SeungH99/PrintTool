@@ -18,6 +18,15 @@ const SHEETS: Record<string, [number, number]> = {
   'A4 (210×297)': [210, 297],
 };
 
+/** Common finished-piece sizes (mm), keyed by an i18n id. */
+const PIECES: Record<string, [number, number]> = {
+  card: [90, 50],
+  postcard: [100, 148],
+  a6: [105, 148],
+  a5: [148, 210],
+  a4: [210, 297],
+};
+
 /** A cols×rows grid of cells scaled to the sheet aspect. */
 function NupGrid({ cols, rows, aspect }: { cols: number; rows: number; aspect: number }) {
   if (cols < 1 || rows < 1) return null;
@@ -55,10 +64,12 @@ export function NupCalculator({ dict, locale, eyebrow, title, desc }: Calculator
   const [sheet, setSheet] = useState(sheetKeys[0]);
   const [sheetW, setSheetW] = useState('788');
   const [sheetH, setSheetH] = useState('1091');
+  const [piece, setPiece] = useState('card');
   const [pieceW, setPieceW] = useState('90');
   const [pieceH, setPieceH] = useState('50');
   const [gap, setGap] = useState('0');
-  const isCustom = sheet === 'custom';
+  const isCustomSheet = sheet === 'custom';
+  const isCustomPiece = piece === 'custom';
 
   function onSheet(value: string) {
     setSheet(value);
@@ -66,6 +77,15 @@ export function NupCalculator({ dict, locale, eyebrow, title, desc }: Calculator
     if (preset) {
       setSheetW(String(preset[0]));
       setSheetH(String(preset[1]));
+    }
+  }
+
+  function onPiece(value: string) {
+    setPiece(value);
+    const preset = PIECES[value];
+    if (preset) {
+      setPieceW(String(preset[0]));
+      setPieceH(String(preset[1]));
     }
   }
 
@@ -86,6 +106,10 @@ export function NupCalculator({ dict, locale, eyebrow, title, desc }: Calculator
     ...sheetKeys.map((k) => ({ value: k, label: k })),
     { value: 'custom', label: t.custom },
   ];
+  const pieceOptions = [
+    ...Object.keys(PIECES).map((k) => ({ value: k, label: t.pieces[k as keyof typeof t.pieces] })),
+    { value: 'custom', label: t.custom },
+  ];
 
   const inputs = (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -97,17 +121,32 @@ export function NupCalculator({ dict, locale, eyebrow, title, desc }: Calculator
         value={sheetW}
         onChange={setSheetW}
         suffix="mm"
-        disabled={!isCustom}
+        disabled={!isCustomSheet}
       />
       <NumberField
         label={t.sheetH}
         value={sheetH}
         onChange={setSheetH}
         suffix="mm"
-        disabled={!isCustom}
+        disabled={!isCustomSheet}
       />
-      <NumberField label={t.pieceW} value={pieceW} onChange={setPieceW} suffix="mm" />
-      <NumberField label={t.pieceH} value={pieceH} onChange={setPieceH} suffix="mm" />
+      <div className="sm:col-span-2">
+        <SelectField label={t.pieceLabel} value={piece} options={pieceOptions} onChange={onPiece} />
+      </div>
+      <NumberField
+        label={t.pieceW}
+        value={pieceW}
+        onChange={setPieceW}
+        suffix="mm"
+        disabled={!isCustomPiece}
+      />
+      <NumberField
+        label={t.pieceH}
+        value={pieceH}
+        onChange={setPieceH}
+        suffix="mm"
+        disabled={!isCustomPiece}
+      />
       <NumberField label={t.gap} value={gap} onChange={setGap} suffix="mm" helper={t.gapHelper} />
     </div>
   );
