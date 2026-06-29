@@ -270,204 +270,400 @@ export const en: Dictionary = {
   toolGuides: {
     pdf: {
       intro:
-        'PDF preflight checks your print file before you send it to the printer — verifying bleed, image resolution (DPI), color mode (CMYK/RGB), and font embedding. Catching problems early avoids costly reprints.',
+        'A PDF preflight check inspects your print file before it goes to the printer, verifying bleed, page size, image resolution (DPI), color mode (CMYK/RGB), and font embedding in one pass. Catching issues before output saves you from reprints, missed deadlines, and extra cost. Your file is analyzed entirely in the browser and never uploaded to a server.',
       body: [
         {
-          heading: 'What gets checked',
-          text: 'Bleed, page size, image resolution (DPI), color mode, and font embedding are checked at once, each flagged as pass, warning, or needs review.',
+          heading: 'How the check works',
+          text: 'The tool reads each page to pull the page boxes (MediaBox/TrimBox), the pixel dimensions and placed size of every image, the color space, and font embedding status. Effective resolution is pixels divided by placed size in inches, so a 1000px image placed at 4 inches lands at about 250 DPI. Every item is flagged pass, warning, or needs review, and the numbers are estimates for guidance.',
         },
         {
-          heading: 'Processed safely in your browser',
-          text: 'Your PDF is analyzed entirely in the browser and never uploaded to a server, so even confidential files stay private.',
+          heading: 'Print standards and typical specs',
+          text: 'For general print, aim for 300 DPI images (150 DPI is fine for large-format viewed from a distance), 3mm bleed, and a 3-5mm safety margin. Use CMYK, set small body black to K100, and embed all fonts or convert them to outlines. Paper is specified by weight (GSM): 80-120g for text stock and 200-300g for covers is common.',
+        },
+        {
+          heading: 'Common mistakes to avoid',
+          text: 'The usual culprits are stray RGB or spot colors, full-bleed designs exported with no bleed, and low-res images scaled up. Small text or thin rules built from all four CMYK plates can look fuzzy if the press misregisters, so keep them K-only. Do not ignore warnings; fix them in the source file and re-export rather than shipping as-is.',
+        },
+        {
+          heading: 'Export workflow tips',
+          text: "Exporting from your design app with a PDF/X-1a or PDF/X-4 preset cleans up color, fonts, and transparency for print. Place trim and registration marks outside the bleed, and set bleed to 3mm in the document setup before export. Even after a clean check, follow your printer's own spec sheet for margins, resolution, and file naming when it differs.",
+        },
+        {
+          heading: 'How it connects to binding and finishing',
+          text: "For a cover you also need the spine width, which depends on paper weight and page count, and perfect binding versus saddle-stitch use different imposition. Finishes like foil, embossing, or spot UV are usually placed on a separate spot-color layer to mark their position. These steps fall outside this check, so confirm them against the printer's spec sheet.",
         },
       ],
       faqTitle: 'Frequently asked questions',
       faq: [
         {
-          q: 'What is preflight?',
-          a: 'An automated check that confirms a file is print-ready — verifying resolution, color, bleed, and fonts to prevent printing errors.',
+          q: 'What DPI should a print-ready PDF be?',
+          a: 'Aim for 300 DPI at the final placed size for general print. Large-format pieces viewed from a distance, like banners, are fine at 100-150 DPI.',
         },
         {
-          q: 'Why does print need CMYK?',
-          a: 'Screens use RGB while presses use CMYK ink. RGB files get converted at the printer and colors can shift, so it helps to confirm the color mode first.',
+          q: 'Can I send an RGB file to print as-is?',
+          a: 'The printer will convert it to CMYK automatically, but bright or neon colors can turn muddy. If color accuracy matters, convert to CMYK while designing so you can preview the shift.',
         },
         {
-          q: 'Why is bleed needed?',
-          a: 'Bleed adds about 3mm beyond the trim edge so no white slivers appear if the cut shifts slightly.',
+          q: 'How much bleed should I add?',
+          a: '3mm on all sides is the common standard, though some printers ask for 1-2mm. Any design where color or imagery touches the edge must include bleed.',
+        },
+        {
+          q: 'How do I stop fonts from breaking at the printer?',
+          a: 'Embed all fonts when exporting the PDF, or convert text to outlines so it renders identically on any system. For fonts whose license blocks embedding, outlining is the safe option.',
+        },
+        {
+          q: 'If my file passes, are printing errors impossible?',
+          a: "Passing catches the major issues and sharply lowers the risk, but the figures are estimates, not a guarantee. Before final output, confirm against the printer's guidelines and a proof.",
+        },
+        {
+          q: 'Is my uploaded PDF stored on a server?',
+          a: 'No. The file is analyzed only in your browser and is never sent to or stored on any server, so confidential documents stay private.',
+        },
+        {
+          q: 'Why should black text be K100 instead of rich black?',
+          a: 'Rich black built from all four plates can look fuzzy on small text if the press misregisters. Keep small black text as K100 single-channel for crisp edges.',
         },
       ],
     },
     convert: {
       intro:
-        'Convert to a print-ready PDF turns JPG, PNG, or WebP images and existing PDFs into a PDF sized to standard print formats like A4 or A3 — ready to send to the printer with the right page size and orientation.',
+        'The print-ready PDF converter turns JPG, PNG, and WebP images and existing PDFs into a PDF sized to standard print formats like A4 or A3, so you get a file you can send straight to the printer. Pick the page size and orientation (portrait or landscape) and your file is laid out to match, with everything processed locally in your browser and no login required.',
       body: [
         {
-          heading: 'Images to print-ready PDF',
-          text: 'Upload an image and it is placed into a PDF at the page size (A4, A3, etc.) and orientation (portrait or landscape) you choose.',
+          heading: 'How the conversion works',
+          text: 'Upload an image and each one is placed on a PDF page at the size (A4, A3, etc.) and orientation you select; existing PDFs are fitted to the same chosen format. The image keeps its aspect ratio as it scales to fit, and any leftover space becomes margin. Print sharpness follows a simple relationship: print size in inches equals pixel count divided by DPI, so the same image looks lower-res on a larger format.',
         },
         {
-          heading: 'Converted in your browser',
-          text: 'Conversion runs entirely in your browser, so files are never uploaded to a server. No login required.',
+          heading: 'Standard sizes and target resolution',
+          text: 'A4 is 210×297mm and A3 is 297×420mm under ISO standards. Commercial print typically targets 300 DPI, which means roughly 2480×3508px to fill an A4 page and about 3508×4961px for A3. Posters viewed from a distance can be fine at 150–200 DPI.',
+        },
+        {
+          heading: 'Common mistake: upscaling low-res images',
+          text: 'The most frequent issue is dropping a small image onto a large format, which leaves the effective resolution too low. A 1000px-wide image stretched across A4 (about 8.27in wide) lands near 120 DPI and prints soft. Check your source pixel dimensions first and confirm they clear 300 DPI at the target size.',
+        },
+        {
+          heading: 'Before you send it to the printer',
+          text: 'Confirm the exact page size and orientation your printer requires, then convert to match. If the job is cut to size, note that this tool does not add a 3mm bleed for you; it has to be built into the source artwork. After converting, open the PDF and eyeball the page size, orientation, and any cropping.',
+        },
+        {
+          heading: 'Color and bleed are separate steps',
+          text: 'This conversion handles page size and placement; it does not switch the color mode to CMYK or remap ink profiles. RGB images stay RGB, so if your job needs CMYK, convert at the source or coordinate with your print shop. Treat trim, bleed, and font embedding as separate preflight checks.',
         },
       ],
       faqTitle: 'Frequently asked questions',
       faq: [
         {
-          q: 'Which files can I convert?',
-          a: 'JPG, PNG, and WebP images and PDFs can be converted into a print-ready PDF.',
+          q: 'How do I convert a JPG image to a print-ready PDF?',
+          a: 'Upload the image, pick the page size (A4, A3, etc.) and orientation, and a print-ready PDF laid out to that format is generated. You can download it straight from your browser with no login.',
         },
         {
-          q: 'What page sizes are supported?',
-          a: 'Standard sizes such as A4 and A3 with portrait or landscape orientation.',
+          q: 'What DPI should a print-ready PDF be?',
+          a: 'Commercial printing usually wants 300 DPI. Check that pixel count divided by inches clears 300 at your target size; posters and other distance-viewed pieces can be fine at 150–200 DPI.',
         },
         {
-          q: 'Are my uploaded files safe?',
-          a: 'Conversion happens only in your browser; files are never sent to an external server.',
+          q: 'Should I choose A4 or A3?',
+          a: 'Match your final printed size: A4 is 210×297mm and A3 is double that area at 297×420mm. If your printer specifies a format, follow it.',
+        },
+        {
+          q: 'Does it add a 3mm bleed automatically?',
+          a: 'No. The tool only sets page size and placement, so a 3mm bleed is not generated for you; build it into the source artwork when the job is trimmed to size.',
+        },
+        {
+          q: 'Are RGB images converted to CMYK?',
+          a: 'No. Conversion does not change the color mode, so RGB images stay RGB. Convert at the source or check with your print shop if CMYK is required.',
+        },
+        {
+          q: 'Can I convert WebP or PNG files too?',
+          a: 'Yes. JPG, PNG, and WebP images and existing PDFs can all be converted into a print-ready PDF.',
+        },
+        {
+          q: 'Are my uploaded files stored on a server?',
+          a: 'No. Conversion happens entirely in your browser and files are never sent to an external server.',
         },
       ],
     },
     res: {
       intro:
-        'The image print size calculator tells you the largest size you can print from a given pixel dimension at a target resolution (DPI). It uses print size = pixels ÷ DPI so you can check the limit before a photo turns out blurry.',
+        "The image print size calculator takes your photo's pixel dimensions and a target resolution (DPI) and returns the largest size you can print before the image goes soft. It applies print size = pixels ÷ DPI and shows the result at 300 and 150 DPI in both inches and centimeters. Checking resolution before you print helps you avoid reorders and wasted paper.",
       body: [
         {
           heading: 'How print size is calculated',
-          text: 'Dividing width and height in pixels by the target DPI gives the size in inches; multiplying by 2.54 gives centimeters. The higher the DPI, the smaller the print size from the same image.',
+          text: 'Divide the width and height in pixels by your target DPI to get the size in inches, then multiply by 2.54 for centimeters. A 3000×2400px image, for example, prints up to 10×8 inches (about 25.4×20.3cm) at 300 DPI. Lowering the DPI grows the print size from the same pixels but reduces sharpness.',
         },
         {
           heading: 'Print resolution tiers',
-          text: '300 DPI is the high-quality benchmark for general printing. 150 DPI is acceptable for posters viewed from a distance; below that, prints may look blurry.',
+          text: 'Commercial and photo printing treat 300 DPI as the high-quality benchmark. Posters and banners viewed from a distance work at around 150 DPI, and large outdoor signage tolerates 72-100 DPI. Newsprint and budget jobs sit near 150-200 DPI; below that, pixels start to show.',
+        },
+        {
+          heading: 'A common mistake and how to avoid it',
+          text: 'The most common mistake is upscaling a small image in an editor to hit a resolution target. Interpolating pixels does not add real detail, so the print often ends up softer, not sharper. Stay within the maximum size the calculator reports, and if it falls short, reshoot or rescan the original at a higher resolution.',
+        },
+        {
+          heading: 'A practical workflow tip',
+          text: 'Before sending to a printer, work backward from the final placed size: needed pixels = print size (inches) × DPI. Printing A4 (about 8.27×11.69in) at 300 DPI therefore needs roughly 2480×3508px. Add 3mm of bleed to that size so nothing important is lost at the trim edge.',
+        },
+        {
+          heading: 'DPI vs PPI and other checks',
+          text: "DPI (a press's ink-dot density) and PPI (an image's pixel density) are technically different, but for sizing they are used interchangeably. This calculator estimates size from pixels and DPI only; color mode (CMYK) and bleed are separate checks. Treat the output as a reference estimate and confirm final specs against your printer's guidelines.",
         },
       ],
       faqTitle: 'Frequently asked questions',
       faq: [
         {
-          q: 'What is DPI (resolution)?',
-          a: 'The number of dots (pixels) within one inch. Higher DPI is sharper but yields a smaller print size from the same pixels.',
+          q: 'Why do my photos print blurry?',
+          a: 'When the pixel count is too low for the print size, the effective DPI drops and pixels smear together. Print smaller or use a higher-resolution original to fix it.',
         },
         {
-          q: 'Why is 300 DPI recommended for print?',
-          a: 'The eye stops resolving individual dots at around 300 DPI at normal viewing distance, making it the standard for smooth, high-quality print.',
+          q: 'How many pixels do I need to print A4 at 300 DPI?',
+          a: 'About 2480×3508px. A4 is 8.27×11.69 inches, and multiplying each side by 300 gives that count; add a little extra for bleed.',
         },
         {
-          q: 'How large can my photo print?',
-          a: 'Enter the pixel dimensions and it calculates the maximum print size at 300 and 150 DPI instantly.',
+          q: 'How large can a smartphone photo print?',
+          a: 'A 12-megapixel photo (about 4000×3000px) prints sharply up to roughly 33.9×25.4cm at 300 DPI. Enter the pixel dimensions to see the exact maximum size.',
+        },
+        {
+          q: 'Does enlarging an image increase its resolution?',
+          a: 'No. Upscaling in an editor only interpolates pixels and does not create real detail; the original pixel count sets the quality ceiling.',
+        },
+        {
+          q: 'What is the difference between DPI and PPI?',
+          a: 'PPI is the pixel density of an image, while DPI is the dot density of a printer. For sizing they mean effectively the same thing, and this calculator works from pixels and DPI.',
+        },
+        {
+          q: 'Is 150 DPI good enough for printing?',
+          a: 'For posters and banners viewed from a distance, 150 DPI is fine. For photos and brochures held close, stick with 300 DPI.',
+        },
+        {
+          q: "Does this calculator match a printer's exact specs?",
+          a: 'The result is an estimate from pixels and DPI only, so treat it as a reference. Check color mode (CMYK) and bleed separately, and confirm final specs with your printer. The calculation runs locally in your browser.',
         },
       ],
     },
     spine: {
       intro:
-        'The spine thickness calculator estimates a book spine from the binding type, page count, and interior/cover paper weight (GSM). Getting the spine width right keeps the title aligned on your cover design.',
+        'The book spine width calculator estimates spine thickness from the binding type, page count, and interior/cover paper weight (GSM). Getting the spine width right keeps the title and barcode from creeping onto the front or back cover. Because paper bulk and bindery tolerances vary, the result is an estimate, so confirm the final spec with your printer.',
       body: [
         {
           heading: 'How spine thickness is calculated',
-          text: 'The number of leaves (pages ÷ 2) is multiplied by the thickness of one sheet (GSM × paper bulk) to get the text-block thickness. Values are estimates that vary by paper and bindery, so confirm with your printer.',
+          text: 'The number of leaves (pages ÷ 2) is multiplied by the thickness of one sheet (GSM × paper bulk/volume) to get the text-block thickness. A 100 gsm uncoated stock with a bulk near 1.2, for example, is about 0.12 mm per sheet. These are estimates that vary by paper and bindery, so confirm with your printer.',
         },
         {
-          heading: 'Differences by binding',
-          text: 'Perfect binding adds the cover thickness to the text block; case (hardcover) binding adds board thickness. Saddle-stitch nests folded signatures, so there is almost no flat spine.',
+          heading: 'Typical weights and bulk values',
+          text: 'Perfect-bound trade books commonly run 80–100 gsm interior and 250–300 gsm cover stock. At the same GSM, a thin uncoated sheet (bulk 1.1–1.3) and a high-bulk book paper (1.6+) can differ by up to 1.5x in spine width. A 200-page 100 gsm uncoated text block lands near 12 mm before the cover is added.',
+        },
+        {
+          heading: 'Common mistake: doubling the leaf count',
+          text: 'A frequent error is entering the raw page count as leaves, which doubles the spine. Page count covers both sides of each sheet, so always divide by two to get leaves. Ignoring the spine fold lines and 3 mm bleed in the cover layout also pulls the title around onto the front panel after trimming.',
+        },
+        {
+          heading: 'Cover layout workflow',
+          text: 'Place the calculated spine width in the center of a single flat cover (back + spine + front) and add a 3 mm bleed on all outer edges. Keep the title and barcode at least 3–5 mm inside the spine fold lines as a safe margin. Pull a physical dummy from the bindery on the actual stock to verify the thickness before you commit.',
+        },
+        {
+          heading: 'How binding type changes the spine',
+          text: 'Perfect binding (including PUR) adds the cover thickness to the text block; case (hardcover) binding adds greyboard and cloth, making the spine thicker still. Saddle stitch nests folded signatures, so there is almost no flat spine and you cannot print on it. Thin books under ~32 pages usually go saddle-stitch, while 60+ pages typically move to perfect binding.',
         },
       ],
       faqTitle: 'Frequently asked questions',
       faq: [
         {
           q: 'How do you calculate spine thickness?',
-          a: 'Multiply half the page count (leaves) by the thickness of one sheet to get the text block, then add cover or board thickness depending on the binding.',
+          a: 'Multiply half the page count (leaves) by the thickness of one sheet (GSM × bulk) to get the text block, then add cover or board thickness depending on the binding.',
+        },
+        {
+          q: 'What is the spine width for a 200-page book?',
+          a: 'On 100 gsm uncoated stock the text block alone is roughly 12 mm, varying with paper bulk and cover thickness. Confirm the exact figure with a dummy from your printer on the actual stock.',
         },
         {
           q: 'Why should page count be a multiple of 4?',
-          a: 'Printing and binding fold sheets into 4-page units, so a count that is not a multiple of 4 can leave blank pages.',
+          a: 'Sheets are folded into 4-page signatures, so a count that is not a multiple of 4 can leave blank pages.',
         },
         {
           q: 'Perfect binding vs. saddle stitch?',
-          a: 'Perfect binding glues the spine and creates thickness; saddle stitch staples the center fold and has almost no spine.',
+          a: 'Perfect binding glues the spine, creates real thickness, and can be printed on; saddle stitch staples the center fold and has almost no spine.',
+        },
+        {
+          q: 'What is the difference between GSM and paper thickness?',
+          a: "GSM is weight per square meter, while thickness is GSM multiplied by the paper's bulk (volume) factor. Two sheets at the same GSM can differ in thickness if their bulk differs.",
+        },
+        {
+          q: 'Do I need a spine width for saddle stitch?',
+          a: 'Saddle stitch has almost no flat spine, so the spine width is effectively zero. With higher page counts, allow trim margin for creep (page push-out) instead.',
+        },
+        {
+          q: 'Can I use the calculated value directly for print?',
+          a: 'The value is an estimate, so verify the spine width with a physical dummy on the real stock before finalizing the cover layout.',
         },
       ],
     },
     weight: {
       intro:
-        'The paper weight calculator estimates total and packaged weight from sheet size, paper weight (GSM), and quantity — useful for shipping costs, quotes, and mailing weight.',
+        'The paper weight calculator estimates total weight and approximate packaged weight from sheet size, paper weight (GSM), and quantity. It is handy for working out shipping cost tiers, print quotes, and mailing weight before you send. The per-sheet weight is calculated exactly from area and GSM; only the packaged weight is an estimate.',
       body: [
         {
-          heading: 'How paper weight is calculated',
-          text: 'GSM is grams per square meter. One sheet = area (m²) × GSM, and total weight = per-sheet weight × quantity. The per-sheet weight is exact; only the packaged weight is an estimate.',
+          heading: 'The paper weight formula',
+          text: 'GSM is grams per square meter. One sheet = area (m²) × GSM, and total weight = per-sheet weight × quantity. For example, A4 (210×297 mm) is about 0.0624 m², so one 80 GSM sheet weighs roughly 5 g and a 500-sheet ream about 2.5 kg. The per-sheet weight is exact; only the packaged weight is an estimate.',
         },
         {
-          heading: 'What GSM means',
-          text: 'GSM expresses paper thickness and weight — the higher the number, the thicker and heavier. Copy paper is typically 80 GSM, business cards 250 GSM or more.',
+          heading: 'Typical GSM by use case',
+          text: 'Copy paper and text stock usually run 70-100 GSM, flyers and leaflets 100-150 GSM, catalog covers 200-250 GSM, and business cards 250-350 GSM. Higher numbers mean thicker, heavier stock, which affects postage tiers and binding choices. At the same GSM, caliper (bulk) can still vary by coating and paper type.',
+        },
+        {
+          heading: 'Common mistake: GSM vs pounds',
+          text: 'North American pound (lb) ratings use a different basis size for each grade, so the same lb can mean very different weights. For instance, 80 lb text is about 118 GSM while 80 lb cover is about 216 GSM. To calculate accurately, convert to GSM before entering values and base the area on the final trimmed sheet size.',
+        },
+        {
+          heading: 'Plan shipping and postage tiers',
+          text: 'Estimating total weight before you ship lets you tune quantity or GSM so you do not cross a postage bracket or courier weight-rate step. Add envelope, padding, and box weight to the packaged figure and leave one tier of headroom to be safe. Because packaged weight is an estimate, confirm important quotes on a real scale.',
+        },
+        {
+          heading: 'Units and related calculations',
+          text: 'GSM measures weight, not thickness, so when you need spine width use the spine calculator with paper caliper and page count instead. Weight scales with area, so going from A4 to A3 doubles the per-sheet weight at the same GSM. Specs given as ream weight or M-weight (per 1,000 sheets) convert with the same formula once the sheet count matches.',
         },
       ],
       faqTitle: 'Frequently asked questions',
       faq: [
         {
           q: 'What is GSM?',
-          a: 'Grams per square meter — the weight of paper per m². 80 GSM means one square meter weighs 80 grams.',
+          a: 'Grams per square meter, the weight of paper per m². 80 GSM means one square meter weighs 80 grams, and a higher number means thicker, heavier stock.',
         },
         {
-          q: 'How is paper weight calculated?',
-          a: 'Multiply the sheet area (m²) by GSM for one sheet, then by the number of sheets for the total.',
+          q: 'How do I convert GSM to pounds (lb)?',
+          a: 'There is no single factor because each paper grade uses a different basis size. As a rough guide, text stock is about GSM ÷ 1.48 and cover stock about GSM ÷ 2.7, but for accurate weight it is safer to work in GSM directly.',
         },
         {
-          q: 'Can I estimate packaged weight?',
-          a: 'It also shows an approximate packaged weight by adding packaging and box weight to the paper weight.',
+          q: 'How much does a ream of A4 80 GSM (500 sheets) weigh?',
+          a: 'One A4 sheet is about 5 g, so 500 sheets weigh roughly 2.5 kg. Add packaging and the real shipping weight is a little higher.',
+        },
+        {
+          q: 'Why does my scale reading differ from the calculated weight?',
+          a: 'Paper absorbs moisture, so real GSM carries a tolerance of about ±5%. The per-sheet calculation is exact, but actual readings vary with humidity and paper batch.',
+        },
+        {
+          q: 'Can I use the packaged weight estimate for shipping quotes?',
+          a: 'It is fine for ballpark tier checks, but for exact rates weigh the parcel on a real scale, since the packaged weight is an estimate.',
+        },
+        {
+          q: 'What GSM should I use for business cards and flyers?',
+          a: 'Business cards are usually 250-350 GSM and flyers or leaflets 100-150 GSM. Go heavier for a stiffer feel, but expect mailing weight to rise with it.',
+        },
+        {
+          q: 'How do I calculate paper weight for a different sheet size?',
+          a: 'Convert the size to area in m², then multiply by GSM and quantity. Enter the sheet size in the calculator and it works out area and weight automatically.',
         },
       ],
     },
     fold: {
       intro:
-        'The fold layout calculator gives the exact width of each panel for half folds, tri folds, roll folds, and more. Inward-folding panels must be slightly narrower so the paper folds cleanly.',
+        'The fold layout calculator returns the exact width of every panel — half fold, tri-fold, roll fold, and more — down to the millimeter. Panels that fold inward must be a little narrower so the paper nests without buckling. Check your panel split before sending a leaflet, brochure, or mailer to print to head off fold and trim surprises.',
       body: [
         {
-          heading: 'Fold types',
-          text: 'Half fold (2 panels), Z-fold / tri-fold (3 panels), and roll fold (4 panels folded inward) each split the width differently across panels.',
+          heading: 'How panel widths are calculated',
+          text: 'Start by dividing the finished width by the number of panels, then shave roughly 1–3mm off each panel that tucks inside to absorb the step. The more layers roll inward, as in a roll fold, the more you trim the innermost panel while keeping the outer panel widest. Outputs are recommended estimates that shift with paper weight and folder accuracy.',
         },
         {
-          heading: 'Why inner panels are narrower',
-          text: 'When several panels fold inward, an inner panel as wide as the outer ones would not close. Narrowing inner panels by a few mm lets the piece fold cleanly.',
+          heading: 'Fold types and standard panel counts',
+          text: 'A half fold is 2 panels, a Z-fold or letter tri-fold is 3, and a roll fold or gate fold is 4. An A4 tri-fold (297mm wide) splits to about 99mm per panel, but a roll fold biases it to roughly 100 / 99 / 98mm so the inner panel clears. Eight- and ten-panel folds are planned alongside 4-page imposition units.',
+        },
+        {
+          heading: 'Common mistake: equal-width panels',
+          text: 'Splitting the width evenly makes the inner panel bulge or the folded edge wrinkle. Heavier stock (250GSM and up) needs a bigger trim, while thin 80–120GSM paper folds fine with about 1mm. Fold one proof on the actual stock before locking in the trim amount.',
+        },
+        {
+          heading: 'Practical workflow tip',
+          text: "Once widths are set, mark each fold line as a 0.25pt guide and extend a 3mm bleed past the outer trim. Keep text and logos at least 3–5mm inside every fold and trim line (the safety zone) so nothing lands on a crease. Design on the flat spread and match panel order to your printer's template.",
+        },
+        {
+          heading: 'Where folding fits in the print flow',
+          text: 'Panel sizing is decided together with imposition, trim margins, and binding method. A 6-page leaflet is finished by folding alone, but a multi-page booklet also needs 4-page signatures and a calculated spine width. Locking the panel split first makes the later PDF preflight — checking trim and bleed — far smoother.',
         },
       ],
       faqTitle: 'Frequently asked questions',
       faq: [
         {
-          q: 'How are fold panel widths set?',
-          a: 'Divide the finished width by the number of panels, then narrow any inward-folding panel by a few mm so it folds cleanly.',
+          q: 'What are the panel widths for an A4 tri-fold?',
+          a: "Dividing A4's 297mm width by three gives about 99mm per panel, but narrow the inner panel by 1–2mm to roughly 97–98mm so it closes cleanly. Confirm the exact figure with a folded proof on your stock.",
         },
         {
-          q: 'Tri-fold vs. roll fold?',
-          a: 'A tri-fold folds in a Z; a roll fold curls inward in one direction, so its inner panels must be narrower.',
+          q: 'How much narrower should the inner panel be on a roll fold?',
+          a: 'Trim about 1–3mm per panel, and more for heavy stock over 250GSM. With more layers, step each inner panel progressively narrower toward the center.',
         },
         {
-          q: 'Why do panels have different widths?',
-          a: 'Panels that tuck inside must be narrower than the outer panels so they do not overlap when folded.',
+          q: 'Do fold lines need bleed?',
+          a: "Fold lines themselves don't need bleed, but the outer trim edges do — add 3mm. Where a background crosses a panel boundary, carry the color through so no white line shows at the crease.",
+        },
+        {
+          q: 'Are a tri-fold and a Z-fold the same?',
+          a: 'Both have three panels, but they fold differently. A letter tri-fold tucks one panel inside, so that panel must be narrower, while a Z-fold zig-zags and leaves the panels nearly equal width.',
+        },
+        {
+          q: 'What safety margin should fold panels use?',
+          a: 'Keep type and key elements at least 3–5mm inside both the fold and trim lines. Content sitting on a crease reads poorly and is vulnerable to fold and trim drift.',
+        },
+        {
+          q: 'Why does thicker paper need a bigger panel trim?',
+          a: 'Thicker stock has a shorter inner circumference when folded, so it needs more compensation. 250–300GSM card may want 2–4mm per panel, while 80–120GSM is fine with about 1mm.',
+        },
+        {
+          q: 'How do I size complex folds like 8-panel or gate folds?',
+          a: 'The principle is the same — narrow the inner panels, increasing the trim toward the innermost fold in fold order. A gate fold meets in the middle, so the two outer panels together must be slightly smaller than the inner width to close.',
         },
       ],
     },
     label: {
       intro:
-        'The label layout calculator works out how many labels fit on a sheet and their row/column grid. Enter label size, sheet margin, and gap to find the layout that fits the most.',
+        'The label layout calculator works out how many labels fit on a sheet, the row and column grid (imposition), and the expected yield. Enter the label size, sheet margins, and gap, and it finds the arrangement that fits the most. It even compares a rotated layout to cut the paper you waste on each sheet.',
       body: [
         {
-          heading: 'How label layout is calculated',
-          text: 'The area left after margins is divided by the label size plus gap to find how many columns and rows fit. Columns × rows is the total per sheet.',
+          heading: 'How label imposition is calculated',
+          text: 'Subtract the margins on both sides to get the usable print area, then divide by the label size plus the gap to get the number of columns and rows. For example, a 200mm usable width with a 50mm label and a 2mm gap gives (200+2)÷(50+2)≈3.88, so 3 columns fit. Columns × rows is the total per sheet, and the trailing gap after the last label is dropped so the count matches what really fits.',
         },
         {
-          heading: 'Higher yield with rotation',
-          text: 'Rotating labels 90° sometimes fits more. With rotation on, the layout that fits more is selected automatically.',
+          heading: 'Standard sheet and label specs',
+          text: 'Common stocks include A4 (210×297mm), SRA3 (320×450mm), and large press sheets. Edge margins are typically 3-10mm and the gap between labels 2-3mm, with a separate 3mm bleed to absorb cutting tolerance. Sticker face stock usually runs 80-120 g/m², and self-adhesive label stock with its liner sits around 150 g/m².',
+        },
+        {
+          heading: 'Common mistake: confusing bleed and gap',
+          text: 'Margin, gap, and bleed each do a different job. Set the gap to 0 and the cut lines overlap, so neighboring labels get sliced; skip the bleed and cutting tolerance leaves a white edge. Unless you are running a gapless kiss-cut where adjacent labels share color, keep at least a 2mm gap between cut lines and 3mm of bleed on every label.',
+        },
+        {
+          heading: 'Workflow tips to raise yield',
+          text: 'Turn on rotation to compare portrait and landscape placement; you often pick up an extra column or two per sheet. Shrinking the label by just 1-2mm can add a whole row or column and lift the total count sharply, so simulate a few sizes before locking the design. Hand the chosen layout straight to your imposition file and die-line (cutting die) artwork.',
+        },
+        {
+          heading: 'Units and the next step',
+          text: 'Millimeters give the most reliable result; if you enter inches, convert at 1in = 25.4mm and keep it consistent. The output is an estimated yield, so confirm the press gripper margin and die-cut tolerance before you print. Once the per-sheet count is set, use the paper weight calculator for total sheets and the DPI calculator for output size.',
         },
       ],
       faqTitle: 'Frequently asked questions',
       faq: [
         {
-          q: 'How many labels fit on a sheet?',
-          a: 'Enter sheet size, margins, label size, and gap, and it calculates the columns, rows, and total instantly.',
+          q: 'How many labels fit on an A4 sheet?',
+          a: 'On A4 (210×297mm) with 5mm margins and a 2mm gap, a 50×30mm label fits about 3 columns × 9 rows = 27 per sheet. Enter your sheet, label size, and gap for the exact columns, rows, and total.',
         },
         {
-          q: 'Does rotating labels fit more?',
-          a: 'Depending on the label ratio, a 90° rotated layout can fit more. The rotation option compares and picks the better one.',
+          q: 'Does rotating labels fit more on a sheet?',
+          a: "Depending on the label's width-to-height ratio, a 90° rotated layout can fit more. With rotation on, the tool compares both orientations and picks the one that fits more.",
         },
         {
-          q: 'Why are margins and gaps needed?',
-          a: 'They absorb printing and cutting tolerance and keep labels from touching, via sheet-edge margins and gaps between labels.',
+          q: 'Why do labels need margins and gaps?',
+          a: 'They absorb printing and cutting tolerance and stop labels from touching. The sheet edge gets a gripper and trim margin, and the space between labels keeps cut lines from overlapping.',
+        },
+        {
+          q: 'What is the difference between kiss-cut and die-cut labels?',
+          a: 'Kiss-cut scores only the label face and leaves the liner intact; die-cut cuts through the liner too, separating each label. Kiss-cut sheet labels can use a small or even zero gap.',
+        },
+        {
+          q: 'How much bleed should a label have?',
+          a: 'Like other print work, labels usually need 3mm of bleed on all sides. It absorbs trim and cutting-die tolerance so no white edge shows up after cutting.',
+        },
+        {
+          q: 'Is the label layout result exact?',
+          a: 'The result is an estimated yield based on your inputs. In production the press gripper margin, cutting-die tolerance, and paper grain can shift it by a row, so confirm with your printer before ordering.',
+        },
+        {
+          q: 'Are my inputs or files sent to a server?',
+          a: 'No. Everything is computed locally in your browser, and your inputs and any uploaded files are never sent to or stored on a server.',
         },
       ],
     },
