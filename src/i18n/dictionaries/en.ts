@@ -378,6 +378,7 @@ export const en: Dictionary = {
       analyzing: 'Analyzing your file…',
       errTitle: 'Could not read the file',
       errDesc: 'Make sure it is a PDF and try again.',
+      previewAlt: 'First page preview',
       reset: 'Start over',
       summaryTitle: 'Result',
       overallOk: 'Basic check passed',

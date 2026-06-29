@@ -376,6 +376,7 @@ export const ko = {
       analyzing: '파일 분석 중…',
       errTitle: '읽을 수 없는 파일',
       errDesc: 'PDF 파일인지 확인한 뒤 다시 시도해 주세요.',
+      previewAlt: 'PDF 첫 페이지 미리보기',
       reset: '다시 시작',
       summaryTitle: '검사 결과',
       overallOk: '기본 검사 통과',

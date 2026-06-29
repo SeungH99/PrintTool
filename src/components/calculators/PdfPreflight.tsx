@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { analyzePdf, type PdfAnalysis } from '@/lib/preflight/analyze';
 import { buildPreflightReport, type PreflightStatus } from '@/lib/preflight/report';
+import { renderFirstPage } from '@/lib/preflight/thumbnail';
 import type { CalculatorProps } from './types';
 import { Badge, type BadgeTone } from '@/components/ui/Badge';
 import { CalculatorHeader } from './CalculatorHeader';
@@ -16,15 +17,23 @@ export function PdfPreflight({ dict, locale, eyebrow, title, desc }: CalculatorP
   const [phase, setPhase] = useState<Phase>('empty');
   const [filename, setFilename] = useState('');
   const [analysis, setAnalysis] = useState<PdfAnalysis | null>(null);
+  const [thumb, setThumb] = useState<string | null>(null);
 
   async function handleFile(file: File) {
     setFilename(file.name);
+    setThumb(null);
     setPhase('analyzing');
     try {
       // Guard against multi-hundred-MB files that would exhaust browser memory.
       if (file.size > 100 * 1024 * 1024) throw new Error('File too large');
       const buffer = await file.arrayBuffer();
       setAnalysis(await analyzePdf(buffer));
+      // Thumbnail is best-effort — a render failure must not fail the report.
+      try {
+        setThumb(await renderFirstPage(buffer, 420));
+      } catch {
+        setThumb(null);
+      }
       setPhase('complete');
     } catch {
       setAnalysis(null);
@@ -36,6 +45,7 @@ export function PdfPreflight({ dict, locale, eyebrow, title, desc }: CalculatorP
     setPhase('empty');
     setFilename('');
     setAnalysis(null);
+    setThumb(null);
   }
 
   const status: Record<PreflightStatus, { tone: BadgeTone; text: string }> = {
@@ -77,6 +87,14 @@ export function PdfPreflight({ dict, locale, eyebrow, title, desc }: CalculatorP
 
         {phase === 'complete' && report && analysis && (
           <div className="flex flex-col gap-4">
+            {thumb && (
+              <div
+                className="h-[380px] w-full rounded-lg border border-hairline bg-hairline-soft bg-contain bg-center bg-no-repeat"
+                style={{ backgroundImage: `url(${thumb})` }}
+                role="img"
+                aria-label={t.previewAlt}
+              />
+            )}
             <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-hairline bg-elevated p-5">
               <div className="flex items-center gap-3">
                 <span className="text-base font-semibold text-ink">
