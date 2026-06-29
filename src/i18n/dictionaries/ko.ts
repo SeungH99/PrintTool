@@ -1,5 +1,5 @@
 export const ko = {
-  nav: { home: '홈', tools: '도구', cta: 'PDF 검사' },
+  nav: { home: '홈', tools: '도구', guides: '가이드', cta: 'PDF 검사' },
   home: {
     metaTitle: '인쇄 파일 검사 & 규격 계산기 · PrintReady',
     eyebrow: '인쇄 제작 툴킷',
@@ -156,6 +156,15 @@ export const ko = {
     adLabel: '광고 영역',
     adNote: '동의 후 광고가 표시됩니다',
     skipToContent: '본문으로 건너뛰기',
+    relatedTools: '관련 도구',
+  },
+  guides: {
+    metaTitle: '인쇄 제작 가이드 · PrintReady',
+    eyebrow: '가이드',
+    title: '인쇄 제작 가이드',
+    desc: '파일 준비부터 색상까지, 인쇄 실무에 필요한 핵심을 정리했습니다.',
+    all: '가이드 전체',
+    faqTitle: '자주 묻는 질문',
   },
   calc: {
     inputs: '입력값',

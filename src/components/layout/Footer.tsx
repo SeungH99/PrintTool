@@ -37,6 +37,11 @@ export function Footer({ locale, dict }: { locale: Locale; dict: Dictionary }) {
             <div className={sectionHead}>{dict.footer.aboutHead}</div>
             <ul className="m-0 flex list-none flex-col gap-2.5 p-0">
               <li>
+                <Link href={`/${locale}/guides`} className={linkClass}>
+                  {dict.nav.guides}
+                </Link>
+              </li>
+              <li>
                 <Link href={`/${locale}/privacy`} className={linkClass}>
                   {dict.footer.privacy}
                 </Link>

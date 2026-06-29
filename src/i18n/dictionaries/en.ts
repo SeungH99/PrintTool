@@ -1,7 +1,7 @@
 import type { Dictionary } from './ko';
 
 export const en: Dictionary = {
-  nav: { home: 'Home', tools: 'Tools', cta: 'Check PDF' },
+  nav: { home: 'Home', tools: 'Tools', guides: 'Guides', cta: 'Check PDF' },
   home: {
     metaTitle: 'Print Preflight & Spec Calculators · PrintReady',
     eyebrow: 'Print production toolkit',
@@ -158,6 +158,15 @@ export const en: Dictionary = {
     adLabel: 'Ad space',
     adNote: 'Ads appear after consent',
     skipToContent: 'Skip to content',
+    relatedTools: 'Related tools',
+  },
+  guides: {
+    metaTitle: 'Print production guides · PrintReady',
+    eyebrow: 'Guide',
+    title: 'Print production guides',
+    desc: 'From file prep to color — the essentials of getting print right.',
+    all: 'All guides',
+    faqTitle: 'Frequently asked questions',
   },
   calc: {
     inputs: 'Values',
