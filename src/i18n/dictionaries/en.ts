@@ -160,6 +160,8 @@ export const en: Dictionary = {
       unitInch: 'Inches (inch)',
       sizeLabel: 'Maximum print size',
       qualityLabel: 'Quality level',
+      aspectLabel: 'Aspect ratio',
+      draftLabel: 'Max size at 150 DPI',
       megapixelsLabel: 'Total pixels',
       levelHigh: 'High quality',
       levelOk: 'Acceptable',
@@ -181,6 +183,7 @@ export const en: Dictionary = {
       coverGsmNote: 'Used only for perfect binding.',
       spineLabel: 'Estimated spine thickness',
       leavesLabel: 'Body leaves',
+      previewCaption: 'Cover spread — back · spine · front',
       warn: 'Page count should be a multiple of 4. The current value may leave blank pages.',
       note: 'Actual thickness varies with paper bulk, coating and binding — confirm with your printer before production. (estimate)',
       guide: [

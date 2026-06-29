@@ -41,6 +41,12 @@ export interface ResolutionResult {
   unit: ResolutionInput['unit'];
   level: ResolutionLevel;
   megapixels: number;
+  /** Reduced pixel aspect ratio, e.g. 3000×2400 -> aspectW 5, aspectH 4. */
+  aspectW: number;
+  aspectH: number;
+  /** Largest printable size at the 150-DPI draft floor, in the same unit. */
+  draftWidth: number;
+  draftHeight: number;
 }
 
 export interface SpineResult {

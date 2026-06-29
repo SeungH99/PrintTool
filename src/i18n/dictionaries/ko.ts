@@ -158,6 +158,8 @@ export const ko = {
       unitInch: '인치 (inch)',
       sizeLabel: '인쇄 가능한 최대 크기',
       qualityLabel: '품질 수준',
+      aspectLabel: '이미지 비율',
+      draftLabel: '150 DPI 최대 크기',
       megapixelsLabel: '총 화소 수',
       levelHigh: '고품질',
       levelOk: '사용 가능',
@@ -179,6 +181,7 @@ export const ko = {
       coverGsmNote: '무선제본에서만 사용됩니다.',
       spineLabel: '예상 책등 두께',
       leavesLabel: '본문 장수',
+      previewCaption: '표지 펼침 — 뒤 · 책등 · 앞',
       warn: '페이지 수는 4의 배수를 권장합니다. 현재 값은 빈 페이지가 생길 수 있습니다.',
       note: '실제 두께는 종이 벌크·코팅·제본에 따라 달라질 수 있어 제작 전 인쇄소 확인을 권장합니다. (값은 추정)',
       guide: [
