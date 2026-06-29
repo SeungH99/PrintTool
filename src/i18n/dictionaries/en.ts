@@ -140,6 +140,7 @@ export const en: Dictionary = {
   calc: {
     inputs: 'Values',
     result: 'Result',
+    copy: 'Copy',
     back: 'All tools',
     guideTitle: 'Guide',
     comingSoon: 'Coming soon',
@@ -251,6 +252,9 @@ export const en: Dictionary = {
       bleedHelper: '3mm per side is the common standard',
       safe: 'Safe margin (mm)',
       safeHelper: 'Keep text and logos inside this line',
+      unit: 'Display unit',
+      unitMm: 'Millimeters (mm)',
+      unitInch: 'Inches (inch)',
       workLabel: 'Working size (with bleed)',
       trimLabel: 'Trim size (finished)',
       safeLabel: 'Safe area',

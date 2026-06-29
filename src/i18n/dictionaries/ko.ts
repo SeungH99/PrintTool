@@ -138,6 +138,7 @@ export const ko = {
   calc: {
     inputs: '입력값',
     result: '결과',
+    copy: '복사',
     back: '도구 홈으로',
     guideTitle: '가이드',
     comingSoon: '준비 중',
@@ -249,6 +250,9 @@ export const ko = {
       bleedHelper: '국내 일반 인쇄는 사방 3mm',
       safe: '안전 여백 (mm)',
       safeHelper: '글자·로고는 이 선 안쪽에 배치',
+      unit: '표시 단위',
+      unitMm: '밀리미터 (mm)',
+      unitInch: '인치 (inch)',
       workLabel: '작업 사이즈 (재단 여백 포함)',
       trimLabel: '재단 크기 (완성)',
       safeLabel: '안전 영역',

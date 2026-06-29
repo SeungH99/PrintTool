@@ -4,6 +4,8 @@ import { useMemo, useState } from 'react';
 import { calculateBleed, validateBleed, type BleedResult } from '@/lib/calculations';
 import type { CalculatorProps } from './types';
 import { NumberField } from '@/components/ui/NumberField';
+import { SelectField } from '@/components/ui/SelectField';
+import { CopyButton } from '@/components/ui/CopyButton';
 import { CalculatorShell } from './CalculatorShell';
 import { ResultPanel } from './ResultPanel';
 import { round, toNum } from './number';
@@ -73,6 +75,7 @@ export function BleedCalculator({ dict, locale, eyebrow, title, desc }: Calculat
   const [height, setHeight] = useState('50');
   const [bleed, setBleed] = useState('3');
   const [safe, setSafe] = useState('3');
+  const [unit, setUnit] = useState<'mm' | 'inch'>('mm');
 
   const { result, errorMsg } = useMemo(() => {
     const input = {
@@ -104,27 +107,42 @@ export function BleedCalculator({ dict, locale, eyebrow, title, desc }: Calculat
         suffix="mm"
         helper={t.safeHelper}
       />
+      <div className="sm:col-span-2">
+        <SelectField
+          label={t.unit}
+          value={unit}
+          options={[
+            { value: 'mm', label: t.unitMm },
+            { value: 'inch', label: t.unitInch },
+          ]}
+          onChange={(v) => setUnit(v === 'inch' ? 'inch' : 'mm')}
+        />
+      </div>
     </div>
   );
+
+  const u = unit === 'inch' ? 'in' : 'mm';
+  const fmt = (mm: number) => (unit === 'inch' ? round(mm / 25.4, 2) : round(mm));
+  const dim = (w: number, h: number) => `${fmt(w)} × ${fmt(h)} ${u}`;
+  const workValue = result ? dim(result.workWmm, result.workHmm) : '—';
 
   const results = (
     <ResultPanel
       resultLabel={dict.calc.result}
       alert={errorMsg ?? undefined}
       primaryLabel={t.workLabel}
-      primaryValue={result ? `${round(result.workWmm)} × ${round(result.workHmm)} mm` : '—'}
+      primaryValue={workValue}
+      primaryAction={
+        result ? (
+          <CopyButton value={workValue} label={`${t.workLabel} ${dict.calc.copy}`} />
+        ) : undefined
+      }
       diagram={result ? <BleedPreview result={result} legend={t} /> : undefined}
       rows={
         result
           ? [
-              {
-                label: t.trimLabel,
-                value: `${round(result.trimWmm)} × ${round(result.trimHmm)} mm`,
-              },
-              {
-                label: t.safeLabel,
-                value: `${round(result.safeWmm)} × ${round(result.safeHmm)} mm`,
-              },
+              { label: t.trimLabel, value: dim(result.trimWmm, result.trimHmm) },
+              { label: t.safeLabel, value: dim(result.safeWmm, result.safeHmm) },
             ]
           : undefined
       }
