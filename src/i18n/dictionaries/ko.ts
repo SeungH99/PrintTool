@@ -24,6 +24,13 @@ export const ko = {
       'CMYK RGB 색상 검사',
       '재단 블리드 확인',
     ],
+    categories: {
+      preflight: '검수',
+      convert: '변환',
+      size: '규격·해상도',
+      paper: '용지',
+      production: '제작·터잡기',
+    },
   },
   tools: [
     {

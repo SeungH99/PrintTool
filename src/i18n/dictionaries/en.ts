@@ -26,6 +26,13 @@ export const en: Dictionary = {
       'CMYK RGB color check',
       'bleed trim check',
     ],
+    categories: {
+      preflight: 'Preflight',
+      convert: 'Convert',
+      size: 'Size & resolution',
+      paper: 'Paper',
+      production: 'Production',
+    },
   },
   tools: [
     {

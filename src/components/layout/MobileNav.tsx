@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import type { Dictionary } from '@/i18n/dictionaries';
 import { buttonClass } from '@/components/ui/buttonClass';
+import { groupTools } from '@/lib/tools';
 
 /**
  * Mobile header navigation (`md:hidden`) — a burger button that opens a drawer
@@ -53,18 +54,22 @@ export function MobileNav({ locale, dict }: { locale: string; dict: Dictionary }
             >
               {dict.nav.home}
             </Link>
-            <div className="mt-1 px-3 py-1 font-mono text-[11px] uppercase tracking-wide text-faint">
-              {dict.nav.tools}
-            </div>
-            {dict.tools.map((tool) => (
-              <Link
-                key={tool.id}
-                href={`/${locale}/${tool.id}`}
-                onClick={() => setOpen(false)}
-                className="rounded-sm px-3 py-2.5 text-sm text-body no-underline transition-colors hover:bg-hairline-soft hover:text-ink"
-              >
-                {tool.title}
-              </Link>
+            {groupTools(dict.tools).map((group) => (
+              <div key={group.key}>
+                <div className="mt-2 px-3 py-1 font-mono text-[11px] uppercase tracking-wide text-faint">
+                  {dict.home.categories[group.key]}
+                </div>
+                {group.tools.map((tool) => (
+                  <Link
+                    key={tool.id}
+                    href={`/${locale}/${tool.id}`}
+                    onClick={() => setOpen(false)}
+                    className="block rounded-sm px-3 py-2.5 text-sm text-body no-underline transition-colors hover:bg-hairline-soft hover:text-ink"
+                  >
+                    {tool.title}
+                  </Link>
+                ))}
+              </div>
             ))}
             <Link
               href={`/${locale}/pdf`}
