@@ -53,7 +53,13 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         <div className="flex flex-col gap-12">
           {groups.map((group) => (
             <div key={group.key}>
-              <h3 className="mb-4 font-mono text-xs uppercase tracking-wide text-mute">
+              <h3
+                className={
+                  locale === 'ko'
+                    ? 'mb-4 text-sm font-semibold tracking-tight text-mute'
+                    : 'mb-4 font-mono text-xs uppercase tracking-wide text-mute'
+                }
+              >
                 {dict.home.categories[group.key]}
               </h3>
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">

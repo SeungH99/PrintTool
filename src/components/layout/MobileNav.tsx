@@ -56,7 +56,13 @@ export function MobileNav({ locale, dict }: { locale: string; dict: Dictionary }
             </Link>
             {groupTools(dict.tools).map((group) => (
               <div key={group.key}>
-                <div className="mt-2 px-3 py-1 font-mono text-[11px] uppercase tracking-wide text-faint">
+                <div
+                  className={
+                    locale === 'ko'
+                      ? 'mt-2 px-3 py-1 text-[13px] font-semibold text-faint'
+                      : 'mt-2 px-3 py-1 font-mono text-[11px] uppercase tracking-wide text-faint'
+                  }
+                >
                   {dict.home.categories[group.key]}
                 </div>
                 {group.tools.map((tool) => (

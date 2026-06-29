@@ -62,7 +62,13 @@ export function ToolsMenu({
         <div className="absolute left-0 top-[calc(100%+6px)] flex max-h-[72vh] w-[320px] flex-col gap-1 overflow-y-auto rounded-md border border-hairline bg-elevated p-1.5 shadow-[0_8px_28px_-6px_rgba(0,0,0,0.18)]">
           {groups.map((group) => (
             <div key={group.label} className="flex flex-col gap-0.5">
-              <div className="px-2.5 pb-0.5 pt-1.5 font-mono text-[10px] uppercase tracking-wide text-faint">
+              <div
+                className={
+                  locale === 'ko'
+                    ? 'px-2.5 pb-0.5 pt-1.5 text-xs font-semibold text-faint'
+                    : 'px-2.5 pb-0.5 pt-1.5 font-mono text-[10px] uppercase tracking-wide text-faint'
+                }
+              >
                 {group.label}
               </div>
               {group.tools.map((tool) => {
