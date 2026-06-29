@@ -13,6 +13,7 @@ import { ToggleField } from '@/components/ui/ToggleField';
 import { Dropzone } from './Dropzone';
 import { buttonClass } from '@/components/ui/buttonClass';
 import { round, toNum } from './number';
+import { trackEvent } from '@/lib/analytics';
 
 type Phase = 'empty' | 'selected' | 'applying' | 'done' | 'error';
 
@@ -161,6 +162,7 @@ export function PrinterMarksTool({ dict, locale, eyebrow, title, desc }: Calcula
       const url = URL.createObjectURL(new Blob([out as BlobPart], { type: 'application/pdf' }));
       setResult({ url, name: `${base}-marks.pdf`, size: out.length });
       setPhase('done');
+      trackEvent('tool_complete', { tool: 'marks' });
     } catch {
       setPhase('error');
     }

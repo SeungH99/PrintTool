@@ -11,6 +11,7 @@ import { SelectField } from '@/components/ui/SelectField';
 import { Badge } from '@/components/ui/Badge';
 import { Dropzone } from './Dropzone';
 import { buttonClass } from '@/components/ui/buttonClass';
+import { trackEvent } from '@/lib/analytics';
 
 type Phase = 'empty' | 'selected' | 'converting' | 'done' | 'error';
 
@@ -202,6 +203,7 @@ export function ConvertTool({ dict, locale, eyebrow, title, desc }: CalculatorPr
         size: out.length,
       });
       setPhase('done');
+      trackEvent('tool_complete', { tool: 'convert' });
     } catch {
       setPhase('error');
     }
