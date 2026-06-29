@@ -146,6 +146,7 @@ export const en: Dictionary = {
     comingSoonDesc: 'This tool is on its way. Try another calculator in the meantime.',
     errors: {
       positive: 'All values must be numbers greater than 0.',
+      tooLarge: 'A value is too large — please check your input.',
       foldInner: 'The inner-panel adjustment is larger than the panel.',
       labelMargin: 'Margins are larger than the sheet.',
       bleedSafe: 'The safe margin is larger than half the finished size.',

@@ -144,6 +144,7 @@ export const ko = {
     comingSoonDesc: '이 도구는 곧 제공됩니다. 다른 계산기를 먼저 사용해 보세요.',
     errors: {
       positive: '모든 값은 0보다 큰 숫자여야 합니다.',
+      tooLarge: '입력값이 너무 큽니다. 값을 확인해 주세요.',
       foldInner: '안쪽 패널 보정값이 패널 너비보다 큽니다.',
       labelMargin: '여백이 용지 크기보다 큽니다.',
       bleedSafe: '안전 여백이 완성 크기의 절반보다 큽니다.',

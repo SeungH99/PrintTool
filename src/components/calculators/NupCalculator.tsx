@@ -27,7 +27,7 @@ const PIECES: Record<string, [number, number]> = {
   a4: [210, 297],
 };
 
-/** A cols×rows grid of cells scaled to the sheet aspect. */
+/** A cols×rows grid of cells scaled to the sheet aspect (cell count capped for the DOM). */
 function NupGrid({ cols, rows, aspect }: { cols: number; rows: number; aspect: number }) {
   if (cols < 1 || rows < 1) return null;
   const maxW = 248;
@@ -38,6 +38,10 @@ function NupGrid({ cols, rows, aspect }: { cols: number; rows: number; aspect: n
     h = maxH;
     w = maxH * aspect;
   }
+  // Cap rendered cells so a high-yield layout can't blow up the DOM; the true
+  // per-sheet count is still shown numerically in the result.
+  const capCols = Math.min(cols, 20);
+  const capRows = Math.min(rows, 14);
   return (
     <div className="flex h-[176px] w-full items-center justify-center">
       <div
@@ -45,12 +49,12 @@ function NupGrid({ cols, rows, aspect }: { cols: number; rows: number; aspect: n
         style={{
           width: `${w}px`,
           height: `${h}px`,
-          gridTemplateColumns: `repeat(${cols}, 1fr)`,
-          gridTemplateRows: `repeat(${rows}, 1fr)`,
+          gridTemplateColumns: `repeat(${capCols}, 1fr)`,
+          gridTemplateRows: `repeat(${capRows}, 1fr)`,
         }}
         aria-hidden="true"
       >
-        {Array.from({ length: cols * rows }).map((_, i) => (
+        {Array.from({ length: capCols * capRows }).map((_, i) => (
           <div key={i} className="rounded-[1px] border border-hairline bg-elevated" />
         ))}
       </div>
