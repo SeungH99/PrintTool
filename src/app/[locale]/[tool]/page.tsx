@@ -18,6 +18,7 @@ import { GsmConverter } from '@/components/calculators/GsmConverter';
 import { BookletCalculator } from '@/components/calculators/BookletCalculator';
 import { NupCalculator } from '@/components/calculators/NupCalculator';
 import { GrommetCalculator } from '@/components/calculators/GrommetCalculator';
+import { ColorConverter } from '@/components/calculators/ColorConverter';
 import { PdfPreflight } from '@/components/calculators/PdfPreflight';
 import { ConvertTool } from '@/components/calculators/ConvertTool';
 import { ComingSoon } from '@/components/calculators/ComingSoon';
@@ -37,6 +38,7 @@ const CALCULATORS: Partial<Record<ToolId, ComponentType<CalculatorProps>>> = {
   booklet: BookletCalculator,
   nup: NupCalculator,
   grommet: GrommetCalculator,
+  color: ColorConverter,
 };
 
 export function generateStaticParams() {

@@ -12,6 +12,7 @@ import {
   BookCopy,
   Grid3x3,
   CircleDot,
+  Palette,
   type LucideIcon,
 } from 'lucide-react';
 
@@ -33,4 +34,5 @@ export const TOOL_ICONS: Record<string, LucideIcon> = {
   booklet: BookCopy,
   nup: Grid3x3,
   grommet: CircleDot,
+  color: Palette,
 };

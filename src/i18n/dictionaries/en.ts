@@ -106,6 +106,12 @@ export const en: Dictionary = {
       desc: 'Get grommet count and positions from banner size and spacing.',
       tag: 'Banner',
     },
+    {
+      id: 'color',
+      title: 'CMYK Color Converter',
+      desc: 'Convert between CMYK, RGB, and HEX through an ICC profile.',
+      tag: 'Color',
+    },
   ],
   footer: {
     tagline: 'Print-production checks and calculations, all in one place.',
@@ -326,6 +332,19 @@ export const en: Dictionary = {
       guide: [
         'Grommets usually sit every 50–60cm, including the corners.',
         'For windy outdoor banners, tighten the spacing to reduce sag and tearing.',
+      ],
+    },
+    color: {
+      hex: 'HEX',
+      hexLabel: 'HEX',
+      rgbLabel: 'RGB',
+      cmykLabel: 'CMYK',
+      loading: 'Loading profile…',
+      errorLoad: 'Could not load the color engine. Refresh and try again.',
+      note: 'ICC profile-based conversion. The actual printed color depends on your printer’s profile and paper.',
+      guide: [
+        'CMYK is ink (print); RGB/HEX is screen. The ICC profile converts between them to preview an on-screen approximation.',
+        'Exact print color depends on the printer’s profile and stock, so confirm with a proof.',
       ],
     },
     pdf: {
@@ -629,6 +648,43 @@ export const en: Dictionary = {
         {
           q: 'What about very windy locations?',
           a: 'Tighten the spacing to 30–45cm, and for large banners add wind slits (mesh or cutouts) to relieve tension.',
+        },
+      ],
+    },
+    color: {
+      intro:
+        'The CMYK color converter translates between print CMYK and screen RGB/HEX through an ICC profile. Instead of a naive formula it uses a real CMYK profile (the Little CMS engine), so the on-screen preview is a closer approximation of the printed color. Everything runs in your browser.',
+      body: [
+        {
+          heading: 'CMYK vs. RGB',
+          text: 'RGB/HEX is additive screen color made from light; CMYK is subtractive print color made from ink. The two gamuts differ, so not every color maps 1:1 and a conversion can shift the color slightly.',
+        },
+        {
+          heading: 'Why an ICC profile',
+          text: 'CMYK↔RGB depends on ink, paper, and press conditions, so a plain formula is inaccurate. This tool transforms color through a standard CMYK ICC profile, which is more reliable than formula-based approximations.',
+        },
+        {
+          heading: 'Screen vs. printed color',
+          text: 'The preview swatch is an sRGB on-screen approximation. The real printed color depends on the printer’s profile (e.g. FOGRA, SWOP), paper, and coating, so confirm with a proof when color matters.',
+        },
+      ],
+      faqTitle: 'Frequently asked questions',
+      faq: [
+        {
+          q: 'Why does RGB look different after converting to CMYK?',
+          a: 'RGB uses light and CMYK uses ink, with different gamuts. Neon and highly saturated colors fall outside CMYK and can look duller.',
+        },
+        {
+          q: 'Is this conversion accurate?',
+          a: 'It is accurate to the standard CMYK ICC profile used. If your printer uses a different profile or paper, the real color can differ, so confirm with a proof.',
+        },
+        {
+          q: 'Can I convert a HEX code to CMYK?',
+          a: 'Yes. Enter a HEX value and it is read as RGB, then converted to CMYK through the ICC profile.',
+        },
+        {
+          q: 'Is anything uploaded to a server?',
+          a: 'No. Color conversion runs entirely in your browser; no data is sent to a server.',
         },
       ],
     },

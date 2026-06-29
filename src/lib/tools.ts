@@ -12,6 +12,7 @@ export const toolIds = [
   'booklet',
   'nup',
   'grommet',
+  'color',
 ] as const;
 
 export type ToolId = (typeof toolIds)[number];
