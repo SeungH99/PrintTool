@@ -34,6 +34,12 @@ export function Header({ locale, dict }: { locale: Locale; dict: Dictionary }) {
             {dict.nav.home}
           </Link>
           <ToolsMenu locale={locale} label={dict.nav.tools} groups={toolGroups} />
+          <Link
+            href={`/${locale}/guides`}
+            className="rounded-sm px-3 py-2 text-sm font-medium text-body no-underline transition-colors hover:text-ink"
+          >
+            {dict.nav.guides}
+          </Link>
         </nav>
 
         <div className="ml-auto flex flex-none items-center gap-2.5">

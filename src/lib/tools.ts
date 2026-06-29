@@ -51,3 +51,39 @@ export function groupTools<T extends { id: string }>(
     tools: cat.ids.map((id) => byId.get(id)).filter((t): t is T => Boolean(t)),
   })).filter((g) => g.tools.length > 0);
 }
+
+// Cross-category neighbours used to top up the related list (so single-tool
+// categories like preflight still link out, and topical clusters read well).
+const EXTRA_RELATED: Partial<Record<ToolId, ToolId[]>> = {
+  pdf: ['bleed', 'color', 'marks'],
+  res: ['size', 'pdf'],
+  size: ['res', 'bleed'],
+  color: ['proof', 'convert', 'pdf'],
+  proof: ['color', 'convert', 'pdf'],
+  convert: ['color', 'proof', 'pdf'],
+  bleed: ['marks', 'impose', 'pdf'],
+  marks: ['bleed', 'impose', 'pdf'],
+  impose: ['nup', 'marks', 'bleed'],
+  spine: ['booklet', 'weight'],
+  booklet: ['spine', 'impose'],
+};
+
+/** The category a tool belongs to (for breadcrumbs / grouping). */
+export function categoryOf(id: ToolId): ToolCategoryKey | undefined {
+  return TOOL_CATEGORIES.find((c) => (c.ids as readonly string[]).includes(id))?.key;
+}
+
+/** Up to `max` related tool ids for internal linking: category siblings first, topped up by curated neighbours. */
+export function relatedToolIds(id: ToolId, max = 4): ToolId[] {
+  const cat = TOOL_CATEGORIES.find((c) => (c.ids as readonly string[]).includes(id));
+  const siblings = cat ? cat.ids.filter((x) => x !== id) : [];
+  const seen = new Set<string>([id]);
+  const out: ToolId[] = [];
+  for (const x of [...siblings, ...(EXTRA_RELATED[id] ?? [])]) {
+    if (seen.has(x)) continue;
+    seen.add(x);
+    out.push(x as ToolId);
+    if (out.length >= max) break;
+  }
+  return out;
+}

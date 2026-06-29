@@ -3,8 +3,9 @@ import { isLocale, locales } from '@/i18n/config';
 import { getDictionary } from '@/i18n/dictionaries';
 import type { ComponentType } from 'react';
 import type { Metadata } from 'next';
-import { isToolId, toolIds, type ToolId } from '@/lib/tools';
+import { isToolId, toolIds, relatedToolIds, categoryOf, type ToolId } from '@/lib/tools';
 import { jsonLdScriptProps } from '@/lib/jsonLd';
+import { SITE_URL } from '@/lib/site';
 import { localizedAlternates, localizedOpenGraph } from '@/lib/metadata';
 import type { CalculatorProps } from '@/components/calculators/types';
 import { ResolutionCalculator } from '@/components/calculators/ResolutionCalculator';
@@ -26,6 +27,7 @@ import { PrinterMarksTool } from '@/components/calculators/PrinterMarksTool';
 import { SoftProofTool } from '@/components/calculators/SoftProofTool';
 import { ComingSoon } from '@/components/calculators/ComingSoon';
 import { ToolContent } from '@/components/calculators/ToolContent';
+import { RelatedTools } from '@/components/layout/RelatedTools';
 
 const CALCULATORS: Partial<Record<ToolId, ComponentType<CalculatorProps>>> = {
   pdf: PdfPreflight,
@@ -105,9 +107,32 @@ export default async function ToolPage({
   };
   const Calculator = CALCULATORS[tool];
 
+  const catKey = categoryOf(tool);
+  const crumbs = [{ '@type': 'ListItem', position: 1, name: dict.nav.home, item: `${SITE_URL}/${locale}` }];
+  if (catKey) {
+    crumbs.push({
+      '@type': 'ListItem',
+      position: 2,
+      name: dict.home.categories[catKey],
+      item: `${SITE_URL}/${locale}#tools`,
+    });
+  }
+  crumbs.push({
+    '@type': 'ListItem',
+    position: crumbs.length + 1,
+    name: meta.title,
+    item: `${SITE_URL}/${locale}/${tool}`,
+  });
+  const breadcrumbJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: crumbs,
+  };
+
   return (
     <>
       <script {...jsonLdScriptProps(appJsonLd)} />
+      <script {...jsonLdScriptProps(breadcrumbJsonLd)} />
       {Calculator ? (
         <Calculator {...shared} />
       ) : (
@@ -122,6 +147,7 @@ export default async function ToolPage({
         />
       )}
       <ToolContent guide={dict.toolGuides[tool]} />
+      <RelatedTools locale={locale} dict={dict} ids={relatedToolIds(tool)} />
     </>
   );
 }
