@@ -119,6 +119,12 @@ export const en: Dictionary = {
       desc: 'Convert between CMYK, RGB, and HEX through an ICC profile.',
       tag: 'Color',
     },
+    {
+      id: 'impose',
+      title: 'PDF Imposition (N-up)',
+      desc: 'Repeat a finished-design PDF across a parent sheet for print.',
+      tag: 'Imposition',
+    },
   ],
   footer: {
     tagline: 'Print-production checks and calculations, all in one place.',
@@ -374,6 +380,44 @@ export const en: Dictionary = {
         'CMYK is ink (print); RGB/HEX is screen. The ICC profile converts between them to preview an on-screen approximation.',
         'Exact print color depends on the printer’s profile and stock, so confirm with a proof.',
       ],
+    },
+    impose: {
+      dropTitle: 'Drop the PDF to impose here',
+      dropOr: 'or',
+      dropBtn: 'Choose file',
+      dropTypes: 'PDF file · processed in your browser',
+      errTitle: 'Could not read the file',
+      errDesc: 'Make sure it is a PDF and try again.',
+      selected: 'File to impose',
+      change: 'Change file',
+      pieceLabel: 'Piece size',
+      settingsTitle: 'Imposition settings',
+      sheet: 'Parent sheet',
+      custom: 'Custom',
+      sheetW: 'Sheet width (mm)',
+      sheetH: 'Sheet height (mm)',
+      gap: 'Gutter / gap (mm)',
+      margin: 'Edge / gripper margin (mm)',
+      marginHelper: 'Margin kept clear at the sheet edges',
+      perSheetLabel: 'Pieces per sheet',
+      gridLabel: 'Layout (cols × rows)',
+      rotatedBadge: 'Rotated 90°',
+      tooBig: 'The piece is larger than the sheet and cannot be placed. Check the sheet size or margins.',
+      imposing: 'Imposing…',
+      start: 'Build imposed PDF',
+      doneTitle: 'Imposition complete',
+      outLabel: 'Output file',
+      specOutSize: 'Output size',
+      download: 'Download PDF',
+      reset: 'Start over',
+      guideTitle: 'Guide',
+      guide: [
+        'The piece size is read automatically from the first page of your PDF.',
+        'The gripper margin is where the press grabs the sheet — usually keep 10–15mm clear.',
+        'Both orientations are compared and the higher-yield one is chosen, flagged with a badge when rotated.',
+      ],
+      disclaimer:
+        'Processed in your browser; the file is never uploaded. Colors are preserved as-is. Use a separate tool for crop marks.',
     },
     pdf: {
       dropTitle: 'Drop your PDF here',
@@ -719,6 +763,47 @@ export const en: Dictionary = {
         {
           q: 'Is anything uploaded to a server?',
           a: 'No. Color conversion runs entirely in your browser; no data is sent to a server.',
+        },
+      ],
+    },
+    impose: {
+      intro:
+        'PDF imposition (n-up) lays out one finished design repeatedly across a large press sheet, producing a print-ready PDF that runs many copies at once. For small pieces like business cards, postcards, labels, and flyers, it maximizes the yield (pieces per sheet) when ganging up on a parent sheet. Your uploaded PDF is processed entirely in the browser and never sent to a server.',
+      body: [
+        {
+          heading: 'Yield and parent-sheet sizes',
+          text: 'Yield is how many finished pieces fit on one parent sheet. This tool reads the piece size from the first page of your PDF, compares both orientations on the chosen sheet, and picks the higher-yielding layout automatically. Common parent sheets include 4x6 (788×1091mm) and Kuk (636×939mm); digital presses often use SRA3 (320×450mm).',
+        },
+        {
+          heading: 'Gutter and gripper margin',
+          text: 'The gutter is the cutting allowance between pieces — usually 3–5mm so the trim does not clip a neighbor. The gripper margin is the sheet edge the press grabs, where nothing prints, so keep 10–15mm clear on all sides. Yield is computed inside the area left after subtracting both.',
+        },
+        {
+          heading: 'Rotation and efficiency',
+          text: 'Turning the piece 90° often fits more copies on the same sheet. This tool compares the yield of both orientations, uses the better one, and flags a badge when rotation is applied. Grain-sensitive stock or one-way artwork may not tolerate rotation, so confirm with your printer.',
+        },
+        {
+          heading: 'Workflow before and after',
+          text: 'Imposition is a separate step from adding crop/registration marks. Typically you export the finished design with bleed, impose it onto the sheet, then add trim marks per sheet. Real production usually follows the printer’s imposition spec (gripper direction, margins), so pull a single sheet proof before a large run.',
+        },
+      ],
+      faqTitle: 'Frequently asked questions',
+      faq: [
+        {
+          q: 'How is the piece size determined?',
+          a: 'It uses the size of the first page of your uploaded PDF as the finished piece. If you exported with bleed, the layout is based on that size.',
+        },
+        {
+          q: 'Can I see how many fit per sheet before exporting?',
+          a: 'Yes. Enter the sheet size, gutter, and margin and the preview shows the layout (cols × rows), pieces per sheet, and whether rotation was applied — before you build the file.',
+        },
+        {
+          q: 'Does it support saddle-stitch or perfect-bound booklet imposition?',
+          a: 'Currently it supports n-up imposition (repeating one design). Booklet signature imposition is a separate step that is in progress.',
+        },
+        {
+          q: 'Are colors changed or is the file uploaded?',
+          a: 'Colors are preserved as-is, and all processing happens in your browser — the file is never sent to a server.',
         },
       ],
     },

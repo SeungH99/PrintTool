@@ -21,6 +21,7 @@ import { GrommetCalculator } from '@/components/calculators/GrommetCalculator';
 import { ColorConverter } from '@/components/calculators/ColorConverter';
 import { PdfPreflight } from '@/components/calculators/PdfPreflight';
 import { ConvertTool } from '@/components/calculators/ConvertTool';
+import { ImposeTool } from '@/components/calculators/ImposeTool';
 import { ComingSoon } from '@/components/calculators/ComingSoon';
 import { ToolContent } from '@/components/calculators/ToolContent';
 
@@ -39,6 +40,7 @@ const CALCULATORS: Partial<Record<ToolId, ComponentType<CalculatorProps>>> = {
   nup: NupCalculator,
   grommet: GrommetCalculator,
   color: ColorConverter,
+  impose: ImposeTool,
 };
 
 export function generateStaticParams() {

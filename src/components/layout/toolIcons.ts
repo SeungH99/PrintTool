@@ -13,6 +13,7 @@ import {
   Grid3x3,
   CircleDot,
   Palette,
+  LayoutTemplate,
   type LucideIcon,
 } from 'lucide-react';
 
@@ -35,4 +36,5 @@ export const TOOL_ICONS: Record<string, LucideIcon> = {
   nup: Grid3x3,
   grommet: CircleDot,
   color: Palette,
+  impose: LayoutTemplate,
 };
