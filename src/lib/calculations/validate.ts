@@ -7,6 +7,9 @@ import type {
   BleedInput,
   PrintSizeInput,
   BasisWeightInput,
+  BookletInput,
+  NupInput,
+  GrommetInput,
 } from './types';
 
 /**
@@ -66,4 +69,18 @@ export function validatePrintSize(i: PrintSizeInput): Validation {
 
 export function validateBasisWeight(i: BasisWeightInput): Validation {
   return positive(i.gsm) ? OK : fail('positive');
+}
+
+export function validateBooklet(i: BookletInput): Validation {
+  return positive(i.pages) ? OK : fail('positive');
+}
+
+export function validateNup(i: NupInput): Validation {
+  if (![i.sheetWmm, i.sheetHmm, i.pieceWmm, i.pieceHmm].every(positive)) return fail('positive');
+  if (!nonNegative(i.gapMm)) return fail('positive');
+  return OK;
+}
+
+export function validateGrommet(i: GrommetInput): Validation {
+  return [i.widthMm, i.heightMm, i.spacingMm].every(positive) ? OK : fail('positive');
 }

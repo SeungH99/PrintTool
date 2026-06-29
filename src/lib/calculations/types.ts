@@ -151,3 +151,59 @@ export interface BasisWeightResult {
   tag: number;
   bristol: number;
 }
+
+export interface BookletInput {
+  pages: number;
+}
+
+export interface BookletSpread {
+  sheet: number;
+  side: 'outer' | 'inner';
+  left: number;
+  right: number;
+}
+
+export interface BookletResult {
+  /** True when the page count is already a multiple of 4. */
+  valid: boolean;
+  /** Page count rounded up to the next multiple of 4. */
+  paddedPages: number;
+  blanks: number;
+  sheets: number;
+  spreads: BookletSpread[];
+}
+
+export interface NupInput {
+  sheetWmm: number;
+  sheetHmm: number;
+  pieceWmm: number;
+  pieceHmm: number;
+  gapMm: number;
+}
+
+export interface NupResult {
+  cols: number;
+  rows: number;
+  perSheet: number;
+  rotated: boolean;
+  wastePct: number;
+}
+
+export interface GrommetInput {
+  widthMm: number;
+  heightMm: number;
+  spacingMm: number;
+}
+
+export interface GrommetResult {
+  /** Grommets per top/bottom edge (corners included). */
+  topCount: number;
+  /** Grommets per left/right edge (corners included). */
+  sideCount: number;
+  /** Total around the perimeter (4 shared corners counted once). */
+  total: number;
+  /** Positions in mm from the left along the top/bottom edge. */
+  topPositions: number[];
+  /** Positions in mm from the top along the side edges. */
+  sidePositions: number[];
+}

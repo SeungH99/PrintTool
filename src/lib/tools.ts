@@ -9,6 +9,9 @@ export const toolIds = [
   'bleed',
   'size',
   'gsm',
+  'booklet',
+  'nup',
+  'grommet',
 ] as const;
 
 export type ToolId = (typeof toolIds)[number];

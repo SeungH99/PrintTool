@@ -15,6 +15,9 @@ import { LabelCalculator } from '@/components/calculators/LabelCalculator';
 import { BleedCalculator } from '@/components/calculators/BleedCalculator';
 import { PrintSizeCalculator } from '@/components/calculators/PrintSizeCalculator';
 import { GsmConverter } from '@/components/calculators/GsmConverter';
+import { BookletCalculator } from '@/components/calculators/BookletCalculator';
+import { NupCalculator } from '@/components/calculators/NupCalculator';
+import { GrommetCalculator } from '@/components/calculators/GrommetCalculator';
 import { PdfPreflight } from '@/components/calculators/PdfPreflight';
 import { ConvertTool } from '@/components/calculators/ConvertTool';
 import { ComingSoon } from '@/components/calculators/ComingSoon';
@@ -31,6 +34,9 @@ const CALCULATORS: Partial<Record<ToolId, ComponentType<CalculatorProps>>> = {
   bleed: BleedCalculator,
   size: PrintSizeCalculator,
   gsm: GsmConverter,
+  booklet: BookletCalculator,
+  nup: NupCalculator,
+  grommet: GrommetCalculator,
 };
 
 export function generateStaticParams() {

@@ -9,6 +9,9 @@ import {
   Crop,
   Ruler,
   Scale,
+  BookCopy,
+  Grid3x3,
+  CircleDot,
   type LucideIcon,
 } from 'lucide-react';
 
@@ -27,4 +30,7 @@ export const TOOL_ICONS: Record<string, LucideIcon> = {
   bleed: Crop,
   size: Ruler,
   gsm: Scale,
+  booklet: BookCopy,
+  nup: Grid3x3,
+  grommet: CircleDot,
 };

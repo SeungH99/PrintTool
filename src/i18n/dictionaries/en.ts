@@ -88,6 +88,24 @@ export const en: Dictionary = {
       desc: 'Convert GSM to US basis weight (lb) for each paper grade.',
       tag: 'GSM',
     },
+    {
+      id: 'booklet',
+      title: 'Saddle-Stitch Pages',
+      desc: 'Validate booklet page count (multiple of 4) and get the printing page order.',
+      tag: 'Booklet',
+    },
+    {
+      id: 'nup',
+      title: 'Sheet Yield (N-up)',
+      desc: 'Find how many pieces a parent sheet yields and the wasted area.',
+      tag: 'Imposition',
+    },
+    {
+      id: 'grommet',
+      title: 'Banner Grommets',
+      desc: 'Get grommet count and positions from banner size and spacing.',
+      tag: 'Banner',
+    },
   ],
   footer: {
     tagline: 'Print-production checks and calculations, all in one place.',
@@ -256,6 +274,58 @@ export const en: Dictionary = {
       guide: [
         'GSM is the weight of 1 m² of paper — an absolute unit independent of grade.',
         'US lb depends on a grade-specific basis size, so the same GSM is a different lb for Cover, Text, and Bond.',
+      ],
+    },
+    booklet: {
+      pages: 'Page count',
+      pagesUnit: 'pp',
+      pagesHelper: 'Total pages incl. cover (multiple of 4 recommended)',
+      sheetsLabel: 'Sheets needed',
+      sheetUnit: 'sheets',
+      paddedLabel: 'Adjusted page count',
+      blanksLabel: 'Blank pages',
+      outer: 'outer',
+      inner: 'inner',
+      warn: 'Not a multiple of 4 — blank pages are added. Round to the nearest multiple of 4.',
+      note: 'For saddle stitch. One folded sheet holds 4 pages; the page order is shown as outer/inner spreads.',
+      guide: [
+        'Saddle stitch binds in 4-page units, so the total page count must be a multiple of 4.',
+        'Outer sheets carry the first and last pages; inner sheets carry the middle pages.',
+      ],
+    },
+    nup: {
+      sheet: 'Parent sheet',
+      custom: 'Custom',
+      sheetW: 'Sheet width (mm)',
+      sheetH: 'Sheet height (mm)',
+      pieceW: 'Piece width (mm)',
+      pieceH: 'Piece height (mm)',
+      gap: 'Gutter / gap (mm)',
+      gapHelper: 'Cutting allowance, usually 0–5mm',
+      perSheetLabel: 'Pieces per sheet',
+      unit: '',
+      gridLabel: 'Layout (cols × rows)',
+      wasteLabel: 'Wasted area',
+      rotatedBadge: 'Rotated 90°',
+      note: 'How many finished pieces a parent sheet yields (n-up) and the wasted area. Both orientations are compared and the higher-yield one is used.',
+      guide: [
+        'Yield = (sheet width ÷ piece width) × (sheet height ÷ piece height); the better orientation is chosen automatically.',
+        'Common Korean parent sheets: 4x6 (788×1091mm), Kuk (636×939mm).',
+      ],
+    },
+    grommet: {
+      width: 'Banner width (mm)',
+      height: 'Banner height (mm)',
+      spacing: 'Grommet spacing (mm)',
+      spacingHelper: 'Typically every 500–600mm',
+      totalLabel: 'Total grommets',
+      unit: '',
+      topLabel: 'Per top/bottom edge',
+      sideLabel: 'Per side edge',
+      note: 'A grommet sits at each corner and is spaced no farther apart than the spacing along every edge. Check the preview for placement.',
+      guide: [
+        'Grommets usually sit every 50–60cm, including the corners.',
+        'For windy outdoor banners, tighten the spacing to reduce sag and tearing.',
       ],
     },
     pdf: {
@@ -448,6 +518,117 @@ export const en: Dictionary = {
         {
           q: 'Is GSM or lb more accurate?',
           a: 'GSM is the grade-independent absolute unit, so it is more reliable for comparison. lb depends on the basis size and should always name its grade.',
+        },
+      ],
+    },
+    booklet: {
+      intro:
+        'The saddle-stitch page calculator checks whether a booklet’s total page count is a multiple of 4, pads any shortfall with blanks, and works out the number of sheets and the printing page order for each sheet. Because one folded sheet holds 4 pages, it shows exactly which page numbers pair up so the booklet reads correctly once bound.',
+      body: [
+        {
+          heading: 'Why a multiple of 4',
+          text: 'Saddle stitch folds one sheet in half to make 4 pages, so the total must be a multiple of 4 or blank pages appear. 20 pages needs 5 sheets; 24 pages needs 6.',
+        },
+        {
+          heading: 'Page order (imposition)',
+          text: 'Once folded, physically distant pages print on the same side. Outer sheets carry the first and last pages; inner sheets carry the middle ones. For 8 pages, the first sheet’s outer side is 8·1 and its inner side is 2·7.',
+        },
+        {
+          heading: 'Watch for creep',
+          text: 'Saddle stitch has almost no spine, but with many sheets the inner pages push outward (creep), trimming their outer margin. Keep a generous safe margin when the page count is high.',
+        },
+      ],
+      faqTitle: 'Frequently asked questions',
+      faq: [
+        {
+          q: 'Why must a saddle-stitch booklet be a multiple of 4?',
+          a: 'One folded sheet makes 4 pages. A count that is not a multiple of 4 leaves blanks, so include the cover and round the total to 4, 8, 12, and so on.',
+        },
+        {
+          q: 'How many sheets does a 20-page booklet need?',
+          a: 'Five. 20 ÷ 4 = 5 — five sheets nested and stapled at the center fold.',
+        },
+        {
+          q: 'Why is the page order scrambled?',
+          a: 'Folding places separated pages on the same printed side. This tool lists the outer/inner page pair for each sheet.',
+        },
+        {
+          q: 'What if my page count is not a multiple of 4?',
+          a: 'It rounds up to the nearest multiple of 4 and fills the shortfall with blank pages. Lay out your content around those blanks.',
+        },
+      ],
+    },
+    nup: {
+      intro:
+        'The sheet yield (n-up) calculator works out how many finished pieces — business cards, flyers, labels — fit on one large parent sheet, plus the wasted area. Enter the parent sheet and piece sizes and it compares both orientations, picks the higher-yield layout, and previews the columns × rows grid.',
+      body: [
+        {
+          heading: 'How yield is calculated',
+          text: 'Divide the sheet width by the piece width for columns and the heights for rows; columns × rows is the count per sheet. Rotating the piece 90° can fit more, so both orientations are compared.',
+        },
+        {
+          heading: 'Parent sheet sizes',
+          text: 'Korean print commonly uses the 4x6 sheet (788×1091mm) and the Kuk sheet (636×939mm). Real yield is slightly lower because of gripper margin and trimming allowance.',
+        },
+        {
+          heading: 'Reducing waste',
+          text: 'Choosing a piece size that divides the sheet evenly, or using a rotated layout, lowers the wasted area and the unit cost. Compare the waste percentage across sheet sizes to find the most efficient option.',
+        },
+      ],
+      faqTitle: 'Frequently asked questions',
+      faq: [
+        {
+          q: 'What is sheet yield (n-up)?',
+          a: 'How many finished pieces you get from one parent sheet. A higher yield means more pieces from the same paper, lowering the unit cost.',
+        },
+        {
+          q: 'How many business cards fit on a 4x6 sheet?',
+          a: 'A 90×50mm card with no gutter fits about 180 (rotated layout). Real runs are a little fewer because of gripper and trim allowances.',
+        },
+        {
+          q: 'Why does rotating fit more?',
+          a: 'When the piece and sheet proportions differ, a 90° turn can leave less leftover space and fit more. The calculator picks the better orientation automatically.',
+        },
+        {
+          q: 'Which sheet size is more efficient?',
+          a: 'It depends on the piece size. Compare the yield and wasted area for each sheet and choose the more efficient one.',
+        },
+      ],
+    },
+    grommet: {
+      intro:
+        'The banner grommet calculator takes the banner width, height, and desired spacing and returns the number of grommets — with one at every corner — and their evenly spaced positions along each edge. The preview shows where each grommet lands so you can mark the punch points before installation.',
+      body: [
+        {
+          heading: 'How placement works',
+          text: 'One grommet goes at each corner, then each edge is divided so the gap never exceeds the spacing, with the grommets distributed evenly. Top and bottom edges use the width; side edges use the height.',
+        },
+        {
+          heading: 'Spacing guidance',
+          text: 'Indoor or short banners typically use 50–60cm spacing. Outdoor, large, or wind-exposed banners tighten to 30–45cm to reduce sag and tearing.',
+        },
+        {
+          heading: 'Installation tips',
+          text: 'Reinforce grommet points with hem tape or stitching to prevent tearing. Plan the count around where you will tie off and the spacing of the wall or frame fixing points.',
+        },
+      ],
+      faqTitle: 'Frequently asked questions',
+      faq: [
+        {
+          q: 'What spacing should banner grommets use?',
+          a: 'Usually 50–60cm. Outdoor or large banners tighten to 30–45cm to reduce wind sag.',
+        },
+        {
+          q: 'Do the corners need grommets?',
+          a: 'Yes. Corners carry the most tension, so they always get a grommet. This calculator includes them.',
+        },
+        {
+          q: 'How many grommets for a 3m × 1m banner?',
+          a: 'At 60cm spacing, six per top/bottom edge and three per side edge, sharing corners for 14 total.',
+        },
+        {
+          q: 'What about very windy locations?',
+          a: 'Tighten the spacing to 30–45cm, and for large banners add wind slits (mesh or cutouts) to relieve tension.',
         },
       ],
     },
