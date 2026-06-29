@@ -6,6 +6,12 @@ export { calculatePaperWeight } from './paperWeight';
 export { calculateSpine, type SpineOptions } from './spine';
 export { calculateFold } from './fold';
 export { calculateLabel } from './label';
+export { calculateBleed } from './bleed';
+export { calculatePrintSize } from './printSize';
+export { calculateBasisWeight } from './basisWeight';
+export { calculateBooklet } from './booklet';
+export { calculateNup } from './nup';
+export { calculateGrommet } from './grommet';
 export * from './validate';
 
 export class NotImplementedError extends Error {

@@ -6,8 +6,14 @@ import { buttonClass } from '@/components/ui/buttonClass';
 import { LanguageSwitcher } from './LanguageSwitcher';
 import { ToolsMenu } from './ToolsMenu';
 import { MobileNav } from './MobileNav';
+import { groupTools } from '@/lib/tools';
 
 export function Header({ locale, dict }: { locale: Locale; dict: Dictionary }) {
+  const toolGroups = groupTools(dict.tools).map((g) => ({
+    label: dict.home.categories[g.key],
+    tools: g.tools,
+  }));
+
   return (
     <header className="sticky top-0 z-50 border-b border-hairline bg-canvas/80 backdrop-blur">
       <div className="mx-auto flex h-16 max-w-page items-center gap-6 px-6">
@@ -27,7 +33,7 @@ export function Header({ locale, dict }: { locale: Locale; dict: Dictionary }) {
           >
             {dict.nav.home}
           </Link>
-          <ToolsMenu locale={locale} label={dict.nav.tools} tools={dict.tools} />
+          <ToolsMenu locale={locale} label={dict.nav.tools} groups={toolGroups} />
         </nav>
 
         <div className="ml-auto flex flex-none items-center gap-2.5">

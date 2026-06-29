@@ -15,6 +15,21 @@ function asBinding(value: string): Binding {
   return value === 'saddle' ? 'saddle' : value === 'case' ? 'case' : 'perfect';
 }
 
+/** Flat cover spread (back · spine · front); the centre band scales with spine width. */
+function SpinePreview({ spineMm, caption }: { spineMm: number; caption: string }) {
+  const band = Math.min(Math.max(spineMm * 2, 6), 90);
+  return (
+    <div className="flex flex-col items-center gap-2.5">
+      <div className="flex h-[110px] items-stretch" aria-hidden="true">
+        <div className="w-[78px] rounded-l-[2px] border border-hairline bg-hairline-soft" />
+        <div className="border-y border-link bg-link-soft" style={{ width: `${band}px` }} />
+        <div className="w-[78px] rounded-r-[2px] border border-hairline bg-hairline-soft" />
+      </div>
+      <span className="text-[11px] text-mute">{caption}</span>
+    </div>
+  );
+}
+
 export function SpineCalculator({ dict, locale, eyebrow, title, desc }: CalculatorProps) {
   const t = dict.calc.spine;
   const [binding, setBinding] = useState<Binding>('perfect');
@@ -59,7 +74,14 @@ export function SpineCalculator({ dict, locale, eyebrow, title, desc }: Calculat
         onChange={setInteriorGsm}
         suffix="g/m²"
       />
-      <NumberField label={t.coverGsm} value={coverGsm} onChange={setCoverGsm} suffix="g/m²" />
+      <NumberField
+        label={t.coverGsm}
+        value={coverGsm}
+        onChange={setCoverGsm}
+        suffix="g/m²"
+        disabled={binding !== 'perfect'}
+        helper={binding !== 'perfect' ? t.coverGsmNote : undefined}
+      />
     </div>
   );
 
@@ -69,6 +91,9 @@ export function SpineCalculator({ dict, locale, eyebrow, title, desc }: Calculat
       alert={errorMsg ?? (result?.warnPageMultiple ? t.warn : undefined)}
       primaryLabel={t.spineLabel}
       primaryValue={result ? `${round(result.spineMm, 2)} mm` : '—'}
+      diagram={
+        result ? <SpinePreview spineMm={result.spineMm} caption={t.previewCaption} /> : undefined
+      }
       rows={result ? [{ label: t.leavesLabel, value: String(result.leaves) }] : undefined}
       note={t.note}
     />

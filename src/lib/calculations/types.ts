@@ -41,6 +41,12 @@ export interface ResolutionResult {
   unit: ResolutionInput['unit'];
   level: ResolutionLevel;
   megapixels: number;
+  /** Reduced pixel aspect ratio, e.g. 3000×2400 -> aspectW 5, aspectH 4. */
+  aspectW: number;
+  aspectH: number;
+  /** Largest printable size at the 150-DPI draft floor, in the same unit. */
+  draftWidth: number;
+  draftHeight: number;
 }
 
 export interface SpineResult {
@@ -98,4 +104,112 @@ export interface LabelResult {
   rotated: boolean;
   remainderWmm: number;
   remainderHmm: number;
+}
+
+export interface BleedInput {
+  /** Finished (trim) width in mm. */
+  widthMm: number;
+  /** Finished (trim) height in mm. */
+  heightMm: number;
+  /** Bleed added on every side, in mm. */
+  bleedMm: number;
+  /** Safe margin inset on every side, in mm. */
+  safeMm: number;
+}
+
+export interface BleedResult {
+  /** Working file size = trim + bleed on all four sides. */
+  workWmm: number;
+  workHmm: number;
+  /** Finished/trim size (echoes input). */
+  trimWmm: number;
+  trimHmm: number;
+  /** Safe area where critical content must stay. */
+  safeWmm: number;
+  safeHmm: number;
+}
+
+export interface PrintSizeInput {
+  widthMm: number;
+  heightMm: number;
+  dpi: number;
+}
+
+export interface PrintSizeResult {
+  widthPx: number;
+  heightPx: number;
+  widthCm: number;
+  heightCm: number;
+  widthIn: number;
+  heightIn: number;
+}
+
+export interface BasisWeightInput {
+  gsm: number;
+}
+
+/** US basis weights (lb), by paper grade, for a given metric GSM. */
+export interface BasisWeightResult {
+  bond: number;
+  text: number;
+  cover: number;
+  index: number;
+  tag: number;
+  bristol: number;
+}
+
+export interface BookletInput {
+  pages: number;
+}
+
+export interface BookletSpread {
+  sheet: number;
+  side: 'outer' | 'inner';
+  left: number;
+  right: number;
+}
+
+export interface BookletResult {
+  /** True when the page count is already a multiple of 4. */
+  valid: boolean;
+  /** Page count rounded up to the next multiple of 4. */
+  paddedPages: number;
+  blanks: number;
+  sheets: number;
+  spreads: BookletSpread[];
+}
+
+export interface NupInput {
+  sheetWmm: number;
+  sheetHmm: number;
+  pieceWmm: number;
+  pieceHmm: number;
+  gapMm: number;
+}
+
+export interface NupResult {
+  cols: number;
+  rows: number;
+  perSheet: number;
+  rotated: boolean;
+  wastePct: number;
+}
+
+export interface GrommetInput {
+  widthMm: number;
+  heightMm: number;
+  spacingMm: number;
+}
+
+export interface GrommetResult {
+  /** Grommets per top/bottom edge (corners included). */
+  topCount: number;
+  /** Grommets per left/right edge (corners included). */
+  sideCount: number;
+  /** Total around the perimeter (4 shared corners counted once). */
+  total: number;
+  /** Positions in mm from the left along the top/bottom edge. */
+  topPositions: number[];
+  /** Positions in mm from the top along the side edges. */
+  sidePositions: number[];
 }

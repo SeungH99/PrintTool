@@ -59,6 +59,7 @@ export function FoldCalculator({ dict, locale, eyebrow, title, desc }: Calculato
         onChange={setInner}
         suffix="mm"
         helper={t.innerHelper}
+        disabled={type === 'half' || type === 'zfold'}
       />
     </div>
   );

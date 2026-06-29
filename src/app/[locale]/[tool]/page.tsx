@@ -12,8 +12,18 @@ import { SpineCalculator } from '@/components/calculators/SpineCalculator';
 import { PaperWeightCalculator } from '@/components/calculators/PaperWeightCalculator';
 import { FoldCalculator } from '@/components/calculators/FoldCalculator';
 import { LabelCalculator } from '@/components/calculators/LabelCalculator';
+import { BleedCalculator } from '@/components/calculators/BleedCalculator';
+import { PrintSizeCalculator } from '@/components/calculators/PrintSizeCalculator';
+import { GsmConverter } from '@/components/calculators/GsmConverter';
+import { BookletCalculator } from '@/components/calculators/BookletCalculator';
+import { NupCalculator } from '@/components/calculators/NupCalculator';
+import { GrommetCalculator } from '@/components/calculators/GrommetCalculator';
+import { ColorConverter } from '@/components/calculators/ColorConverter';
 import { PdfPreflight } from '@/components/calculators/PdfPreflight';
 import { ConvertTool } from '@/components/calculators/ConvertTool';
+import { ImposeTool } from '@/components/calculators/ImposeTool';
+import { PrinterMarksTool } from '@/components/calculators/PrinterMarksTool';
+import { SoftProofTool } from '@/components/calculators/SoftProofTool';
 import { ComingSoon } from '@/components/calculators/ComingSoon';
 import { ToolContent } from '@/components/calculators/ToolContent';
 
@@ -25,6 +35,16 @@ const CALCULATORS: Partial<Record<ToolId, ComponentType<CalculatorProps>>> = {
   weight: PaperWeightCalculator,
   fold: FoldCalculator,
   label: LabelCalculator,
+  bleed: BleedCalculator,
+  size: PrintSizeCalculator,
+  gsm: GsmConverter,
+  booklet: BookletCalculator,
+  nup: NupCalculator,
+  grommet: GrommetCalculator,
+  color: ColorConverter,
+  impose: ImposeTool,
+  marks: PrinterMarksTool,
+  proof: SoftProofTool,
 };
 
 export function generateStaticParams() {

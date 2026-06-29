@@ -14,6 +14,7 @@ export function ResultPanel({
   alert,
   primaryLabel,
   primaryValue,
+  primaryAction,
   badge,
   diagram,
   rows,
@@ -23,6 +24,8 @@ export function ResultPanel({
   alert?: string;
   primaryLabel?: string;
   primaryValue?: string;
+  /** Optional control shown beside the primary value (e.g. a copy button). */
+  primaryAction?: ReactNode;
   badge?: ReactNode;
   diagram?: ReactNode;
   rows?: ResultRow[];
@@ -46,8 +49,11 @@ export function ResultPanel({
         {primaryValue && (
           <div className={rows && rows.length > 0 ? 'mb-4' : ''}>
             {primaryLabel && <div className="mb-1.5 text-[13px] text-mute">{primaryLabel}</div>}
-            <div className="text-4xl font-semibold tracking-tight tabular-nums text-ink">
-              {primaryValue}
+            <div className="flex items-center gap-2.5">
+              <div className="text-4xl font-semibold tracking-tight tabular-nums text-ink">
+                {primaryValue}
+              </div>
+              {primaryAction}
             </div>
             {badge && <div className="mt-3">{badge}</div>}
           </div>

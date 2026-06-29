@@ -18,11 +18,11 @@ interface ToolLink {
 export function ToolsMenu({
   locale,
   label,
-  tools,
+  groups,
 }: {
   locale: string;
   label: string;
-  tools: readonly ToolLink[];
+  groups: readonly { label: string; tools: readonly ToolLink[] }[];
 }) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -59,31 +59,44 @@ export function ToolsMenu({
       </button>
 
       {open && (
-        <div className="absolute left-0 top-[calc(100%+6px)] flex w-[300px] flex-col gap-0.5 rounded-md border border-hairline bg-elevated p-1.5 shadow-[0_8px_28px_-6px_rgba(0,0,0,0.18)]">
-          {tools.map((tool) => {
-            const Icon = TOOL_ICONS[tool.id];
-            return (
-              <Link
-                key={tool.id}
-                href={`/${locale}/${tool.id}`}
-                onClick={() => setOpen(false)}
-                className="flex items-center gap-2.5 rounded-sm px-2.5 py-2 no-underline transition-colors hover:bg-hairline-soft"
+        <div className="absolute left-0 top-[calc(100%+6px)] flex max-h-[72vh] w-[320px] flex-col gap-1 overflow-y-auto rounded-md border border-hairline bg-elevated p-1.5 shadow-[0_8px_28px_-6px_rgba(0,0,0,0.18)]">
+          {groups.map((group) => (
+            <div key={group.label} className="flex flex-col gap-0.5">
+              <div
+                className={
+                  locale === 'ko'
+                    ? 'px-2.5 pb-0.5 pt-1.5 text-xs font-semibold text-faint'
+                    : 'px-2.5 pb-0.5 pt-1.5 font-mono text-[10px] uppercase tracking-wide text-faint'
+                }
               >
-                <span
-                  aria-hidden="true"
-                  className="flex h-7 w-7 flex-none items-center justify-center rounded-md border border-hairline bg-hairline-soft text-body"
-                >
-                  {Icon && <Icon size={16} strokeWidth={1.5} />}
-                </span>
-                <span className="flex min-w-0 flex-col">
-                  <span className="text-[13px] font-medium leading-[18px] text-ink">
-                    {tool.title}
-                  </span>
-                  <span className="truncate text-xs leading-4 text-mute">{tool.desc}</span>
-                </span>
-              </Link>
-            );
-          })}
+                {group.label}
+              </div>
+              {group.tools.map((tool) => {
+                const Icon = TOOL_ICONS[tool.id];
+                return (
+                  <Link
+                    key={tool.id}
+                    href={`/${locale}/${tool.id}`}
+                    onClick={() => setOpen(false)}
+                    className="flex items-center gap-2.5 rounded-sm px-2.5 py-2 no-underline transition-colors hover:bg-hairline-soft"
+                  >
+                    <span
+                      aria-hidden="true"
+                      className="flex h-7 w-7 flex-none items-center justify-center rounded-md border border-hairline bg-hairline-soft text-body"
+                    >
+                      {Icon && <Icon size={16} strokeWidth={1.5} />}
+                    </span>
+                    <span className="flex min-w-0 flex-col">
+                      <span className="text-[13px] font-medium leading-[18px] text-ink">
+                        {tool.title}
+                      </span>
+                      <span className="truncate text-xs leading-4 text-mute">{tool.desc}</span>
+                    </span>
+                  </Link>
+                );
+              })}
+            </div>
+          ))}
         </div>
       )}
     </div>

@@ -5,6 +5,7 @@ import { calculatePaperWeight, validatePaperWeight } from '@/lib/calculations';
 import type { CalculatorProps } from './types';
 import { NumberField } from '@/components/ui/NumberField';
 import { SelectField } from '@/components/ui/SelectField';
+import { CopyButton } from '@/components/ui/CopyButton';
 import { CalculatorShell } from './CalculatorShell';
 import { ResultPanel } from './ResultPanel';
 import { round, toNum } from './number';
@@ -16,6 +17,24 @@ const SIZES: Record<string, [number, number]> = {
   B5: [182, 257],
   Letter: [215.9, 279.4],
 };
+
+/** Edge-on stack of sheets; the stack grows (capped) with the sheet count. */
+function PaperStack({ sheets }: { sheets: number }) {
+  const layers = Math.min(Math.max(Math.round(sheets / 40), 4), 20);
+  return (
+    <div className="flex h-[140px] items-center justify-center">
+      <div className="flex flex-col-reverse gap-[2px]" aria-hidden="true">
+        {Array.from({ length: layers }).map((_, i) => (
+          <div
+            key={i}
+            className="h-1.5 rounded-[1px] border border-hairline bg-elevated"
+            style={{ width: `${150 - (i % 2) * 6}px` }}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
 
 export function PaperWeightCalculator({ dict, locale, eyebrow, title, desc }: CalculatorProps) {
   const t = dict.calc.weight;
@@ -80,15 +99,23 @@ export function PaperWeightCalculator({ dict, locale, eyebrow, title, desc }: Ca
     </div>
   );
 
+  const totalValue = result ? `${round(result.totalKg, 2)} kg` : '—';
   const results = (
     <ResultPanel
       resultLabel={dict.calc.result}
       alert={errorMsg ?? undefined}
       primaryLabel={t.totalLabel}
-      primaryValue={result ? `${round(result.totalKg, 2)} kg` : '—'}
+      primaryValue={totalValue}
+      primaryAction={
+        result ? (
+          <CopyButton value={totalValue} label={`${t.totalLabel} ${dict.calc.copy}`} />
+        ) : undefined
+      }
+      diagram={result ? <PaperStack sheets={toNum(sheets)} /> : undefined}
       rows={
         result
           ? [
+              { label: t.areaLabel, value: `${round(result.areaM2, 4)} m²` },
               { label: t.perSheetLabel, value: `${round(result.perSheetG, 2)} g` },
               { label: t.packageLabel, value: `${round(result.packageKg, 2)} kg` },
             ]

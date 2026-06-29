@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { getDictionary } from '@/i18n/dictionaries';
 import { locales, defaultLocale, isLocale } from '@/i18n/config';
+import { toolIds } from '@/lib/tools';
 
 describe('i18n', () => {
   it('exposes ko and en locales with ko as default', () => {
@@ -13,9 +14,11 @@ describe('i18n', () => {
     expect(getDictionary('en').nav.home).toBe('Home');
   });
 
-  it('lists all seven tools in both locales', () => {
-    expect(getDictionary('ko').tools).toHaveLength(7);
-    expect(getDictionary('en').tools).toHaveLength(7);
+  it('lists every tool id in both locales, in toolIds order', () => {
+    expect(getDictionary('ko').tools).toHaveLength(toolIds.length);
+    expect(getDictionary('en').tools).toHaveLength(toolIds.length);
+    expect(getDictionary('ko').tools.map((t) => t.id)).toEqual([...toolIds]);
+    expect(getDictionary('en').tools.map((t) => t.id)).toEqual([...toolIds]);
   });
 
   it('includes the convert tool in both locales', () => {

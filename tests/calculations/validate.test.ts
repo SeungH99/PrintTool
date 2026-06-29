@@ -5,6 +5,9 @@ import {
   validatePaperWeight,
   validateFold,
   validateLabel,
+  validateBooklet,
+  validatePrintSize,
+  validateBasisWeight,
 } from '@/lib/calculations/validate';
 
 describe('calculation input validation', () => {
@@ -62,6 +65,21 @@ describe('calculation input validation', () => {
       ok: false,
       error: 'positive',
     });
+  });
+
+  it('rejects absurdly large inputs with tooLarge', () => {
+    expect(validateBooklet({ pages: 20 })).toEqual({ ok: true });
+    expect(validateBooklet({ pages: 50_000 })).toEqual({ ok: false, error: 'tooLarge' });
+    expect(validatePrintSize({ widthMm: 1_000_000, heightMm: 297, dpi: 300 })).toEqual({
+      ok: false,
+      error: 'tooLarge',
+    });
+    expect(validateResolution({ widthPx: 3000, heightPx: 2400, dpi: 999_999, unit: 'cm' })).toEqual({
+      ok: false,
+      error: 'tooLarge',
+    });
+    expect(validateBasisWeight({ gsm: 999_999 })).toEqual({ ok: false, error: 'tooLarge' });
+    expect(validateBasisWeight({ gsm: 120 })).toEqual({ ok: true });
   });
 
   it('rejects a label sheet smaller than its margins', () => {

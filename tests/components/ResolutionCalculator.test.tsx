@@ -27,7 +27,7 @@ describe('ResolutionCalculator', () => {
 
   it('shows an error and hides the result on non-positive input', () => {
     render(<ResolutionCalculator {...props} />);
-    fireEvent.change(screen.getByLabelText('가로 (픽셀)'), { target: { value: '-5' } });
+    fireEvent.change(screen.getByLabelText('가로 (픽셀)'), { target: { value: '0' } });
     expect(screen.getByText('모든 값은 0보다 큰 숫자여야 합니다.')).toBeInTheDocument();
   });
 });

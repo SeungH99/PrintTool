@@ -4,14 +4,23 @@ import { useMemo, useState } from 'react';
 import { calculateLabel, validateLabel } from '@/lib/calculations';
 import type { CalculatorProps } from './types';
 import { NumberField } from '@/components/ui/NumberField';
+import { SelectField } from '@/components/ui/SelectField';
 import { ToggleField } from '@/components/ui/ToggleField';
 import { Badge } from '@/components/ui/Badge';
 import { CalculatorShell } from './CalculatorShell';
 import { ResultPanel } from './ResultPanel';
 import { round, toNum } from './number';
 
+/** Common label-sheet sizes (mm). */
+const SHEETS: Record<string, [number, number]> = {
+  A4: [210, 297],
+  A3: [297, 420],
+  Letter: [215.9, 279.4],
+};
+
 export function LabelCalculator({ dict, locale, eyebrow, title, desc }: CalculatorProps) {
   const t = dict.calc.label;
+  const [sheet, setSheet] = useState('A4');
   const [sheetW, setSheetW] = useState('210');
   const [sheetH, setSheetH] = useState('297');
   const [labelW, setLabelW] = useState('63.5');
@@ -19,6 +28,16 @@ export function LabelCalculator({ dict, locale, eyebrow, title, desc }: Calculat
   const [margin, setMargin] = useState('7');
   const [gap, setGap] = useState('2.5');
   const [rotate, setRotate] = useState(false);
+  const isCustomSheet = sheet === 'custom';
+
+  function onSheet(value: string) {
+    setSheet(value);
+    const preset = SHEETS[value];
+    if (preset) {
+      setSheetW(String(preset[0]));
+      setSheetH(String(preset[1]));
+    }
+  }
 
   const { result, errorMsg } = useMemo(() => {
     const input = {
@@ -35,10 +54,30 @@ export function LabelCalculator({ dict, locale, eyebrow, title, desc }: Calculat
     return { result: calculateLabel(input), errorMsg: null };
   }, [sheetW, sheetH, labelW, labelH, margin, gap, rotate, dict]);
 
+  const sheetOptions = [
+    ...Object.keys(SHEETS).map((k) => ({ value: k, label: k })),
+    { value: 'custom', label: t.sheetCustom },
+  ];
+
   const inputs = (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-      <NumberField label={t.sheetW} value={sheetW} onChange={setSheetW} suffix="mm" />
-      <NumberField label={t.sheetH} value={sheetH} onChange={setSheetH} suffix="mm" />
+      <div className="sm:col-span-2">
+        <SelectField label={t.sheetSize} value={sheet} options={sheetOptions} onChange={onSheet} />
+      </div>
+      <NumberField
+        label={t.sheetW}
+        value={sheetW}
+        onChange={setSheetW}
+        suffix="mm"
+        disabled={!isCustomSheet}
+      />
+      <NumberField
+        label={t.sheetH}
+        value={sheetH}
+        onChange={setSheetH}
+        suffix="mm"
+        disabled={!isCustomSheet}
+      />
       <NumberField label={t.labelW} value={labelW} onChange={setLabelW} suffix="mm" />
       <NumberField label={t.labelH} value={labelH} onChange={setLabelH} suffix="mm" />
       <NumberField label={t.margin} value={margin} onChange={setMargin} suffix="mm" />

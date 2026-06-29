@@ -25,7 +25,18 @@ export const en: Dictionary = {
       'DPI checker',
       'CMYK RGB color check',
       'bleed trim check',
+      'PDF imposition n-up',
+      'add crop marks to PDF',
+      'CMYK soft proof',
+      'print color preview',
     ],
+    categories: {
+      preflight: 'Preflight',
+      convert: 'Convert',
+      size: 'Size & resolution',
+      paper: 'Paper',
+      production: 'Production',
+    },
   },
   tools: [
     {
@@ -70,6 +81,66 @@ export const en: Dictionary = {
       desc: 'Calculate how many labels fit on a single sheet.',
       tag: 'Imposition',
     },
+    {
+      id: 'bleed',
+      title: 'Bleed & Safe Area',
+      desc: 'Get the working size with bleed added and the safe margin box from a finished trim size.',
+      tag: 'Bleed',
+    },
+    {
+      id: 'size',
+      title: 'Paper Size to Pixels',
+      desc: 'Convert A4, business card, and other sizes to mm, cm, inches, and pixels at any DPI.',
+      tag: 'Size',
+    },
+    {
+      id: 'gsm',
+      title: 'Paper Weight Converter',
+      desc: 'Convert GSM to US basis weight (lb) for each paper grade.',
+      tag: 'GSM',
+    },
+    {
+      id: 'booklet',
+      title: 'Saddle-Stitch Pages',
+      desc: 'Validate booklet page count (multiple of 4) and get the printing page order.',
+      tag: 'Booklet',
+    },
+    {
+      id: 'nup',
+      title: 'Sheet Yield (N-up)',
+      desc: 'Find how many pieces a parent sheet yields and the wasted area.',
+      tag: 'Imposition',
+    },
+    {
+      id: 'grommet',
+      title: 'Banner Grommets',
+      desc: 'Get grommet count and positions from banner size and spacing.',
+      tag: 'Banner',
+    },
+    {
+      id: 'color',
+      title: 'CMYK Color Converter',
+      desc: 'Convert between CMYK, RGB, and HEX through an ICC profile.',
+      tag: 'Color',
+    },
+    {
+      id: 'impose',
+      title: 'PDF Imposition (N-up)',
+      desc: 'Repeat a finished-design PDF across a parent sheet for print.',
+      tag: 'Imposition',
+    },
+    {
+      id: 'marks',
+      title: 'PDF Crop & Printer Marks',
+      desc: 'Add crop marks and registration targets outside the PDF bleed.',
+      tag: 'Printer marks',
+    },
+    {
+      id: 'proof',
+      title: 'Image Soft Proof (CMYK)',
+      desc: 'Simulate an image in CMYK to preview print color and out-of-gamut areas.',
+      tag: 'Soft proof',
+    },
   ],
   footer: {
     tagline: 'Print-production checks and calculations, all in one place.',
@@ -91,14 +162,17 @@ export const en: Dictionary = {
   calc: {
     inputs: 'Values',
     result: 'Result',
+    copy: 'Copy',
     back: 'All tools',
     guideTitle: 'Guide',
     comingSoon: 'Coming soon',
     comingSoonDesc: 'This tool is on its way. Try another calculator in the meantime.',
     errors: {
       positive: 'All values must be numbers greater than 0.',
+      tooLarge: 'A value is too large — please check your input.',
       foldInner: 'The inner-panel adjustment is larger than the panel.',
       labelMargin: 'Margins are larger than the sheet.',
+      bleedSafe: 'The safe margin is larger than half the finished size.',
     },
     res: {
       widthPx: 'Width (pixels)',
@@ -110,6 +184,8 @@ export const en: Dictionary = {
       unitInch: 'Inches (inch)',
       sizeLabel: 'Maximum print size',
       qualityLabel: 'Quality level',
+      aspectLabel: 'Aspect ratio',
+      draftLabel: 'Max size at 150 DPI',
       megapixelsLabel: 'Total pixels',
       levelHigh: 'High quality',
       levelOk: 'Acceptable',
@@ -128,8 +204,10 @@ export const en: Dictionary = {
       pagesHelper: 'Body pages, excluding the cover',
       interiorGsm: 'Interior paper (GSM)',
       coverGsm: 'Cover paper (GSM)',
+      coverGsmNote: 'Used only for perfect binding.',
       spineLabel: 'Estimated spine thickness',
       leavesLabel: 'Body leaves',
+      previewCaption: 'Cover spread — back · spine · front',
       warn: 'Page count should be a multiple of 4. The current value may leave blank pages.',
       note: 'Actual thickness varies with paper bulk, coating and binding — confirm with your printer before production. (estimate)',
       guide: [
@@ -144,6 +222,7 @@ export const en: Dictionary = {
       height: 'Height (mm)',
       gsm: 'Weight (GSM)',
       sheets: 'Number of sheets',
+      areaLabel: 'Sheet area',
       totalLabel: 'Total paper weight',
       perSheetLabel: 'Per sheet',
       packageLabel: 'Est. package weight',
@@ -168,6 +247,8 @@ export const en: Dictionary = {
       ],
     },
     label: {
+      sheetSize: 'Sheet size',
+      sheetCustom: 'Custom',
       sheetW: 'Sheet width (mm)',
       sheetH: 'Sheet height (mm)',
       labelW: 'Label width (mm)',
@@ -186,6 +267,237 @@ export const en: Dictionary = {
         'Gaps absorb cutting tolerance — 2mm or more is recommended.',
       ],
     },
+    bleed: {
+      width: 'Finished width (mm)',
+      height: 'Finished height (mm)',
+      bleed: 'Bleed (mm)',
+      bleedHelper: '3mm per side is the common standard',
+      safe: 'Safe margin (mm)',
+      safeHelper: 'Keep text and logos inside this line',
+      unit: 'Display unit',
+      unitMm: 'Millimeters (mm)',
+      unitInch: 'Inches (inch)',
+      workLabel: 'Working size (with bleed)',
+      trimLabel: 'Trim size (finished)',
+      safeLabel: 'Safe area',
+      legendBleed: 'Bleed',
+      legendTrim: 'Trim',
+      legendSafe: 'Safe',
+      note: 'Match the bleed your printer asks for (usually 1–3mm). Build the artwork at the working size; the piece is cut down to the trim size.',
+      guide: [
+        'Working size = finished size + bleed on all sides. Extend any color or image that touches the edge all the way to the bleed.',
+        'Keep critical text and logos inside the safe line so they survive if the cut shifts.',
+      ],
+    },
+    size: {
+      format: 'Paper size',
+      custom: 'Custom',
+      width: 'Width (mm)',
+      height: 'Height (mm)',
+      dpi: 'Resolution (DPI)',
+      dpiHelper: 'Print usually calls for 300 DPI',
+      pxLabel: 'Pixel size',
+      mmLabel: 'Millimeters',
+      cmLabel: 'Centimeters',
+      inLabel: 'Inches',
+      note: 'Pixel size = size(mm) ÷ 25.4 × DPI. At the same size, a higher DPI means more pixels.',
+      guide: [
+        'Filling A4 at 300 DPI needs about 2480 × 3508 px.',
+        'Print files are usually built at 300 DPI; large-format pieces are fine at 150 DPI.',
+      ],
+    },
+    gsm: {
+      gsm: 'Weight (GSM)',
+      grade: 'Paper grade',
+      grades: {
+        bond: 'Bond / Writing',
+        text: 'Text / Book',
+        cover: 'Cover',
+        index: 'Index',
+        tag: 'Tag',
+        bristol: 'Bristol',
+      },
+      note: 'lb differs by grade because each uses a different basis sheet size. GSM is an absolute unit independent of grade.',
+      guide: [
+        'GSM is the weight of 1 m² of paper — an absolute unit independent of grade.',
+        'US lb depends on a grade-specific basis size, so the same GSM is a different lb for Cover, Text, and Bond.',
+      ],
+    },
+    booklet: {
+      pages: 'Page count',
+      pagesUnit: 'pp',
+      pagesHelper: 'Total pages incl. cover (multiple of 4 recommended)',
+      quickPick: 'Quick pick',
+      sheetsLabel: 'Sheets needed',
+      sheetUnit: 'sheets',
+      paddedLabel: 'Adjusted page count',
+      blanksLabel: 'Blank pages',
+      outer: 'outer',
+      inner: 'inner',
+      warn: 'Not a multiple of 4 — blank pages are added. Round to the nearest multiple of 4.',
+      note: 'For saddle stitch. One folded sheet holds 4 pages; the page order is shown as outer/inner spreads.',
+      guide: [
+        'Saddle stitch binds in 4-page units, so the total page count must be a multiple of 4.',
+        'Outer sheets carry the first and last pages; inner sheets carry the middle pages.',
+      ],
+    },
+    nup: {
+      sheet: 'Parent sheet',
+      custom: 'Custom',
+      sheetW: 'Sheet width (mm)',
+      sheetH: 'Sheet height (mm)',
+      pieceLabel: 'Finished size',
+      pieces: {
+        card: 'Business card',
+        postcard: 'Postcard',
+        a6: 'A6',
+        a5: 'A5',
+        a4: 'A4',
+      },
+      pieceW: 'Piece width (mm)',
+      pieceH: 'Piece height (mm)',
+      gap: 'Gutter / gap (mm)',
+      gapHelper: 'Cutting allowance, usually 0–5mm',
+      perSheetLabel: 'Pieces per sheet',
+      unit: '',
+      gridLabel: 'Layout (cols × rows)',
+      wasteLabel: 'Wasted area',
+      rotatedBadge: 'Rotated 90°',
+      note: 'How many finished pieces a parent sheet yields (n-up) and the wasted area. Both orientations are compared and the higher-yield one is used.',
+      guide: [
+        'Yield = (sheet width ÷ piece width) × (sheet height ÷ piece height); the better orientation is chosen automatically.',
+        'Common Korean parent sheets: 4x6 (788×1091mm), Kuk (636×939mm).',
+      ],
+    },
+    grommet: {
+      width: 'Banner width (mm)',
+      height: 'Banner height (mm)',
+      spacing: 'Grommet spacing (mm)',
+      spacingHelper: 'Typically every 500–600mm',
+      totalLabel: 'Total grommets',
+      unit: '',
+      topLabel: 'Per top/bottom edge',
+      sideLabel: 'Per side edge',
+      note: 'A grommet sits at each corner and is spaced no farther apart than the spacing along every edge. Check the preview for placement.',
+      guide: [
+        'Grommets usually sit every 50–60cm, including the corners.',
+        'For windy outdoor banners, tighten the spacing to reduce sag and tearing.',
+      ],
+    },
+    color: {
+      hex: 'HEX',
+      gamutWarn: 'This screen colour is outside the CMYK gamut and will print as the nearest reproducible colour.',
+      gamutBadge: 'Out of gamut',
+      copy: 'Copy',
+      loading: 'Loading profile…',
+      errorLoad: 'Could not load the color engine. Refresh and try again.',
+      note: 'ICC profile-based conversion. The actual printed color depends on your printer’s profile and paper.',
+      guide: [
+        'CMYK is ink (print); RGB/HEX is screen. The ICC profile converts between them to preview an on-screen approximation.',
+        'Exact print color depends on the printer’s profile and stock, so confirm with a proof.',
+      ],
+    },
+    impose: {
+      dropTitle: 'Drop the PDF to impose here',
+      dropOr: 'or',
+      dropBtn: 'Choose file',
+      dropTypes: 'PDF file · processed in your browser',
+      errTitle: 'Could not read the file',
+      errDesc: 'Make sure it is a PDF and try again.',
+      selected: 'File to impose',
+      change: 'Change file',
+      pieceLabel: 'Piece size',
+      settingsTitle: 'Imposition settings',
+      sheet: 'Parent sheet',
+      custom: 'Custom',
+      sheetW: 'Sheet width (mm)',
+      sheetH: 'Sheet height (mm)',
+      gap: 'Gutter / gap (mm)',
+      margin: 'Edge / gripper margin (mm)',
+      marginHelper: 'Margin kept clear at the sheet edges',
+      perSheetLabel: 'Pieces per sheet',
+      gridLabel: 'Layout (cols × rows)',
+      rotatedBadge: 'Rotated 90°',
+      tooBig: 'The piece is larger than the sheet and cannot be placed. Check the sheet size or margins.',
+      imposing: 'Imposing…',
+      start: 'Build imposed PDF',
+      doneTitle: 'Imposition complete',
+      outLabel: 'Output file',
+      specOutSize: 'Output size',
+      download: 'Download PDF',
+      reset: 'Start over',
+      guideTitle: 'Guide',
+      guide: [
+        'The piece size is read automatically from the first page of your PDF.',
+        'The gripper margin is where the press grabs the sheet — usually keep 10–15mm clear.',
+        'Both orientations are compared and the higher-yield one is chosen, flagged with a badge when rotated.',
+      ],
+      disclaimer:
+        'Processed in your browser; the file is never uploaded. Colors are preserved as-is. Use a separate tool for crop marks.',
+    },
+    marks: {
+      dropTitle: 'Drop the PDF to mark here',
+      dropOr: 'or',
+      dropBtn: 'Choose file',
+      dropTypes: 'PDF file · processed in your browser',
+      errTitle: 'Could not read the file',
+      errDesc: 'Make sure it is a PDF and try again.',
+      selected: 'File to mark',
+      change: 'Change file',
+      trimLabel: 'Trim size',
+      previewTitle: 'Preview',
+      settingsTitle: 'Mark settings',
+      crop: 'Crop marks',
+      registration: 'Registration marks',
+      bleed: 'Bleed (mm)',
+      offset: 'Offset (mm)',
+      length: 'Mark length (mm)',
+      weight: 'Stroke width (pt)',
+      applying: 'Adding marks…',
+      start: 'Build marked PDF',
+      doneTitle: 'Marks added',
+      outLabel: 'Output file',
+      specOutSize: 'Output size',
+      download: 'Download PDF',
+      reset: 'Start over',
+      guideTitle: 'Guide',
+      guide: [
+        'Crop marks show where to trim; registration marks check color alignment.',
+        'Marks sit outside the trim, in the bleed area, so the page grows to fit them.',
+        'The offset keeps the marks clear of the printed (bleed) area.',
+      ],
+      disclaimer:
+        'Processed in your browser; the file is never uploaded. Marks are added to every page and drawn in registration black (all plates). Match the values to your printer’s spec.',
+    },
+    proof: {
+      dropTitle: 'Drop an image to soft-proof here',
+      dropOr: 'or',
+      dropBtn: 'Choose file',
+      dropTypes: 'JPG · PNG · WebP · processed in your browser',
+      errTitle: 'Could not read the file',
+      errDesc: 'Make sure it is an image (JPG·PNG·WebP) and try again.',
+      loading: 'Loading color profile…',
+      errorLoad: 'Could not load the color engine. Refresh and try again.',
+      processing: 'Converting image…',
+      gamutLabel: 'Out-of-gamut area',
+      inGamut: 'In gamut',
+      reset: 'Start over',
+      originalLabel: 'Original (screen)',
+      proofLabel: 'Proof (print sim)',
+      highlight: 'Highlight out-of-gamut',
+      highlightHelper: 'Mark pixels that dull in print, in magenta',
+      uploadIcc: 'Upload ICC profile',
+      download: 'Download proof PNG',
+      simNote:
+        'This is an on-screen simulation and does not guarantee the printed result. It varies with monitor calibration, paper, and press conditions.',
+      guideTitle: 'Guide',
+      guide: [
+        'Compare the original (screen RGB) with the print simulation (CMYK profile) side by side.',
+        'The out-of-gamut % is the share of pixels whose screen color can’t be reproduced in CMYK.',
+        'Upload your printer’s ICC profile for a more accurate preview.',
+      ],
+      disclaimer: 'ICC profile-based simulation. Confirm exact color with a printed proof.',
+    },
     pdf: {
       dropTitle: 'Drop your PDF here',
       dropOr: 'or',
@@ -194,6 +506,7 @@ export const en: Dictionary = {
       analyzing: 'Analyzing your file…',
       errTitle: 'Could not read the file',
       errDesc: 'Make sure it is a PDF and try again.',
+      previewAlt: 'First page preview',
       reset: 'Start over',
       summaryTitle: 'Result',
       overallOk: 'Basic check passed',
@@ -225,12 +538,16 @@ export const en: Dictionary = {
       settingsTitle: 'Conversion settings',
       sizeLabel: 'Page size',
       sizeA4: 'A4 (210 × 297 mm)',
+      sizeA3: 'A3 (297 × 420 mm)',
       sizeLetter: 'Letter (8.5 × 11 in)',
       sizeFit: 'Fit to image size',
       orientationLabel: 'Orientation',
       orientAuto: 'Auto',
       orientPortrait: 'Portrait',
       orientLandscape: 'Landscape',
+      previewTitle: 'Preview',
+      effDpiLabel: 'Effective resolution',
+      dpiLowBadge: 'Low resolution',
       start: 'Convert to print PDF',
       converting: 'Converting…',
       doneTitle: 'Conversion complete',
@@ -241,6 +558,7 @@ export const en: Dictionary = {
       specPages: 'Pages',
       specSize: 'Page size',
       specColor: 'Color',
+      specOutSize: 'Output size',
       reset: 'Start over',
       cmykNote:
         'Output is RGB. True CMYK conversion is not possible in the browser — for precise color, use your print shop or a professional tool.',
@@ -268,6 +586,388 @@ export const en: Dictionary = {
   },
   langName: 'EN',
   toolGuides: {
+    bleed: {
+      intro:
+        'The bleed & safe-area calculator turns a finished (trim) size into the working size with bleed added on every side, plus the safe line that keeps text and logos from being cut. You build artwork at the working size and the piece is trimmed to the finished size, so it prints with no white edges and nothing important clipped.',
+      body: [
+        {
+          heading: 'Working size, trim line, and safe line',
+          text: 'Working size = finished size + bleed on all sides. The trim line sits at the finished size, and the safe line is inset from the trim. The preview shows all three zones: bleed (outer), trim (middle), and safe (inner).',
+        },
+        {
+          heading: 'Why bleed is needed',
+          text: 'Cutters trim stacks of sheets at once and can drift by 1–2mm. Any design where color or imagery touches the edge must fill to the bleed so a shifted cut never leaves a white sliver. 3mm per side is the common standard; some printers ask for 1–2mm.',
+        },
+        {
+          heading: 'Keep content inside the safe line',
+          text: 'Place text, logos, and numbers that must not be cut inside the safe line, typically 3mm in from the trim. That margin absorbs cutting tolerance so nothing important gets clipped.',
+        },
+      ],
+      faqTitle: 'Frequently asked questions',
+      faq: [
+        {
+          q: 'What is the difference between trim size and working size?',
+          a: 'Trim size is the final size after cutting; working size is that plus bleed on every side, which is how you build the file. A 90×50mm card with 3mm bleed has a 96×56mm working size.',
+        },
+        {
+          q: 'How much bleed is standard?',
+          a: '3mm on all sides is the common standard. Some printers ask for 1–2mm, so check your printer’s guide before ordering.',
+        },
+        {
+          q: 'How big should the safe margin be?',
+          a: 'About 3mm inside the trim line is typical. Keep important text and logos inside it so they survive if the cut drifts.',
+        },
+        {
+          q: 'Can I go edge to edge without bleed?',
+          a: 'Not recommended. Without bleed, a slightly shifted cut can show a white edge. Always add bleed when color or imagery reaches the edge.',
+        },
+      ],
+    },
+    size: {
+      intro:
+        'The paper size to pixels calculator turns standard formats like A4, business card, and postcard — or a custom size — into mm, cm, inches, and the pixel dimensions at a target DPI. It uses pixels = size(mm) ÷ 25.4 × DPI, so you know exactly how many pixels your design canvas needs.',
+      body: [
+        {
+          heading: 'How size converts to pixels',
+          text: 'Divide millimeters by 25.4 to get inches, then multiply by DPI for pixels. Filling A4 (210×297mm) at 300 DPI needs about 2480×3508px. A higher DPI yields more pixels at the same physical size.',
+        },
+        {
+          heading: 'Standard paper sizes',
+          text: 'The ISO A series halves in area each step down from A4 (210×297mm). US sizes include Letter (215.9×279.4mm), Legal, and Tabloid; a business card is typically 90×50mm and a postcard 100×148mm.',
+        },
+        {
+          heading: 'Setting up your canvas',
+          text: 'Enter these pixel values as the canvas size in your design app to guarantee print resolution. For trimmed work, add 3mm bleed per side to the size. Color mode (CMYK) is set separately.',
+        },
+      ],
+      faqTitle: 'Frequently asked questions',
+      faq: [
+        {
+          q: 'How many pixels is A4 at 300 DPI?',
+          a: 'About 2480 × 3508 pixels — A4 (210×297mm) divided by 25.4 to inches, then multiplied by 300.',
+        },
+        {
+          q: 'What is a business card in pixels?',
+          a: 'A 90×50mm card at 300 DPI is about 1063 × 591 pixels; add a little more for 3mm bleed.',
+        },
+        {
+          q: 'What DPI should I use?',
+          a: '300 DPI for general print. Large-format pieces viewed from a distance, like posters and banners, are fine at 150 DPI.',
+        },
+        {
+          q: 'Why convert between mm and px?',
+          a: 'Print sizes are specified in mm while design canvases are in px. Converting lets you build a file at the right resolution for the print size.',
+        },
+      ],
+    },
+    gsm: {
+      intro:
+        'The paper weight converter turns metric GSM (g/m²) into US basis weight (lb) for each paper grade — Bond, Text, Cover, Index, Tag, and Bristol. Because lb uses a different basis sheet size per grade, the same paper reads as a different lb number depending on grade; this tool computes them all at once.',
+      body: [
+        {
+          heading: 'GSM vs. lb',
+          text: 'GSM is the weight of one square meter of paper, an absolute unit independent of grade. US lb is the weight of 500 sheets of that grade’s basis size (e.g. Cover 20×26in), so the same caliper reads as a different lb per grade.',
+        },
+        {
+          heading: 'Conversion factors by grade',
+          text: 'lb = GSM ÷ factor, with a grade-specific factor: Bond 3.76, Text 1.48, Cover 2.70, Index 1.875, Tag 1.63, Bristol 2.19. For example, 270 GSM is about 100lb Cover, and 216 GSM is about 115lb Index.',
+        },
+        {
+          heading: 'Using it to order paper',
+          text: 'When ordering imported stock quoted in lb, convert to GSM to compare against metric weights. Different grades at the same GSM can differ in thickness and stiffness, so confirm with a sample.',
+        },
+      ],
+      faqTitle: 'Frequently asked questions',
+      faq: [
+        {
+          q: 'What is 80lb Cover in GSM?',
+          a: 'About 216 GSM — 80 multiplied by the Cover factor 2.7048. It is a common thickness for covers and business cards.',
+        },
+        {
+          q: 'Why do two papers at the same lb differ in thickness?',
+          a: 'Each grade (Text, Cover, Bond, etc.) uses a different basis sheet size. 80lb Text and 80lb Cover have very different GSM. Compare by GSM for accuracy.',
+        },
+        {
+          q: 'What GSM is copy paper?',
+          a: 'Copy paper is usually 80 GSM (about 20lb Bond); business cards use 250 GSM or more (about 90lb+ Cover).',
+        },
+        {
+          q: 'Is GSM or lb more accurate?',
+          a: 'GSM is the grade-independent absolute unit, so it is more reliable for comparison. lb depends on the basis size and should always name its grade.',
+        },
+      ],
+    },
+    booklet: {
+      intro:
+        'The saddle-stitch page calculator checks whether a booklet’s total page count is a multiple of 4, pads any shortfall with blanks, and works out the number of sheets and the printing page order for each sheet. Because one folded sheet holds 4 pages, it shows exactly which page numbers pair up so the booklet reads correctly once bound.',
+      body: [
+        {
+          heading: 'Why a multiple of 4',
+          text: 'Saddle stitch folds one sheet in half to make 4 pages, so the total must be a multiple of 4 or blank pages appear. 20 pages needs 5 sheets; 24 pages needs 6.',
+        },
+        {
+          heading: 'Page order (imposition)',
+          text: 'Once folded, physically distant pages print on the same side. Outer sheets carry the first and last pages; inner sheets carry the middle ones. For 8 pages, the first sheet’s outer side is 8·1 and its inner side is 2·7.',
+        },
+        {
+          heading: 'Watch for creep',
+          text: 'Saddle stitch has almost no spine, but with many sheets the inner pages push outward (creep), trimming their outer margin. Keep a generous safe margin when the page count is high.',
+        },
+      ],
+      faqTitle: 'Frequently asked questions',
+      faq: [
+        {
+          q: 'Why must a saddle-stitch booklet be a multiple of 4?',
+          a: 'One folded sheet makes 4 pages. A count that is not a multiple of 4 leaves blanks, so include the cover and round the total to 4, 8, 12, and so on.',
+        },
+        {
+          q: 'How many sheets does a 20-page booklet need?',
+          a: 'Five. 20 ÷ 4 = 5 — five sheets nested and stapled at the center fold.',
+        },
+        {
+          q: 'Why is the page order scrambled?',
+          a: 'Folding places separated pages on the same printed side. This tool lists the outer/inner page pair for each sheet.',
+        },
+        {
+          q: 'What if my page count is not a multiple of 4?',
+          a: 'It rounds up to the nearest multiple of 4 and fills the shortfall with blank pages. Lay out your content around those blanks.',
+        },
+      ],
+    },
+    nup: {
+      intro:
+        'The sheet yield (n-up) calculator works out how many finished pieces — business cards, flyers, labels — fit on one large parent sheet, plus the wasted area. Enter the parent sheet and piece sizes and it compares both orientations, picks the higher-yield layout, and previews the columns × rows grid.',
+      body: [
+        {
+          heading: 'How yield is calculated',
+          text: 'Divide the sheet width by the piece width for columns and the heights for rows; columns × rows is the count per sheet. Rotating the piece 90° can fit more, so both orientations are compared.',
+        },
+        {
+          heading: 'Parent sheet sizes',
+          text: 'Korean print commonly uses the 4x6 sheet (788×1091mm) and the Kuk sheet (636×939mm). Real yield is slightly lower because of gripper margin and trimming allowance.',
+        },
+        {
+          heading: 'Reducing waste',
+          text: 'Choosing a piece size that divides the sheet evenly, or using a rotated layout, lowers the wasted area and the unit cost. Compare the waste percentage across sheet sizes to find the most efficient option.',
+        },
+      ],
+      faqTitle: 'Frequently asked questions',
+      faq: [
+        {
+          q: 'What is sheet yield (n-up)?',
+          a: 'How many finished pieces you get from one parent sheet. A higher yield means more pieces from the same paper, lowering the unit cost.',
+        },
+        {
+          q: 'How many business cards fit on a 4x6 sheet?',
+          a: 'A 90×50mm card with no gutter fits about 180 (rotated layout). Real runs are a little fewer because of gripper and trim allowances.',
+        },
+        {
+          q: 'Why does rotating fit more?',
+          a: 'When the piece and sheet proportions differ, a 90° turn can leave less leftover space and fit more. The calculator picks the better orientation automatically.',
+        },
+        {
+          q: 'Which sheet size is more efficient?',
+          a: 'It depends on the piece size. Compare the yield and wasted area for each sheet and choose the more efficient one.',
+        },
+      ],
+    },
+    grommet: {
+      intro:
+        'The banner grommet calculator takes the banner width, height, and desired spacing and returns the number of grommets — with one at every corner — and their evenly spaced positions along each edge. The preview shows where each grommet lands so you can mark the punch points before installation.',
+      body: [
+        {
+          heading: 'How placement works',
+          text: 'One grommet goes at each corner, then each edge is divided so the gap never exceeds the spacing, with the grommets distributed evenly. Top and bottom edges use the width; side edges use the height.',
+        },
+        {
+          heading: 'Spacing guidance',
+          text: 'Indoor or short banners typically use 50–60cm spacing. Outdoor, large, or wind-exposed banners tighten to 30–45cm to reduce sag and tearing.',
+        },
+        {
+          heading: 'Installation tips',
+          text: 'Reinforce grommet points with hem tape or stitching to prevent tearing. Plan the count around where you will tie off and the spacing of the wall or frame fixing points.',
+        },
+      ],
+      faqTitle: 'Frequently asked questions',
+      faq: [
+        {
+          q: 'What spacing should banner grommets use?',
+          a: 'Usually 50–60cm. Outdoor or large banners tighten to 30–45cm to reduce wind sag.',
+        },
+        {
+          q: 'Do the corners need grommets?',
+          a: 'Yes. Corners carry the most tension, so they always get a grommet. This calculator includes them.',
+        },
+        {
+          q: 'How many grommets for a 3m × 1m banner?',
+          a: 'At 60cm spacing, six per top/bottom edge and three per side edge, sharing corners for 14 total.',
+        },
+        {
+          q: 'What about very windy locations?',
+          a: 'Tighten the spacing to 30–45cm, and for large banners add wind slits (mesh or cutouts) to relieve tension.',
+        },
+      ],
+    },
+    color: {
+      intro:
+        'The CMYK color converter translates between print CMYK and screen RGB/HEX through an ICC profile. Instead of a naive formula it uses a real CMYK profile (the Little CMS engine), so the on-screen preview is a closer approximation of the printed color. Everything runs in your browser.',
+      body: [
+        {
+          heading: 'CMYK vs. RGB',
+          text: 'RGB/HEX is additive screen color made from light; CMYK is subtractive print color made from ink. The two gamuts differ, so not every color maps 1:1 and a conversion can shift the color slightly.',
+        },
+        {
+          heading: 'Why an ICC profile',
+          text: 'CMYK↔RGB depends on ink, paper, and press conditions, so a plain formula is inaccurate. This tool transforms color through a standard CMYK ICC profile, which is more reliable than formula-based approximations.',
+        },
+        {
+          heading: 'Screen vs. printed color',
+          text: 'The preview swatch is an sRGB on-screen approximation. The real printed color depends on the printer’s profile (e.g. FOGRA, SWOP), paper, and coating, so confirm with a proof when color matters.',
+        },
+      ],
+      faqTitle: 'Frequently asked questions',
+      faq: [
+        {
+          q: 'Why does RGB look different after converting to CMYK?',
+          a: 'RGB uses light and CMYK uses ink, with different gamuts. Neon and highly saturated colors fall outside CMYK and can look duller.',
+        },
+        {
+          q: 'Is this conversion accurate?',
+          a: 'It is accurate to the standard CMYK ICC profile used. If your printer uses a different profile or paper, the real color can differ, so confirm with a proof.',
+        },
+        {
+          q: 'Can I convert a HEX code to CMYK?',
+          a: 'Yes. Enter a HEX value and it is read as RGB, then converted to CMYK through the ICC profile.',
+        },
+        {
+          q: 'Is anything uploaded to a server?',
+          a: 'No. Color conversion runs entirely in your browser; no data is sent to a server.',
+        },
+      ],
+    },
+    impose: {
+      intro:
+        'PDF imposition (n-up) lays out one finished design repeatedly across a large press sheet, producing a print-ready PDF that runs many copies at once. For small pieces like business cards, postcards, labels, and flyers, it maximizes the yield (pieces per sheet) when ganging up on a parent sheet. Your uploaded PDF is processed entirely in the browser and never sent to a server.',
+      body: [
+        {
+          heading: 'Yield and parent-sheet sizes',
+          text: 'Yield is how many finished pieces fit on one parent sheet. This tool reads the piece size from the first page of your PDF, compares both orientations on the chosen sheet, and picks the higher-yielding layout automatically. Common parent sheets include 4x6 (788×1091mm) and Kuk (636×939mm); digital presses often use SRA3 (320×450mm).',
+        },
+        {
+          heading: 'Gutter and gripper margin',
+          text: 'The gutter is the cutting allowance between pieces — usually 3–5mm so the trim does not clip a neighbor. The gripper margin is the sheet edge the press grabs, where nothing prints, so keep 10–15mm clear on all sides. Yield is computed inside the area left after subtracting both.',
+        },
+        {
+          heading: 'Rotation and efficiency',
+          text: 'Turning the piece 90° often fits more copies on the same sheet. This tool compares the yield of both orientations, uses the better one, and flags a badge when rotation is applied. Grain-sensitive stock or one-way artwork may not tolerate rotation, so confirm with your printer.',
+        },
+        {
+          heading: 'Workflow before and after',
+          text: 'Imposition is a separate step from adding crop/registration marks. Typically you export the finished design with bleed, impose it onto the sheet, then add trim marks per sheet. Real production usually follows the printer’s imposition spec (gripper direction, margins), so pull a single sheet proof before a large run.',
+        },
+      ],
+      faqTitle: 'Frequently asked questions',
+      faq: [
+        {
+          q: 'How is the piece size determined?',
+          a: 'It uses the size of the first page of your uploaded PDF as the finished piece. If you exported with bleed, the layout is based on that size.',
+        },
+        {
+          q: 'Can I see how many fit per sheet before exporting?',
+          a: 'Yes. Enter the sheet size, gutter, and margin and the preview shows the layout (cols × rows), pieces per sheet, and whether rotation was applied — before you build the file.',
+        },
+        {
+          q: 'Does it support saddle-stitch or perfect-bound booklet imposition?',
+          a: 'Currently it supports n-up imposition (repeating one design). Booklet signature imposition is a separate step that is in progress.',
+        },
+        {
+          q: 'Are colors changed or is the file uploaded?',
+          a: 'Colors are preserved as-is, and all processing happens in your browser — the file is never sent to a server.',
+        },
+      ],
+    },
+    marks: {
+      intro:
+        'The crop & printer marks tool adds crop (trim) marks and registration targets outside the trim of a finished PDF. Crop marks tell the printer where to cut; registration marks let the press confirm that the four CMYK plates line up exactly. Your uploaded PDF is processed entirely in the browser and never sent to a server.',
+      body: [
+        {
+          heading: 'Crop marks and bleed',
+          text: 'Crop marks are short lines at the four corners of the finished (trim) size. Designs whose color or images run to the edge need bleed (usually 3mm) to absorb trimming tolerance, and the marks sit outside that bleed so they never cover the artwork. This tool grows the page (MediaBox) to make room for the marks.',
+        },
+        {
+          heading: 'Registration marks and rich black',
+          text: 'Registration marks are circle-and-crosshair targets the press uses to confirm each color plate is aligned. Because they must appear on all four plates, they are drawn in registration black (CMYK 100/100/100/100), not a single channel. This tool outputs the marks in rich black automatically.',
+        },
+        {
+          heading: 'Trim box and page rotation',
+          text: 'The tool uses the PDF TrimBox as the cut size when present, and the page (MediaBox) otherwise. Marks are stamped directly on the page, so even if the page carries a /Rotate flag, the content and marks rotate together and stay aligned. Check the live preview before exporting.',
+        },
+        {
+          heading: 'Print workflow tips',
+          text: 'Typically you export the design with bleed, add marks here, and impose multiple copies onto a sheet as a separate step. Printers differ on the mark types, lengths, and offsets they expect, so check the spec sheet and pull a single proof to verify placement before a large run.',
+        },
+      ],
+      faqTitle: 'Frequently asked questions',
+      faq: [
+        {
+          q: 'What is the difference between crop and registration marks?',
+          a: 'Crop marks show where to cut; registration marks confirm the CMYK plates are aligned. You can toggle each on or off.',
+        },
+        {
+          q: 'Which pages get marks?',
+          a: 'Every page in the document, each computed from its own trim (or page) size.',
+        },
+        {
+          q: 'Does it work on a PDF that already has bleed?',
+          a: 'Yes. If a TrimBox is set it is used as the cut size and marks are placed outside the bleed; otherwise the page size is treated as the trim.',
+        },
+        {
+          q: 'Is anything uploaded or are colors changed?',
+          a: 'Nothing is uploaded. The original content and colors are untouched — only the marks are added — and all processing happens in your browser.',
+        },
+      ],
+    },
+    proof: {
+      intro:
+        'Image soft proofing converts a screen RGB image through a CMYK ICC profile to preview how it will look in print. It reports the share of the image that falls outside the CMYK gamut (vivid, saturated colors that can’t be reproduced) and highlights exactly which pixels will dull. All processing happens in your browser and the image is never sent to a server.',
+      body: [
+        {
+          heading: 'Soft proofing and gamut',
+          text: 'RGB makes color with light (screen); CMYK makes it with ink (print), and the two have different ranges (gamuts). Soft proofing round-trips the image through a real CMYK profile (Little CMS engine) to approximate how colors shift in print. A higher out-of-gamut percentage means a bigger difference between screen and print color.',
+        },
+        {
+          heading: 'ICC profiles and accuracy',
+          text: 'The built-in profile assumes a generic CMYK. If your printer provides a profile (e.g. FOGRA, SWOP), upload the ICC file to preview under those exact conditions. Whatever profile you use, the screen is still a simulation — actual color depends on monitor calibration, paper, and press conditions.',
+        },
+        {
+          heading: 'Working with out-of-gamut areas',
+          text: 'Turn on highlighting to see, in magenta, the pixels that will dull in print. If there are many, lower the saturation, bring colors into a safe CMYK range, or consider a spot color. Photos commonly have some out-of-gamut areas, but check logos and brand colors so they don’t shift noticeably in print.',
+        },
+        {
+          heading: 'Workflow tips',
+          text: 'Soft proofing is a fast pre-check. The preview downscales the image for speed, so use it to read color trends and always confirm final color with a printed proof (hard proof) from your printer. Ideally design in CMYK and use this tool to catch gamut risks early.',
+        },
+      ],
+      faqTitle: 'Frequently asked questions',
+      faq: [
+        {
+          q: 'Is soft proofing accurate?',
+          a: 'It shows trends but does not guarantee exact print color. It depends on monitor calibration and the printer’s profile and stock, so confirm with a printed proof.',
+        },
+        {
+          q: 'What does the out-of-gamut percentage mean?',
+          a: 'The share of pixels whose screen color falls outside the CMYK gamut and shifts to the nearest reproducible color in print. Higher means a bigger screen-to-print difference.',
+        },
+        {
+          q: 'Can I use my printer’s profile?',
+          a: 'Yes. Upload an ICC profile (.icc/.icm) and the simulation re-runs against that profile.',
+        },
+        {
+          q: 'Is my image uploaded?',
+          a: 'No. The conversion runs entirely in your browser; the image is never sent to a server.',
+        },
+      ],
+    },
     pdf: {
       intro:
         'A PDF preflight check inspects your print file before it goes to the printer, verifying bleed, page size, image resolution (DPI), color mode (CMYK/RGB), and font embedding in one pass. Catching issues before output saves you from reprints, missed deadlines, and extra cost. Your file is analyzed entirely in the browser and never uploaded to a server.',
