@@ -173,6 +173,7 @@ export function aggregateColorMode(modes: ColorMode[]): ColorMode {
 export async function analyzePdf(bytes: ArrayBuffer | Uint8Array): Promise<PdfAnalysis> {
   const doc = await PDFDocument.load(bytes, { updateMetadata: false });
   const pageCount = doc.getPageCount();
+  if (pageCount === 0) throw new Error('PDF has no pages');
   const first = doc.getPage(0);
   const { width, height } = first.getSize();
 

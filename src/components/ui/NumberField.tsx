@@ -23,7 +23,7 @@ export function NumberField({
           type="text"
           inputMode="decimal"
           value={value}
-          onChange={(e) => onChange(e.target.value.replace(/[^\d.-]/g, ''))}
+          onChange={(e) => onChange(e.target.value.replace(/[^\d.]/g, ''))}
           disabled={disabled}
           aria-label={label}
           className={cn(

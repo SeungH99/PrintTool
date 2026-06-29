@@ -22,10 +22,12 @@ function HexField({
   label,
   value,
   onChange,
+  onBlur,
 }: {
   label: string;
   value: string;
   onChange: (v: string) => void;
+  onBlur: () => void;
 }) {
   return (
     <div className="flex min-w-0 flex-col gap-1.5">
@@ -34,6 +36,7 @@ function HexField({
         type="text"
         value={value}
         onChange={(e) => onChange(e.target.value.replace(/[^#0-9a-fA-F]/g, '').slice(0, 7))}
+        onBlur={onBlur}
         placeholder="#1a73e8"
         aria-label={label}
         className="h-10 w-full rounded-sm border border-hairline bg-elevated px-3 font-mono text-sm uppercase text-ink outline-none transition focus:border-link focus:ring-2 focus:ring-link/20"
@@ -51,7 +54,8 @@ export function ColorConverter({ dict, locale, eyebrow, title, desc }: Calculato
   const [m, setM] = useState('50');
   const [y, setY] = useState('25');
   const [k, setK] = useState('25');
-  const [hex, setHex] = useState('');
+  // null = not editing → field mirrors the CMYK-derived hex; string = user's in-progress edit.
+  const [hexEdit, setHexEdit] = useState<string | null>(null);
 
   useEffect(() => {
     let alive = true;
@@ -61,7 +65,9 @@ export function ColorConverter({ dict, locale, eyebrow, title, desc }: Calculato
         // glue out of the bundle so it loads its own .wasm at runtime via import.meta.url.
         const src = '/lcms/lcms.js';
         const mod = (await import(/* webpackIgnore: true */ src)) as LcmsModule;
-        const lcms = (await mod.instantiate({ locateFile: (f) => `/lcms/${f}` })) as unknown as Lcms;
+        const lcms = (await mod.instantiate({
+          locateFile: (f) => `/lcms/${f}`,
+        })) as unknown as Lcms;
         const res = await fetch('/profiles/default_cmyk.icc');
         if (!res.ok) throw new Error('profile fetch failed');
         const bytes = new Uint8Array(await res.arrayBuffer());
@@ -98,7 +104,7 @@ export function ColorConverter({ dict, locale, eyebrow, title, desc }: Calculato
   const hexOut = rgb ? rgbToHex(rgb[0], rgb[1], rgb[2]) : '—';
 
   function applyHex(v: string) {
-    setHex(v);
+    setHexEdit(v);
     const parsed = hexToRgb(v);
     if (parsed && engine) {
       const cmyk = engine.rgbToCmyk(parsed[0], parsed[1], parsed[2]);
@@ -117,7 +123,12 @@ export function ColorConverter({ dict, locale, eyebrow, title, desc }: Calculato
         <NumberField label="Y" value={y} onChange={setY} suffix="%" />
         <NumberField label="K" value={k} onChange={setK} suffix="%" />
       </div>
-      <HexField label={t.hex} value={hex} onChange={applyHex} />
+      <HexField
+        label={t.hex}
+        value={hexEdit ?? (status === 'ready' ? hexOut : '')}
+        onChange={applyHex}
+        onBlur={() => setHexEdit(null)}
+      />
     </div>
   );
 

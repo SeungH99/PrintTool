@@ -89,7 +89,7 @@ export function GrommetCalculator({ dict, locale, eyebrow, title, desc }: Calcul
       resultLabel={dict.calc.result}
       alert={errorMsg ?? undefined}
       primaryLabel={t.totalLabel}
-      primaryValue={result ? `${result.total} ${t.unit}` : '—'}
+      primaryValue={result ? `${result.total} ${t.unit}`.trim() : '—'}
       diagram={
         result ? (
           <GrommetDiagram result={result} widthMm={toNum(width)} heightMm={toNum(height)} />
@@ -98,8 +98,8 @@ export function GrommetCalculator({ dict, locale, eyebrow, title, desc }: Calcul
       rows={
         result
           ? [
-              { label: t.topLabel, value: `${result.topCount} ${t.unit}` },
-              { label: t.sideLabel, value: `${result.sideCount} ${t.unit}` },
+              { label: t.topLabel, value: `${result.topCount} ${t.unit}`.trim() },
+              { label: t.sideLabel, value: `${result.sideCount} ${t.unit}`.trim() },
             ]
           : undefined
       }

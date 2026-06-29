@@ -100,10 +100,16 @@ export function ConvertTool({ dict, locale, eyebrow, title, desc }: CalculatorPr
   const pdfSelected = !!file && isPdf(file);
   const sizeOptions = [
     { value: 'a4', label: t.sizeA4 },
+    { value: 'a3', label: t.sizeA3 },
     { value: 'letter', label: t.sizeLetter },
     ...(pdfSelected ? [] : [{ value: 'fit', label: t.sizeFit }]),
   ];
-  const sizeShort: Record<PageSizeId, string> = { a4: 'A4', letter: 'Letter', fit: t.sizeFit };
+  const sizeShort: Record<PageSizeId, string> = {
+    a4: 'A4',
+    a3: 'A3',
+    letter: 'Letter',
+    fit: t.sizeFit,
+  };
 
   return (
     <>

@@ -21,6 +21,8 @@ export function PdfPreflight({ dict, locale, eyebrow, title, desc }: CalculatorP
     setFilename(file.name);
     setPhase('analyzing');
     try {
+      // Guard against multi-hundred-MB files that would exhaust browser memory.
+      if (file.size > 100 * 1024 * 1024) throw new Error('File too large');
       const buffer = await file.arrayBuffer();
       setAnalysis(await analyzePdf(buffer));
       setPhase('complete');
@@ -110,7 +112,7 @@ export function PdfPreflight({ dict, locale, eyebrow, title, desc }: CalculatorP
                     )}
                     {item.key === 'resolution' && analysis.minImageDpi !== null && (
                       <div className="mt-0.5 text-xs tabular-nums text-mute">
-                        {Math.round(analysis.minImageDpi)} DPI
+                        {round(analysis.minImageDpi, 1)} DPI
                       </div>
                     )}
                     {item.key === 'color' &&

@@ -117,7 +117,7 @@ export function NupCalculator({ dict, locale, eyebrow, title, desc }: Calculator
       resultLabel={dict.calc.result}
       alert={errorMsg ?? undefined}
       primaryLabel={t.perSheetLabel}
-      primaryValue={result ? `${result.perSheet} ${t.unit}` : '—'}
+      primaryValue={result ? `${result.perSheet} ${t.unit}`.trim() : '—'}
       badge={result?.rotated ? <Badge>{t.rotatedBadge}</Badge> : undefined}
       diagram={
         result && result.perSheet > 0 ? (

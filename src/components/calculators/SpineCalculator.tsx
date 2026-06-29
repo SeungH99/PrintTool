@@ -59,7 +59,14 @@ export function SpineCalculator({ dict, locale, eyebrow, title, desc }: Calculat
         onChange={setInteriorGsm}
         suffix="g/m²"
       />
-      <NumberField label={t.coverGsm} value={coverGsm} onChange={setCoverGsm} suffix="g/m²" />
+      <NumberField
+        label={t.coverGsm}
+        value={coverGsm}
+        onChange={setCoverGsm}
+        suffix="g/m²"
+        disabled={binding !== 'perfect'}
+        helper={binding !== 'perfect' ? t.coverGsmNote : undefined}
+      />
     </div>
   );
 

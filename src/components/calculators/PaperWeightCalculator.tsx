@@ -89,6 +89,7 @@ export function PaperWeightCalculator({ dict, locale, eyebrow, title, desc }: Ca
       rows={
         result
           ? [
+              { label: t.areaLabel, value: `${round(result.areaM2, 4)} m²` },
               { label: t.perSheetLabel, value: `${round(result.perSheetG, 2)} g` },
               { label: t.packageLabel, value: `${round(result.packageKg, 2)} kg` },
             ]
