@@ -6,6 +6,7 @@ import {
   Columns2,
   LayoutGrid,
   Repeat,
+  Crop,
   type LucideIcon,
 } from 'lucide-react';
 
@@ -21,4 +22,5 @@ export const TOOL_ICONS: Record<string, LucideIcon> = {
   fold: Columns2,
   label: LayoutGrid,
   convert: Repeat,
+  bleed: Crop,
 };

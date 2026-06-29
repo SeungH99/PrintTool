@@ -99,3 +99,26 @@ export interface LabelResult {
   remainderWmm: number;
   remainderHmm: number;
 }
+
+export interface BleedInput {
+  /** Finished (trim) width in mm. */
+  widthMm: number;
+  /** Finished (trim) height in mm. */
+  heightMm: number;
+  /** Bleed added on every side, in mm. */
+  bleedMm: number;
+  /** Safe margin inset on every side, in mm. */
+  safeMm: number;
+}
+
+export interface BleedResult {
+  /** Working file size = trim + bleed on all four sides. */
+  workWmm: number;
+  workHmm: number;
+  /** Finished/trim size (echoes input). */
+  trimWmm: number;
+  trimHmm: number;
+  /** Safe area where critical content must stay. */
+  safeWmm: number;
+  safeHmm: number;
+}

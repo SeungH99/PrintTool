@@ -12,6 +12,7 @@ import { SpineCalculator } from '@/components/calculators/SpineCalculator';
 import { PaperWeightCalculator } from '@/components/calculators/PaperWeightCalculator';
 import { FoldCalculator } from '@/components/calculators/FoldCalculator';
 import { LabelCalculator } from '@/components/calculators/LabelCalculator';
+import { BleedCalculator } from '@/components/calculators/BleedCalculator';
 import { PdfPreflight } from '@/components/calculators/PdfPreflight';
 import { ConvertTool } from '@/components/calculators/ConvertTool';
 import { ComingSoon } from '@/components/calculators/ComingSoon';
@@ -25,6 +26,7 @@ const CALCULATORS: Partial<Record<ToolId, ComponentType<CalculatorProps>>> = {
   weight: PaperWeightCalculator,
   fold: FoldCalculator,
   label: LabelCalculator,
+  bleed: BleedCalculator,
 };
 
 export function generateStaticParams() {

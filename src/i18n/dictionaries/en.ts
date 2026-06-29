@@ -70,6 +70,12 @@ export const en: Dictionary = {
       desc: 'Calculate how many labels fit on a single sheet.',
       tag: 'Imposition',
     },
+    {
+      id: 'bleed',
+      title: 'Bleed & Safe Area',
+      desc: 'Get the working size with bleed added and the safe margin box from a finished trim size.',
+      tag: 'Bleed',
+    },
   ],
   footer: {
     tagline: 'Print-production checks and calculations, all in one place.',
@@ -99,6 +105,7 @@ export const en: Dictionary = {
       positive: 'All values must be numbers greater than 0.',
       foldInner: 'The inner-panel adjustment is larger than the panel.',
       labelMargin: 'Margins are larger than the sheet.',
+      bleedSafe: 'The safe margin is larger than half the finished size.',
     },
     res: {
       widthPx: 'Width (pixels)',
@@ -186,6 +193,25 @@ export const en: Dictionary = {
         'Gaps absorb cutting tolerance — 2mm or more is recommended.',
       ],
     },
+    bleed: {
+      width: 'Finished width (mm)',
+      height: 'Finished height (mm)',
+      bleed: 'Bleed (mm)',
+      bleedHelper: '3mm per side is the common standard',
+      safe: 'Safe margin (mm)',
+      safeHelper: 'Keep text and logos inside this line',
+      workLabel: 'Working size (with bleed)',
+      trimLabel: 'Trim size (finished)',
+      safeLabel: 'Safe area',
+      legendBleed: 'Bleed',
+      legendTrim: 'Trim',
+      legendSafe: 'Safe',
+      note: 'Match the bleed your printer asks for (usually 1–3mm). Build the artwork at the working size; the piece is cut down to the trim size.',
+      guide: [
+        'Working size = finished size + bleed on all sides. Extend any color or image that touches the edge all the way to the bleed.',
+        'Keep critical text and logos inside the safe line so they survive if the cut shifts.',
+      ],
+    },
     pdf: {
       dropTitle: 'Drop your PDF here',
       dropOr: 'or',
@@ -268,6 +294,43 @@ export const en: Dictionary = {
   },
   langName: 'EN',
   toolGuides: {
+    bleed: {
+      intro:
+        'The bleed & safe-area calculator turns a finished (trim) size into the working size with bleed added on every side, plus the safe line that keeps text and logos from being cut. You build artwork at the working size and the piece is trimmed to the finished size, so it prints with no white edges and nothing important clipped.',
+      body: [
+        {
+          heading: 'Working size, trim line, and safe line',
+          text: 'Working size = finished size + bleed on all sides. The trim line sits at the finished size, and the safe line is inset from the trim. The preview shows all three zones: bleed (outer), trim (middle), and safe (inner).',
+        },
+        {
+          heading: 'Why bleed is needed',
+          text: 'Cutters trim stacks of sheets at once and can drift by 1–2mm. Any design where color or imagery touches the edge must fill to the bleed so a shifted cut never leaves a white sliver. 3mm per side is the common standard; some printers ask for 1–2mm.',
+        },
+        {
+          heading: 'Keep content inside the safe line',
+          text: 'Place text, logos, and numbers that must not be cut inside the safe line, typically 3mm in from the trim. That margin absorbs cutting tolerance so nothing important gets clipped.',
+        },
+      ],
+      faqTitle: 'Frequently asked questions',
+      faq: [
+        {
+          q: 'What is the difference between trim size and working size?',
+          a: 'Trim size is the final size after cutting; working size is that plus bleed on every side, which is how you build the file. A 90×50mm card with 3mm bleed has a 96×56mm working size.',
+        },
+        {
+          q: 'How much bleed is standard?',
+          a: '3mm on all sides is the common standard. Some printers ask for 1–2mm, so check your printer’s guide before ordering.',
+        },
+        {
+          q: 'How big should the safe margin be?',
+          a: 'About 3mm inside the trim line is typical. Keep important text and logos inside it so they survive if the cut drifts.',
+        },
+        {
+          q: 'Can I go edge to edge without bleed?',
+          a: 'Not recommended. Without bleed, a slightly shifted cut can show a white edge. Always add bleed when color or imagery reaches the edge.',
+        },
+      ],
+    },
     pdf: {
       intro:
         'A PDF preflight check inspects your print file before it goes to the printer, verifying bleed, page size, image resolution (DPI), color mode (CMYK/RGB), and font embedding in one pass. Catching issues before output saves you from reprints, missed deadlines, and extra cost. Your file is analyzed entirely in the browser and never uploaded to a server.',

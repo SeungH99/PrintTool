@@ -1,10 +1,17 @@
-import type { ResolutionInput, SpineInput, PaperWeightInput, FoldInput, LabelInput } from './types';
+import type {
+  ResolutionInput,
+  SpineInput,
+  PaperWeightInput,
+  FoldInput,
+  LabelInput,
+  BleedInput,
+} from './types';
 
 /**
  * Input validation for the calculators. Keys map 1:1 to `dict.calc.errors.*` so
  * the UI can render a message directly. Pure — no React, fully unit-tested.
  */
-export type ValidationError = 'positive' | 'foldInner' | 'labelMargin';
+export type ValidationError = 'positive' | 'foldInner' | 'labelMargin' | 'bleedSafe';
 
 export type Validation = { ok: true } | { ok: false; error: ValidationError };
 
@@ -40,5 +47,13 @@ export function validateLabel(i: LabelInput): Validation {
   if (i.sheetWmm - 2 * i.marginMm <= 0 || i.sheetHmm - 2 * i.marginMm <= 0) {
     return fail('labelMargin');
   }
+  return OK;
+}
+
+export function validateBleed(i: BleedInput): Validation {
+  if (!positive(i.widthMm) || !positive(i.heightMm)) return fail('positive');
+  if (!nonNegative(i.bleedMm) || !nonNegative(i.safeMm)) return fail('positive');
+  // The safe margin can't consume the whole piece.
+  if (i.widthMm - 2 * i.safeMm <= 0 || i.heightMm - 2 * i.safeMm <= 0) return fail('bleedSafe');
   return OK;
 }
