@@ -14,6 +14,7 @@ export const toolIds = [
   'grommet',
   'color',
   'impose',
+  'marks',
 ] as const;
 
 export type ToolId = (typeof toolIds)[number];
@@ -31,7 +32,10 @@ export const TOOL_CATEGORIES = [
   { key: 'convert', ids: ['convert', 'color'] },
   { key: 'size', ids: ['res', 'size'] },
   { key: 'paper', ids: ['weight', 'gsm', 'spine'] },
-  { key: 'production', ids: ['bleed', 'fold', 'label', 'booklet', 'nup', 'impose', 'grommet'] },
+  {
+    key: 'production',
+    ids: ['bleed', 'fold', 'label', 'booklet', 'nup', 'impose', 'marks', 'grommet'],
+  },
 ] as const;
 
 export type ToolCategoryKey = (typeof TOOL_CATEGORIES)[number]['key'];

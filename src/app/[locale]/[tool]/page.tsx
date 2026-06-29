@@ -22,6 +22,7 @@ import { ColorConverter } from '@/components/calculators/ColorConverter';
 import { PdfPreflight } from '@/components/calculators/PdfPreflight';
 import { ConvertTool } from '@/components/calculators/ConvertTool';
 import { ImposeTool } from '@/components/calculators/ImposeTool';
+import { PrinterMarksTool } from '@/components/calculators/PrinterMarksTool';
 import { ComingSoon } from '@/components/calculators/ComingSoon';
 import { ToolContent } from '@/components/calculators/ToolContent';
 
@@ -41,6 +42,7 @@ const CALCULATORS: Partial<Record<ToolId, ComponentType<CalculatorProps>>> = {
   grommet: GrommetCalculator,
   color: ColorConverter,
   impose: ImposeTool,
+  marks: PrinterMarksTool,
 };
 
 export function generateStaticParams() {

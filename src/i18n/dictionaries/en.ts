@@ -125,6 +125,12 @@ export const en: Dictionary = {
       desc: 'Repeat a finished-design PDF across a parent sheet for print.',
       tag: 'Imposition',
     },
+    {
+      id: 'marks',
+      title: 'PDF Crop & Printer Marks',
+      desc: 'Add crop marks and registration targets outside the PDF bleed.',
+      tag: 'Printer marks',
+    },
   ],
   footer: {
     tagline: 'Print-production checks and calculations, all in one place.',
@@ -418,6 +424,40 @@ export const en: Dictionary = {
       ],
       disclaimer:
         'Processed in your browser; the file is never uploaded. Colors are preserved as-is. Use a separate tool for crop marks.',
+    },
+    marks: {
+      dropTitle: 'Drop the PDF to mark here',
+      dropOr: 'or',
+      dropBtn: 'Choose file',
+      dropTypes: 'PDF file · processed in your browser',
+      errTitle: 'Could not read the file',
+      errDesc: 'Make sure it is a PDF and try again.',
+      selected: 'File to mark',
+      change: 'Change file',
+      trimLabel: 'Trim size',
+      previewTitle: 'Preview',
+      settingsTitle: 'Mark settings',
+      crop: 'Crop marks',
+      registration: 'Registration marks',
+      bleed: 'Bleed (mm)',
+      offset: 'Offset (mm)',
+      length: 'Mark length (mm)',
+      weight: 'Stroke width (pt)',
+      applying: 'Adding marks…',
+      start: 'Build marked PDF',
+      doneTitle: 'Marks added',
+      outLabel: 'Output file',
+      specOutSize: 'Output size',
+      download: 'Download PDF',
+      reset: 'Start over',
+      guideTitle: 'Guide',
+      guide: [
+        'Crop marks show where to trim; registration marks check color alignment.',
+        'Marks sit outside the trim, in the bleed area, so the page grows to fit them.',
+        'The offset keeps the marks clear of the printed (bleed) area.',
+      ],
+      disclaimer:
+        'Processed in your browser; the file is never uploaded. Marks are added to every page and drawn in registration black (all plates). Match the values to your printer’s spec.',
     },
     pdf: {
       dropTitle: 'Drop your PDF here',
@@ -804,6 +844,47 @@ export const en: Dictionary = {
         {
           q: 'Are colors changed or is the file uploaded?',
           a: 'Colors are preserved as-is, and all processing happens in your browser — the file is never sent to a server.',
+        },
+      ],
+    },
+    marks: {
+      intro:
+        'The crop & printer marks tool adds crop (trim) marks and registration targets outside the trim of a finished PDF. Crop marks tell the printer where to cut; registration marks let the press confirm that the four CMYK plates line up exactly. Your uploaded PDF is processed entirely in the browser and never sent to a server.',
+      body: [
+        {
+          heading: 'Crop marks and bleed',
+          text: 'Crop marks are short lines at the four corners of the finished (trim) size. Designs whose color or images run to the edge need bleed (usually 3mm) to absorb trimming tolerance, and the marks sit outside that bleed so they never cover the artwork. This tool grows the page (MediaBox) to make room for the marks.',
+        },
+        {
+          heading: 'Registration marks and rich black',
+          text: 'Registration marks are circle-and-crosshair targets the press uses to confirm each color plate is aligned. Because they must appear on all four plates, they are drawn in registration black (CMYK 100/100/100/100), not a single channel. This tool outputs the marks in rich black automatically.',
+        },
+        {
+          heading: 'Trim box and page rotation',
+          text: 'The tool uses the PDF TrimBox as the cut size when present, and the page (MediaBox) otherwise. Marks are stamped directly on the page, so even if the page carries a /Rotate flag, the content and marks rotate together and stay aligned. Check the live preview before exporting.',
+        },
+        {
+          heading: 'Print workflow tips',
+          text: 'Typically you export the design with bleed, add marks here, and impose multiple copies onto a sheet as a separate step. Printers differ on the mark types, lengths, and offsets they expect, so check the spec sheet and pull a single proof to verify placement before a large run.',
+        },
+      ],
+      faqTitle: 'Frequently asked questions',
+      faq: [
+        {
+          q: 'What is the difference between crop and registration marks?',
+          a: 'Crop marks show where to cut; registration marks confirm the CMYK plates are aligned. You can toggle each on or off.',
+        },
+        {
+          q: 'Which pages get marks?',
+          a: 'Every page in the document, each computed from its own trim (or page) size.',
+        },
+        {
+          q: 'Does it work on a PDF that already has bleed?',
+          a: 'Yes. If a TrimBox is set it is used as the cut size and marks are placed outside the bleed; otherwise the page size is treated as the trim.',
+        },
+        {
+          q: 'Is anything uploaded or are colors changed?',
+          a: 'Nothing is uploaded. The original content and colors are untouched — only the marks are added — and all processing happens in your browser.',
         },
       ],
     },

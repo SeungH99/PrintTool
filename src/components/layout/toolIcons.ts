@@ -14,6 +14,7 @@ import {
   CircleDot,
   Palette,
   LayoutTemplate,
+  Scissors,
   type LucideIcon,
 } from 'lucide-react';
 
@@ -37,4 +38,5 @@ export const TOOL_ICONS: Record<string, LucideIcon> = {
   grommet: CircleDot,
   color: Palette,
   impose: LayoutTemplate,
+  marks: Scissors,
 };
