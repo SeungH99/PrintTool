@@ -15,6 +15,7 @@ import {
   Palette,
   LayoutTemplate,
   Scissors,
+  Contrast,
   type LucideIcon,
 } from 'lucide-react';
 
@@ -39,4 +40,5 @@ export const TOOL_ICONS: Record<string, LucideIcon> = {
   color: Palette,
   impose: LayoutTemplate,
   marks: Scissors,
+  proof: Contrast,
 };

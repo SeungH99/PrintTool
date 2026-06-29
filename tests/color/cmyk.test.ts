@@ -85,4 +85,18 @@ describe('CMYK ICC engine (Ghostscript default_cmyk profile)', () => {
     // A mid grey is reproducible and round-trips tightly.
     expect(gamutClipDistance(e, [128, 128, 128])).toBeLessThan(20);
   });
+
+  it('soft-proofs a packed RGB buffer in one bulk pass', async () => {
+    const e = await engine();
+    // Two pixels: white, then saturated green.
+    const rgb = new Uint8ClampedArray([255, 255, 255, 0, 255, 0]);
+    const out = e.proofImage(rgb, 2);
+    expect(out).toHaveLength(6);
+    // White stays near white.
+    expect(out[0]).toBeGreaterThan(230);
+    expect(out[2]).toBeGreaterThan(230);
+    // Green is clipped into gamut: still green-dominant but no longer pure 255.
+    expect(out[4]).toBeGreaterThan(out[3]);
+    expect(out[4]).toBeGreaterThan(out[5]);
+  });
 });

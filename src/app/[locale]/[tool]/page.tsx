@@ -23,6 +23,7 @@ import { PdfPreflight } from '@/components/calculators/PdfPreflight';
 import { ConvertTool } from '@/components/calculators/ConvertTool';
 import { ImposeTool } from '@/components/calculators/ImposeTool';
 import { PrinterMarksTool } from '@/components/calculators/PrinterMarksTool';
+import { SoftProofTool } from '@/components/calculators/SoftProofTool';
 import { ComingSoon } from '@/components/calculators/ComingSoon';
 import { ToolContent } from '@/components/calculators/ToolContent';
 
@@ -43,6 +44,7 @@ const CALCULATORS: Partial<Record<ToolId, ComponentType<CalculatorProps>>> = {
   color: ColorConverter,
   impose: ImposeTool,
   marks: PrinterMarksTool,
+  proof: SoftProofTool,
 };
 
 export function generateStaticParams() {

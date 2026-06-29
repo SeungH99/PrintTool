@@ -15,6 +15,7 @@ export const toolIds = [
   'color',
   'impose',
   'marks',
+  'proof',
 ] as const;
 
 export type ToolId = (typeof toolIds)[number];
@@ -29,7 +30,7 @@ export function isToolId(value: string): value is ToolId {
  */
 export const TOOL_CATEGORIES = [
   { key: 'preflight', ids: ['pdf'] },
-  { key: 'convert', ids: ['convert', 'color'] },
+  { key: 'convert', ids: ['convert', 'color', 'proof'] },
   { key: 'size', ids: ['res', 'size'] },
   { key: 'paper', ids: ['weight', 'gsm', 'spine'] },
   {

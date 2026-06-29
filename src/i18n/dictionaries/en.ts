@@ -131,6 +131,12 @@ export const en: Dictionary = {
       desc: 'Add crop marks and registration targets outside the PDF bleed.',
       tag: 'Printer marks',
     },
+    {
+      id: 'proof',
+      title: 'Image Soft Proof (CMYK)',
+      desc: 'Simulate an image in CMYK to preview print color and out-of-gamut areas.',
+      tag: 'Soft proof',
+    },
   ],
   footer: {
     tagline: 'Print-production checks and calculations, all in one place.',
@@ -458,6 +464,35 @@ export const en: Dictionary = {
       ],
       disclaimer:
         'Processed in your browser; the file is never uploaded. Marks are added to every page and drawn in registration black (all plates). Match the values to your printer’s spec.',
+    },
+    proof: {
+      dropTitle: 'Drop an image to soft-proof here',
+      dropOr: 'or',
+      dropBtn: 'Choose file',
+      dropTypes: 'JPG · PNG · WebP · processed in your browser',
+      errTitle: 'Could not read the file',
+      errDesc: 'Make sure it is an image (JPG·PNG·WebP) and try again.',
+      loading: 'Loading color profile…',
+      errorLoad: 'Could not load the color engine. Refresh and try again.',
+      processing: 'Converting image…',
+      gamutLabel: 'Out-of-gamut area',
+      inGamut: 'In gamut',
+      reset: 'Start over',
+      originalLabel: 'Original (screen)',
+      proofLabel: 'Proof (print sim)',
+      highlight: 'Highlight out-of-gamut',
+      highlightHelper: 'Mark pixels that dull in print, in magenta',
+      uploadIcc: 'Upload ICC profile',
+      download: 'Download proof PNG',
+      simNote:
+        'This is an on-screen simulation and does not guarantee the printed result. It varies with monitor calibration, paper, and press conditions.',
+      guideTitle: 'Guide',
+      guide: [
+        'Compare the original (screen RGB) with the print simulation (CMYK profile) side by side.',
+        'The out-of-gamut % is the share of pixels whose screen color can’t be reproduced in CMYK.',
+        'Upload your printer’s ICC profile for a more accurate preview.',
+      ],
+      disclaimer: 'ICC profile-based simulation. Confirm exact color with a printed proof.',
     },
     pdf: {
       dropTitle: 'Drop your PDF here',
@@ -885,6 +920,47 @@ export const en: Dictionary = {
         {
           q: 'Is anything uploaded or are colors changed?',
           a: 'Nothing is uploaded. The original content and colors are untouched — only the marks are added — and all processing happens in your browser.',
+        },
+      ],
+    },
+    proof: {
+      intro:
+        'Image soft proofing converts a screen RGB image through a CMYK ICC profile to preview how it will look in print. It reports the share of the image that falls outside the CMYK gamut (vivid, saturated colors that can’t be reproduced) and highlights exactly which pixels will dull. All processing happens in your browser and the image is never sent to a server.',
+      body: [
+        {
+          heading: 'Soft proofing and gamut',
+          text: 'RGB makes color with light (screen); CMYK makes it with ink (print), and the two have different ranges (gamuts). Soft proofing round-trips the image through a real CMYK profile (Little CMS engine) to approximate how colors shift in print. A higher out-of-gamut percentage means a bigger difference between screen and print color.',
+        },
+        {
+          heading: 'ICC profiles and accuracy',
+          text: 'The built-in profile assumes a generic CMYK. If your printer provides a profile (e.g. FOGRA, SWOP), upload the ICC file to preview under those exact conditions. Whatever profile you use, the screen is still a simulation — actual color depends on monitor calibration, paper, and press conditions.',
+        },
+        {
+          heading: 'Working with out-of-gamut areas',
+          text: 'Turn on highlighting to see, in magenta, the pixels that will dull in print. If there are many, lower the saturation, bring colors into a safe CMYK range, or consider a spot color. Photos commonly have some out-of-gamut areas, but check logos and brand colors so they don’t shift noticeably in print.',
+        },
+        {
+          heading: 'Workflow tips',
+          text: 'Soft proofing is a fast pre-check. The preview downscales the image for speed, so use it to read color trends and always confirm final color with a printed proof (hard proof) from your printer. Ideally design in CMYK and use this tool to catch gamut risks early.',
+        },
+      ],
+      faqTitle: 'Frequently asked questions',
+      faq: [
+        {
+          q: 'Is soft proofing accurate?',
+          a: 'It shows trends but does not guarantee exact print color. It depends on monitor calibration and the printer’s profile and stock, so confirm with a printed proof.',
+        },
+        {
+          q: 'What does the out-of-gamut percentage mean?',
+          a: 'The share of pixels whose screen color falls outside the CMYK gamut and shifts to the nearest reproducible color in print. Higher means a bigger screen-to-print difference.',
+        },
+        {
+          q: 'Can I use my printer’s profile?',
+          a: 'Yes. Upload an ICC profile (.icc/.icm) and the simulation re-runs against that profile.',
+        },
+        {
+          q: 'Is my image uploaded?',
+          a: 'No. The conversion runs entirely in your browser; the image is never sent to a server.',
         },
       ],
     },

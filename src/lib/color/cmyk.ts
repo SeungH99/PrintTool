@@ -61,6 +61,12 @@ export interface ColorEngine {
   profileName: string;
   cmykToRgb: (c: number, m: number, y: number, k: number) => RGB;
   rgbToCmyk: (r: number, g: number, b: number) => CMYK;
+  /**
+   * Soft-proof a whole image in one shot: round-trip a packed RGB buffer
+   * (3 bytes/pixel, `nPixels` pixels) through CMYK and back, returning the
+   * simulated RGB. Runs as two bulk Little-CMS transforms, not per-pixel JS.
+   */
+  proofImage: (rgb: Uint8ClampedArray, nPixels: number) => Uint8ClampedArray;
 }
 
 /**
@@ -122,6 +128,10 @@ export function buildEngine(
         Math.round((out[2] / 255) * 100),
         Math.round((out[3] / 255) * 100),
       ];
+    },
+    proofImage(rgb, nPixels) {
+      const cmyk = lcms.cmsDoTransform(toCmyk, rgb, nPixels);
+      return lcms.cmsDoTransform(toRgb, cmyk, nPixels);
     },
   };
 }
