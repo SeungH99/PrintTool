@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { analyzePdf, type PdfAnalysis } from '@/lib/preflight/analyze';
 import { buildPreflightReport, type PreflightStatus } from '@/lib/preflight/report';
 import { renderFirstPage } from '@/lib/preflight/thumbnail';
+import { trackEvent } from '@/lib/analytics';
 import type { CalculatorProps } from './types';
 import { Badge, type BadgeTone } from '@/components/ui/Badge';
 import { CalculatorHeader } from './CalculatorHeader';
@@ -35,6 +36,7 @@ export function PdfPreflight({ dict, locale, eyebrow, title, desc }: CalculatorP
         setThumb(null);
       }
       setPhase('complete');
+      trackEvent('tool_complete', { tool: 'pdf' });
     } catch {
       setAnalysis(null);
       setPhase('error');

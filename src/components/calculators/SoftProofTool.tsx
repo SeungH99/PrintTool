@@ -10,6 +10,7 @@ import { Badge } from '@/components/ui/Badge';
 import { Dropzone } from './Dropzone';
 import { buttonClass } from '@/components/ui/buttonClass';
 import { round } from './number';
+import { trackEvent } from '@/lib/analytics';
 
 type Phase = 'empty' | 'processing' | 'done' | 'error';
 
@@ -143,6 +144,7 @@ export function SoftProofTool({ dict, locale, eyebrow, title, desc }: Calculator
       const data = await toImageData(f);
       setResult(proofImageData(data, engine));
       setPhase('done');
+      trackEvent('tool_complete', { tool: 'proof' });
     } catch {
       setPhase('error');
     }

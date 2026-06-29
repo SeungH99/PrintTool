@@ -14,6 +14,7 @@ import { Dropzone } from './Dropzone';
 import { NupGrid } from './NupGrid';
 import { buttonClass } from '@/components/ui/buttonClass';
 import { round, toNum } from './number';
+import { trackEvent } from '@/lib/analytics';
 
 type Phase = 'empty' | 'selected' | 'imposing' | 'done' | 'error';
 
@@ -114,6 +115,7 @@ export function ImposeTool({ dict, locale, eyebrow, title, desc }: CalculatorPro
         size: out.bytes.length,
       });
       setPhase('done');
+      trackEvent('tool_complete', { tool: 'impose' });
     } catch {
       setPhase('error');
     }
