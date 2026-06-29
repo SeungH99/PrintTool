@@ -122,3 +122,32 @@ export interface BleedResult {
   safeWmm: number;
   safeHmm: number;
 }
+
+export interface PrintSizeInput {
+  widthMm: number;
+  heightMm: number;
+  dpi: number;
+}
+
+export interface PrintSizeResult {
+  widthPx: number;
+  heightPx: number;
+  widthCm: number;
+  heightCm: number;
+  widthIn: number;
+  heightIn: number;
+}
+
+export interface BasisWeightInput {
+  gsm: number;
+}
+
+/** US basis weights (lb), by paper grade, for a given metric GSM. */
+export interface BasisWeightResult {
+  bond: number;
+  text: number;
+  cover: number;
+  index: number;
+  tag: number;
+  bristol: number;
+}

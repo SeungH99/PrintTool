@@ -7,6 +7,8 @@ import {
   LayoutGrid,
   Repeat,
   Crop,
+  Ruler,
+  Scale,
   type LucideIcon,
 } from 'lucide-react';
 
@@ -23,4 +25,6 @@ export const TOOL_ICONS: Record<string, LucideIcon> = {
   label: LayoutGrid,
   convert: Repeat,
   bleed: Crop,
+  size: Ruler,
+  gsm: Scale,
 };

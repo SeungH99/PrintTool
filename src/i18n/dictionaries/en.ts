@@ -76,6 +76,18 @@ export const en: Dictionary = {
       desc: 'Get the working size with bleed added and the safe margin box from a finished trim size.',
       tag: 'Bleed',
     },
+    {
+      id: 'size',
+      title: 'Paper Size to Pixels',
+      desc: 'Convert A4, business card, and other sizes to mm, cm, inches, and pixels at any DPI.',
+      tag: 'Size',
+    },
+    {
+      id: 'gsm',
+      title: 'Paper Weight Converter',
+      desc: 'Convert GSM to US basis weight (lb) for each paper grade.',
+      tag: 'GSM',
+    },
   ],
   footer: {
     tagline: 'Print-production checks and calculations, all in one place.',
@@ -212,6 +224,40 @@ export const en: Dictionary = {
         'Keep critical text and logos inside the safe line so they survive if the cut shifts.',
       ],
     },
+    size: {
+      format: 'Paper size',
+      custom: 'Custom',
+      width: 'Width (mm)',
+      height: 'Height (mm)',
+      dpi: 'Resolution (DPI)',
+      dpiHelper: 'Print usually calls for 300 DPI',
+      pxLabel: 'Pixel size',
+      mmLabel: 'Millimeters',
+      cmLabel: 'Centimeters',
+      inLabel: 'Inches',
+      note: 'Pixel size = size(mm) ÷ 25.4 × DPI. At the same size, a higher DPI means more pixels.',
+      guide: [
+        'Filling A4 at 300 DPI needs about 2480 × 3508 px.',
+        'Print files are usually built at 300 DPI; large-format pieces are fine at 150 DPI.',
+      ],
+    },
+    gsm: {
+      gsm: 'Weight (GSM)',
+      grade: 'Paper grade',
+      grades: {
+        bond: 'Bond / Writing',
+        text: 'Text / Book',
+        cover: 'Cover',
+        index: 'Index',
+        tag: 'Tag',
+        bristol: 'Bristol',
+      },
+      note: 'lb differs by grade because each uses a different basis sheet size. GSM is an absolute unit independent of grade.',
+      guide: [
+        'GSM is the weight of 1 m² of paper — an absolute unit independent of grade.',
+        'US lb depends on a grade-specific basis size, so the same GSM is a different lb for Cover, Text, and Bond.',
+      ],
+    },
     pdf: {
       dropTitle: 'Drop your PDF here',
       dropOr: 'or',
@@ -328,6 +374,80 @@ export const en: Dictionary = {
         {
           q: 'Can I go edge to edge without bleed?',
           a: 'Not recommended. Without bleed, a slightly shifted cut can show a white edge. Always add bleed when color or imagery reaches the edge.',
+        },
+      ],
+    },
+    size: {
+      intro:
+        'The paper size to pixels calculator turns standard formats like A4, business card, and postcard — or a custom size — into mm, cm, inches, and the pixel dimensions at a target DPI. It uses pixels = size(mm) ÷ 25.4 × DPI, so you know exactly how many pixels your design canvas needs.',
+      body: [
+        {
+          heading: 'How size converts to pixels',
+          text: 'Divide millimeters by 25.4 to get inches, then multiply by DPI for pixels. Filling A4 (210×297mm) at 300 DPI needs about 2480×3508px. A higher DPI yields more pixels at the same physical size.',
+        },
+        {
+          heading: 'Standard paper sizes',
+          text: 'The ISO A series halves in area each step down from A4 (210×297mm). US sizes include Letter (215.9×279.4mm), Legal, and Tabloid; a business card is typically 90×50mm and a postcard 100×148mm.',
+        },
+        {
+          heading: 'Setting up your canvas',
+          text: 'Enter these pixel values as the canvas size in your design app to guarantee print resolution. For trimmed work, add 3mm bleed per side to the size. Color mode (CMYK) is set separately.',
+        },
+      ],
+      faqTitle: 'Frequently asked questions',
+      faq: [
+        {
+          q: 'How many pixels is A4 at 300 DPI?',
+          a: 'About 2480 × 3508 pixels — A4 (210×297mm) divided by 25.4 to inches, then multiplied by 300.',
+        },
+        {
+          q: 'What is a business card in pixels?',
+          a: 'A 90×50mm card at 300 DPI is about 1063 × 591 pixels; add a little more for 3mm bleed.',
+        },
+        {
+          q: 'What DPI should I use?',
+          a: '300 DPI for general print. Large-format pieces viewed from a distance, like posters and banners, are fine at 150 DPI.',
+        },
+        {
+          q: 'Why convert between mm and px?',
+          a: 'Print sizes are specified in mm while design canvases are in px. Converting lets you build a file at the right resolution for the print size.',
+        },
+      ],
+    },
+    gsm: {
+      intro:
+        'The paper weight converter turns metric GSM (g/m²) into US basis weight (lb) for each paper grade — Bond, Text, Cover, Index, Tag, and Bristol. Because lb uses a different basis sheet size per grade, the same paper reads as a different lb number depending on grade; this tool computes them all at once.',
+      body: [
+        {
+          heading: 'GSM vs. lb',
+          text: 'GSM is the weight of one square meter of paper, an absolute unit independent of grade. US lb is the weight of 500 sheets of that grade’s basis size (e.g. Cover 20×26in), so the same caliper reads as a different lb per grade.',
+        },
+        {
+          heading: 'Conversion factors by grade',
+          text: 'lb = GSM ÷ factor, with a grade-specific factor: Bond 3.76, Text 1.48, Cover 2.70, Index 1.875, Tag 1.63, Bristol 2.19. For example, 270 GSM is about 100lb Cover, and 216 GSM is about 115lb Index.',
+        },
+        {
+          heading: 'Using it to order paper',
+          text: 'When ordering imported stock quoted in lb, convert to GSM to compare against metric weights. Different grades at the same GSM can differ in thickness and stiffness, so confirm with a sample.',
+        },
+      ],
+      faqTitle: 'Frequently asked questions',
+      faq: [
+        {
+          q: 'What is 80lb Cover in GSM?',
+          a: 'About 216 GSM — 80 multiplied by the Cover factor 2.7048. It is a common thickness for covers and business cards.',
+        },
+        {
+          q: 'Why do two papers at the same lb differ in thickness?',
+          a: 'Each grade (Text, Cover, Bond, etc.) uses a different basis sheet size. 80lb Text and 80lb Cover have very different GSM. Compare by GSM for accuracy.',
+        },
+        {
+          q: 'What GSM is copy paper?',
+          a: 'Copy paper is usually 80 GSM (about 20lb Bond); business cards use 250 GSM or more (about 90lb+ Cover).',
+        },
+        {
+          q: 'Is GSM or lb more accurate?',
+          a: 'GSM is the grade-independent absolute unit, so it is more reliable for comparison. lb depends on the basis size and should always name its grade.',
         },
       ],
     },

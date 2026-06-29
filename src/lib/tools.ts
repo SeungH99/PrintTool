@@ -7,6 +7,8 @@ export const toolIds = [
   'fold',
   'label',
   'bleed',
+  'size',
+  'gsm',
 ] as const;
 
 export type ToolId = (typeof toolIds)[number];

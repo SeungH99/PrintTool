@@ -5,6 +5,8 @@ import type {
   FoldInput,
   LabelInput,
   BleedInput,
+  PrintSizeInput,
+  BasisWeightInput,
 } from './types';
 
 /**
@@ -56,4 +58,12 @@ export function validateBleed(i: BleedInput): Validation {
   // The safe margin can't consume the whole piece.
   if (i.widthMm - 2 * i.safeMm <= 0 || i.heightMm - 2 * i.safeMm <= 0) return fail('bleedSafe');
   return OK;
+}
+
+export function validatePrintSize(i: PrintSizeInput): Validation {
+  return [i.widthMm, i.heightMm, i.dpi].every(positive) ? OK : fail('positive');
+}
+
+export function validateBasisWeight(i: BasisWeightInput): Validation {
+  return positive(i.gsm) ? OK : fail('positive');
 }

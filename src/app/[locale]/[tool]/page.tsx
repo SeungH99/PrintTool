@@ -13,6 +13,8 @@ import { PaperWeightCalculator } from '@/components/calculators/PaperWeightCalcu
 import { FoldCalculator } from '@/components/calculators/FoldCalculator';
 import { LabelCalculator } from '@/components/calculators/LabelCalculator';
 import { BleedCalculator } from '@/components/calculators/BleedCalculator';
+import { PrintSizeCalculator } from '@/components/calculators/PrintSizeCalculator';
+import { GsmConverter } from '@/components/calculators/GsmConverter';
 import { PdfPreflight } from '@/components/calculators/PdfPreflight';
 import { ConvertTool } from '@/components/calculators/ConvertTool';
 import { ComingSoon } from '@/components/calculators/ComingSoon';
@@ -27,6 +29,8 @@ const CALCULATORS: Partial<Record<ToolId, ComponentType<CalculatorProps>>> = {
   fold: FoldCalculator,
   label: LabelCalculator,
   bleed: BleedCalculator,
+  size: PrintSizeCalculator,
+  gsm: GsmConverter,
 };
 
 export function generateStaticParams() {
