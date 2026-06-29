@@ -23,6 +23,10 @@ export const ko = {
       'DPI 확인',
       'CMYK RGB 색상 검사',
       '재단 블리드 확인',
+      'PDF 터잡기',
+      '인쇄 재단선 추가',
+      'CMYK 소프트프루프',
+      '인쇄 색 미리보기',
     ],
     categories: {
       preflight: '검수',

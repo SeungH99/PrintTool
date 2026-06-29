@@ -25,6 +25,10 @@ export const en: Dictionary = {
       'DPI checker',
       'CMYK RGB color check',
       'bleed trim check',
+      'PDF imposition n-up',
+      'add crop marks to PDF',
+      'CMYK soft proof',
+      'print color preview',
     ],
     categories: {
       preflight: 'Preflight',
