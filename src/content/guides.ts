@@ -23,7 +23,15 @@ export interface Guide {
 }
 
 /** Stable slugs shared by both locales — drives routing, sitemap, and static params. */
-export const guideSlugs = ['print-file-prep', 'bleed-and-trim', 'cmyk-vs-rgb'] as const;
+export const guideSlugs = [
+  'print-file-prep',
+  'bleed-and-trim',
+  'cmyk-vs-rgb',
+  'resolution-and-dpi',
+  'paper-weight-gsm',
+  'saddle-stitch-booklet',
+  'large-format-banner',
+] as const;
 export type GuideSlug = (typeof guideSlugs)[number];
 
 const ko: Guide[] = [
@@ -162,6 +170,174 @@ const ko: Guide[] = [
     ],
     relatedTools: ['color', 'proof', 'convert'],
   },
+  {
+    slug: 'resolution-and-dpi',
+    title: '인쇄 해상도와 DPI 가이드 — 흐릿하지 않게 출력하기',
+    description:
+      'DPI·PPI·실효 해상도의 차이와, 인쇄 크기에 맞는 픽셀 수를 정하는 법을 정리했습니다. 이미지가 흐릿하게 나오는 원인과 해결책.',
+    intro:
+      '인쇄물이 흐릿하게 나오는 가장 흔한 원인은 해상도 부족입니다. 화면에서 선명해 보여도 실제 인쇄 크기로 놓으면 픽셀이 부족해 뭉개질 수 있습니다. 이 가이드는 DPI의 의미와, 원하는 크기로 선명하게 인쇄하려면 몇 픽셀이 필요한지 정리합니다.',
+    sections: [
+      {
+        heading: 'DPI와 PPI',
+        body: 'DPI(dots per inch)는 인쇄기가 1인치에 찍는 점의 수, PPI(pixels per inch)는 이미지가 1인치에 담는 픽셀 수입니다. 실무에서는 둘을 섞어 쓰지만, 디자인 단계에서 중요한 것은 이미지의 픽셀 밀도(PPI)입니다.',
+      },
+      {
+        heading: '실효 해상도',
+        body: '같은 이미지라도 크게 배치하면 해상도가 떨어집니다. 실효 해상도 = 이미지 가로 픽셀 ÷ 배치 가로 길이(인치)입니다. 3000px 이미지를 10인치로 놓으면 300 DPI지만, 20인치로 늘리면 150 DPI로 떨어집니다.',
+      },
+      {
+        heading: '용도별 권장 DPI',
+        body: '손에 드는 인쇄물(명함·브로슈어·책)은 300 DPI를 권장합니다. 1~2m 거리에서 보는 포스터는 150 DPI, 멀리서 보는 대형 현수막은 72~100 DPI로도 충분합니다. 보는 거리가 멀수록 낮은 해상도가 허용됩니다.',
+      },
+      {
+        heading: '이미지를 키우면 안 되는 이유',
+        body: '작은 이미지를 편집기에서 확대하면 픽셀 수만 늘 뿐 없던 디테일이 생기지 않습니다(업스케일). AI 업스케일러도 한계가 있으니, 처음부터 충분히 큰 원본이나 벡터(SVG·AI)를 쓰는 것이 안전합니다.',
+      },
+      {
+        heading: '필요한 픽셀 계산',
+        body: '필요한 픽셀 = 인쇄 크기(인치) × 목표 DPI입니다. A4(약 8.27×11.69인치)를 300 DPI로 채우려면 약 2480×3508px가 필요합니다. 해상도 계산기나 규격·픽셀 변환기로 바로 구할 수 있습니다.',
+      },
+    ],
+    faq: [
+      {
+        q: '인쇄에 필요한 DPI는 얼마인가요?',
+        a: '손에 드는 인쇄물은 300 DPI가 기준입니다. 포스터는 150 DPI, 대형 현수막은 72~100 DPI로도 충분합니다. 보는 거리가 멀수록 낮아도 됩니다.',
+      },
+      {
+        q: '이미지를 키우면 해상도가 좋아지나요?',
+        a: '아니요. 업스케일은 픽셀만 늘리고 디테일은 만들지 못해 오히려 뭉개집니다. 충분히 큰 원본이나 벡터를 쓰세요.',
+      },
+      {
+        q: '실효 해상도가 무엇인가요?',
+        a: '이미지를 실제 인쇄 크기로 놓았을 때의 해상도입니다. 픽셀 수 ÷ 배치 크기(인치)로, 크게 놓을수록 낮아집니다.',
+      },
+    ],
+    relatedTools: ['res', 'size', 'pdf'],
+  },
+  {
+    slug: 'paper-weight-gsm',
+    title: '종이 평량(GSM)과 두께 가이드 — 용지 고르고 책등 계산하기',
+    description:
+      'GSM과 미국식 lb의 차이, 용도별 평량 선택, 그리고 페이지 수로 책등 두께를 계산하는 법을 정리했습니다.',
+    intro:
+      '종이를 고를 때 가장 먼저 보는 값이 평량입니다. 같은 "두껍다"도 명함과 책 표지가 다르고, 미터식 GSM과 미국식 lb은 표기 방식이 전혀 달라 혼동되기 쉽습니다. 이 가이드는 평량의 의미와 용도별 선택, 책등 계산까지 정리합니다.',
+    sections: [
+      {
+        heading: 'GSM이란',
+        body: 'GSM(g/m²)은 종이 1제곱미터의 무게입니다. 종류와 무관한 절대 단위라 비교가 쉽습니다. 복사용지 80, 일반 전단 100~150, 명함 250~300, 책 표지 250 이상이 대략의 기준입니다.',
+      },
+      {
+        heading: 'GSM과 미국식 lb',
+        body: '미국은 lb(파운드)으로 표기하는데, 종류마다 기준 전지 크기가 달라 같은 두께라도 숫자가 다릅니다. 80lb Text와 80lb Cover는 전혀 다른 두께입니다. 비교할 때는 GSM으로 환산하세요.',
+      },
+      {
+        heading: '평량과 두께(caliper)는 다르다',
+        body: '평량은 무게, 두께(caliper)는 실제 두께입니다. 같은 GSM이라도 종이 밀도에 따라 두께가 다릅니다. 책등 계산에는 평량보다 종이별 실측 두께가 더 정확하지만, 평량으로도 근사할 수 있습니다.',
+      },
+      {
+        heading: '책등 두께',
+        body: '책등 두께는 대략 (내지 페이지 수 ÷ 2) × 한 장 두께 + 표지 두께로 계산합니다. 페이지가 많을수록, 종이가 두꺼울수록 책등이 두꺼워집니다. 무선제본·중철 등 제본 방식에 따라서도 달라집니다.',
+      },
+    ],
+    faq: [
+      {
+        q: '명함은 보통 몇 GSM인가요?',
+        a: '250~300 GSM을 많이 씁니다. 더 도톰한 고급 명함은 350 GSM 이상을 쓰기도 합니다.',
+      },
+      {
+        q: '80lb는 GSM으로 얼마인가요?',
+        a: '종류에 따라 다릅니다. 80lb Text는 약 118 GSM, 80lb Cover는 약 216 GSM입니다. 종류를 함께 봐야 정확합니다.',
+      },
+      {
+        q: '책등 두께는 어떻게 구하나요?',
+        a: '페이지 수, 종이 평량/두께, 제본 방식을 책등 계산기에 입력하면 mm 단위로 바로 나옵니다.',
+      },
+    ],
+    relatedTools: ['weight', 'gsm', 'spine'],
+  },
+  {
+    slug: 'saddle-stitch-booklet',
+    title: '중철제본과 터잡기 가이드 — 페이지 수와 순서 맞추기',
+    description:
+      '중철제본에서 페이지 수가 4의 배수여야 하는 이유, 터잡기(임포지션)와 크리프, N-up 배치를 정리했습니다.',
+    intro:
+      '소책자·카탈로그를 중철(가운데를 스테이플로 묶는 방식)로 만들 때, 페이지 수와 순서를 잘못 잡으면 인쇄 후 책이 맞지 않습니다. 이 가이드는 4의 배수 규칙, 터잡기, 크리프, 한 판에 여러 면을 앉히는 N-up까지 정리합니다.',
+    sections: [
+      {
+        heading: '왜 4의 배수인가',
+        body: '종이 한 장을 반으로 접으면 앞뒤 4쪽이 됩니다. 중철은 이런 장을 겹쳐 묶으므로 전체 쪽수는 항상 4의 배수여야 합니다. 부족하면 빈 페이지를 넣어 맞춥니다.',
+      },
+      {
+        heading: '터잡기(임포지션)',
+        body: '책으로 묶으면 물리적으로 떨어진 페이지가 같은 면에 인쇄됩니다. 8쪽 책자라면 첫 장 겉면에 8쪽과 1쪽이, 속면에 2쪽과 7쪽이 들어갑니다. 이렇게 인쇄 순서로 페이지를 재배치하는 것이 터잡기입니다.',
+      },
+      {
+        heading: '크리프(밀림)',
+        body: '장수가 많아지면 안쪽 페이지가 바깥보다 조금씩 튀어나옵니다(크리프). 재단하면 안쪽 페이지의 바깥 여백이 줄어들므로, 가장자리 가까운 요소는 크리프를 감안해 여백을 넉넉히 두세요.',
+      },
+      {
+        heading: 'N-up 배치',
+        body: '한 전지에 여러 페이지나 여러 부수를 앉혀 인쇄 효율을 높이는 것이 N-up입니다. 명함처럼 작은 인쇄물은 한 장에 여러 개를 모아 찍고 재단합니다.',
+      },
+    ],
+    faq: [
+      {
+        q: '중철 페이지 수는 왜 4의 배수여야 하나요?',
+        a: '종이 한 장을 접으면 4쪽이 되기 때문입니다. 4의 배수가 아니면 빈 페이지가 생깁니다. 20쪽이면 5장, 24쪽이면 6장이 필요합니다.',
+      },
+      {
+        q: '터잡기를 직접 해야 하나요?',
+        a: '임포지션 도구로 PDF를 인쇄 순서에 맞게 자동 재배치할 수 있습니다. 페이지 순서와 면 배치를 계산해 줍니다.',
+      },
+      {
+        q: '크리프는 언제 신경 써야 하나요?',
+        a: '페이지가 많은 두꺼운 중철일수록 영향이 큽니다. 안쪽 여백에 중요한 요소가 있으면 여유를 두세요.',
+      },
+    ],
+    relatedTools: ['booklet', 'impose', 'nup'],
+  },
+  {
+    slug: 'large-format-banner',
+    title: '현수막·배너 제작 가이드 — 해상도, 그로멧, 마감',
+    description:
+      '대형 현수막과 배너의 해상도 기준, 그로멧(아일릿) 간격, 여백·마감 처리를 정리했습니다.',
+    intro:
+      '현수막·배너는 명함이나 책과 기준이 다릅니다. 크기가 크고 멀리서 보기 때문에 해상도는 낮아도 되지만, 그로멧 위치나 마감 여백을 잘못 잡으면 설치할 때 문제가 생깁니다. 이 가이드는 대형 출력의 해상도, 그로멧, 마감을 정리합니다.',
+    sections: [
+      {
+        heading: '해상도는 낮아도 된다',
+        body: '대형 출력은 보는 거리가 멀어 72~150 DPI면 충분합니다. 다만 실제 출력 크기 기준이어야 하므로, 1:1 크기에서 그 해상도를 만족하는지 확인하세요. 파일이 너무 커지면 1/10 크기에 10배 DPI로 작업하기도 합니다.',
+      },
+      {
+        heading: '그로멧(아일릿)',
+        body: '그로멧은 현수막을 끈으로 묶기 위해 가장자리에 뚫는 금속 고리입니다. 보통 모서리에 하나씩 두고 그 사이를 50~100cm 간격으로 배치합니다. 그로멧 위치에는 글자나 중요한 요소를 두지 마세요.',
+      },
+      {
+        heading: '여백과 마감',
+        body: '봉제(헤밍)나 접착으로 가장자리를 마감하면 그만큼 안쪽이 가려집니다. 마감 폭(보통 2~5cm)만큼 안전 여백을 두고, 배경은 가장자리까지 채워 마감 후에도 흰 부분이 보이지 않게 하세요.',
+      },
+      {
+        heading: '재질과 용도',
+        body: '실내 배너는 합성지·PVC, 실외 현수막은 방수·내후성 원단을 씁니다. 바람을 많이 받는 곳은 바람이 통하는 메시 원단이 안전합니다.',
+      },
+    ],
+    faq: [
+      {
+        q: '현수막은 몇 DPI로 작업하나요?',
+        a: '보는 거리가 멀어 72~150 DPI면 충분합니다. 실제 출력 크기 기준으로 확인하고, 파일이 크면 1/10 크기에 10배 DPI로 작업하세요.',
+      },
+      {
+        q: '그로멧 간격은 얼마가 적당한가요?',
+        a: '보통 모서리마다 하나씩 두고 그 사이를 50~100cm 간격으로 배치합니다. 그로멧 자리에는 글자를 두지 마세요.',
+      },
+      {
+        q: '현수막에도 도련이 필요한가요?',
+        a: '마감(봉제·접착) 폭만큼 배경을 더 채우고, 그 안쪽에 안전 여백을 둡니다. 마감 후 흰 가장자리가 보이지 않도록 하세요.',
+      },
+    ],
+    relatedTools: ['grommet', 'size', 'res'],
+  },
 ];
 
 const en: Guide[] = [
@@ -299,6 +475,174 @@ const en: Guide[] = [
       },
     ],
     relatedTools: ['color', 'proof', 'convert'],
+  },
+  {
+    slug: 'resolution-and-dpi',
+    title: 'Print Resolution and DPI — How to Avoid Blurry Output',
+    description:
+      'The difference between DPI, PPI, and effective resolution, plus how to size your pixels for the print size. Why images come out blurry and how to fix it.',
+    intro:
+      'Low resolution is the most common reason print comes out blurry. An image that looks sharp on screen can break up once it is placed at the real print size, where there are not enough pixels. This guide explains what DPI means and how many pixels you need to print sharply at a given size.',
+    sections: [
+      {
+        heading: 'DPI vs PPI',
+        body: 'DPI (dots per inch) is how many dots the press lays down per inch; PPI (pixels per inch) is how many pixels the image packs per inch. The terms are used interchangeably in practice, but in the design stage what matters is the image’s pixel density (PPI).',
+      },
+      {
+        heading: 'Effective resolution',
+        body: 'The same image loses resolution as you place it larger. Effective resolution = image width in pixels ÷ placed width in inches. A 3000px image placed at 10 inches is 300 DPI, but stretched to 20 inches it drops to 150 DPI.',
+      },
+      {
+        heading: 'Recommended DPI by use',
+        body: 'Hold-in-hand pieces (business cards, brochures, books) want 300 DPI. A poster viewed from 1–2m is fine at 150 DPI, and a large banner viewed from far away works at 72–100 DPI. The farther the viewing distance, the lower the resolution you can get away with.',
+      },
+      {
+        heading: 'Why upscaling does not help',
+        body: 'Enlarging a small image in an editor only adds pixels — it cannot invent detail that was not there (upscaling). AI upscalers have limits too, so it is safest to start from a large enough original or a vector (SVG, AI).',
+      },
+      {
+        heading: 'Calculating the pixels you need',
+        body: 'Pixels needed = print size in inches × target DPI. Filling A4 (about 8.27×11.69 inches) at 300 DPI needs roughly 2480×3508px. A resolution calculator or a size-to-pixels converter gives it instantly.',
+      },
+    ],
+    faq: [
+      {
+        q: 'What DPI do I need for print?',
+        a: '300 DPI is the baseline for hold-in-hand pieces. Posters are fine at 150 DPI and large banners at 72–100 DPI. The farther the viewing distance, the lower it can be.',
+      },
+      {
+        q: 'Does enlarging an image improve resolution?',
+        a: 'No. Upscaling only adds pixels without adding detail, so it tends to look worse. Use a large enough original or a vector instead.',
+      },
+      {
+        q: 'What is effective resolution?',
+        a: 'It is the resolution once the image is placed at the real print size — pixel count ÷ placed size in inches. The larger you place it, the lower it gets.',
+      },
+    ],
+    relatedTools: ['res', 'size', 'pdf'],
+  },
+  {
+    slug: 'paper-weight-gsm',
+    title: 'Paper Weight (GSM) and Thickness — Choosing Stock and Spine',
+    description:
+      'The difference between GSM and US pound (lb), how to pick a weight by use, and how to calculate spine thickness from page count.',
+    intro:
+      'Paper weight is the first number you look at when choosing stock. The same "thick" means one thing for a business card and another for a book cover, and metric GSM and US lb are written so differently that they are easy to confuse. This guide covers what weight means, how to choose by use, and how to calculate the spine.',
+    sections: [
+      {
+        heading: 'What GSM is',
+        body: 'GSM (g/m²) is the weight of one square meter of paper. Because it is an absolute unit independent of paper type, it is easy to compare. Rough guides: copy paper 80, general flyers 100–150, business cards 250–300, book covers 250 and up.',
+      },
+      {
+        heading: 'GSM vs US pound (lb)',
+        body: 'The US labels stock in pounds, but each type uses a different basis sheet size, so the same thickness gets a different number. 80lb Text and 80lb Cover are completely different thicknesses. Convert to GSM to compare.',
+      },
+      {
+        heading: 'Weight is not thickness (caliper)',
+        body: 'Weight is mass; caliper is actual thickness. Two papers at the same GSM can differ in thickness depending on density. A measured per-sheet thickness is more accurate for a spine than weight, but weight gives a usable approximation.',
+      },
+      {
+        heading: 'Spine thickness',
+        body: 'Spine thickness is roughly (interior page count ÷ 2) × per-sheet thickness + cover thickness. More pages and thicker paper make a thicker spine. The binding method (perfect binding, saddle stitch, etc.) changes it too.',
+      },
+    ],
+    faq: [
+      {
+        q: 'What GSM is a business card?',
+        a: '250–300 GSM is common. Heavier premium cards may use 350 GSM or more.',
+      },
+      {
+        q: 'What is 80lb in GSM?',
+        a: 'It depends on the type. 80lb Text is about 118 GSM and 80lb Cover about 216 GSM, so you have to know the type.',
+      },
+      {
+        q: 'How do I find spine thickness?',
+        a: 'Enter the page count, paper weight or thickness, and binding method into a spine calculator and it returns the value in millimeters.',
+      },
+    ],
+    relatedTools: ['weight', 'gsm', 'spine'],
+  },
+  {
+    slug: 'saddle-stitch-booklet',
+    title: 'Saddle-Stitch Booklets and Imposition — Page Count and Order',
+    description:
+      'Why saddle-stitch page counts must be a multiple of four, plus imposition, creep, and N-up layout explained for real production.',
+    intro:
+      'When you make a booklet or catalog with saddle stitch (stapled at the center fold), getting the page count or order wrong means the book does not line up after printing. This guide covers the multiple-of-four rule, imposition, creep, and N-up layout for ganging multiple pieces on a sheet.',
+    sections: [
+      {
+        heading: 'Why a multiple of four',
+        body: 'Folding one sheet in half gives four pages, front and back. Saddle stitch nests these folded sheets, so the total page count must always be a multiple of four. If it falls short, blank pages are added to make up the difference.',
+      },
+      {
+        heading: 'Imposition',
+        body: 'Once bound, pages that are physically far apart print on the same sheet. In an 8-page booklet, the outer side of the first sheet holds pages 8 and 1, and the inner side holds pages 2 and 7. Rearranging pages into this printing order is called imposition.',
+      },
+      {
+        heading: 'Creep (push-out)',
+        body: 'As page count grows, the inner pages stick out slightly past the outer ones (creep). Trimming then shaves the outer margin of the inner pages, so keep elements near the edge well inside the margin to account for it.',
+      },
+      {
+        heading: 'N-up layout',
+        body: 'N-up gangs several pages or copies onto one sheet to print more efficiently. Small pieces like business cards are printed many-up on a sheet and then cut apart.',
+      },
+    ],
+    faq: [
+      {
+        q: 'Why must saddle-stitch pages be a multiple of four?',
+        a: 'Because folding one sheet makes four pages. If the count is not a multiple of four, you end up with blank pages. 20 pages needs 5 sheets, 24 pages needs 6.',
+      },
+      {
+        q: 'Do I have to impose the pages myself?',
+        a: 'An imposition tool can reorder a PDF into printing order automatically, calculating the page sequence and sheet layout for you.',
+      },
+      {
+        q: 'When does creep matter?',
+        a: 'The thicker the booklet and the higher the page count, the bigger the effect. Leave extra room if important elements sit in the inner margin.',
+      },
+    ],
+    relatedTools: ['booklet', 'impose', 'nup'],
+  },
+  {
+    slug: 'large-format-banner',
+    title: 'Banners and Large-Format Printing — Resolution, Grommets, Finishing',
+    description:
+      'Resolution standards for large banners, grommet (eyelet) spacing, and margin and finishing — explained for outdoor and indoor display.',
+    intro:
+      'Banners follow different rules than business cards or books. They are large and viewed from a distance, so resolution can be low — but getting grommet positions or finishing margins wrong causes problems at install. This guide covers resolution, grommets, and finishing for large-format output.',
+    sections: [
+      {
+        heading: 'Resolution can be low',
+        body: 'Large-format output is viewed from far away, so 72–150 DPI is plenty. It just has to hold at the real output size, so check the resolution at 1:1 — or, if the file gets too big, work at 1/10 scale with 10× the DPI.',
+      },
+      {
+        heading: 'Grommets (eyelets)',
+        body: 'Grommets are the metal rings punched along the edge so the banner can be tied down. Typically one at each corner, with the rest spaced 50–100cm apart. Keep text and important elements away from where grommets land.',
+      },
+      {
+        heading: 'Margin and finishing',
+        body: 'Hemming or gluing the edges covers part of the artwork. Keep a safe margin equal to the finishing width (usually 2–5cm), and fill the background to the very edge so no white shows after finishing.',
+      },
+      {
+        heading: 'Material and use',
+        body: 'Indoor banners use synthetic paper or PVC; outdoor banners use waterproof, weather-resistant fabric. In windy locations, a mesh fabric that lets air through is safer.',
+      },
+    ],
+    faq: [
+      {
+        q: 'What DPI should a banner be?',
+        a: 'Viewed from a distance, 72–150 DPI is enough. Check it at the real output size, and if the file is too large, work at 1/10 scale with 10× DPI.',
+      },
+      {
+        q: 'How far apart should grommets be?',
+        a: 'Usually one at each corner with the rest spaced 50–100cm apart. Keep text out of the grommet positions.',
+      },
+      {
+        q: 'Do banners need bleed?',
+        a: 'Fill the background out by the finishing (hem/glue) width and keep a safe margin inside it, so no white edge shows after finishing.',
+      },
+    ],
+    relatedTools: ['grommet', 'size', 'res'],
   },
 ];
 

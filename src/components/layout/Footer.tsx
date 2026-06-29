@@ -42,14 +42,24 @@ export function Footer({ locale, dict }: { locale: Locale; dict: Dictionary }) {
                 </Link>
               </li>
               <li>
+                <Link href={`/${locale}/about`} className={linkClass}>
+                  {dict.footer.about}
+                </Link>
+              </li>
+              <li>
+                <Link href={`/${locale}/contact`} className={linkClass}>
+                  {dict.footer.contact}
+                </Link>
+              </li>
+              <li>
                 <Link href={`/${locale}/privacy`} className={linkClass}>
                   {dict.footer.privacy}
                 </Link>
               </li>
               <li>
-                <a href="mailto:sheyeon1216@gmail.com" className={linkClass}>
-                  {dict.footer.contact}
-                </a>
+                <Link href={`/${locale}/terms`} className={linkClass}>
+                  {dict.footer.terms}
+                </Link>
               </li>
               <li>
                 <CookieSettingsButton label={dict.footer.cookieSettings} />

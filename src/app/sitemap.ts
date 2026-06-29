@@ -2,6 +2,7 @@ import type { MetadataRoute } from 'next';
 import { locales } from '@/i18n/config';
 import { toolIds } from '@/lib/tools';
 import { guideSlugs } from '@/content/guides';
+import { pageSlugs } from '@/content/pages';
 import { SITE_URL } from '@/lib/site';
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -10,6 +11,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...toolIds.map((id) => `/${id}`),
     '/guides',
     ...guideSlugs.map((slug) => `/guides/${slug}`),
+    ...pageSlugs.map((slug) => `/${slug}`),
     '/privacy',
   ];
   const now = new Date();

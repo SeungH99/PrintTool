@@ -146,6 +146,8 @@ export const en: Dictionary = {
     tagline: 'Print-production checks and calculations, all in one place.',
     toolsHead: 'Tools',
     aboutHead: 'About',
+    about: 'About',
+    terms: 'Terms',
     privacy: 'Privacy policy',
     privacyDesc:
       'PrintReady privacy policy — uploaded files are processed locally in your browser, never sent to a server.',
