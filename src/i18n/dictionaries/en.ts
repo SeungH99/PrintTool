@@ -416,6 +416,9 @@ export const en: Dictionary = {
       orientAuto: 'Auto',
       orientPortrait: 'Portrait',
       orientLandscape: 'Landscape',
+      previewTitle: 'Preview',
+      effDpiLabel: 'Effective resolution',
+      dpiLowBadge: 'Low resolution',
       start: 'Convert to print PDF',
       converting: 'Converting…',
       doneTitle: 'Conversion complete',
@@ -426,6 +429,7 @@ export const en: Dictionary = {
       specPages: 'Pages',
       specSize: 'Page size',
       specColor: 'Color',
+      specOutSize: 'Output size',
       reset: 'Start over',
       cmykNote:
         'Output is RGB. True CMYK conversion is not possible in the browser — for precise color, use your print shop or a professional tool.',

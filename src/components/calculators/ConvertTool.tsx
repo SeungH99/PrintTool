@@ -1,26 +1,109 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type CSSProperties } from 'react';
 import { PDFDocument } from 'pdf-lib';
 import { imageToPdf, type Orientation, type PageSizeId } from '@/lib/convert/imageToPdf';
 import { resizePdf } from '@/lib/convert/resizePdf';
+import { PAGE_PT } from '@/lib/convert/page-geometry';
 import type { CalculatorProps } from './types';
 import { CalculatorHeader } from './CalculatorHeader';
 import { SelectField } from '@/components/ui/SelectField';
+import { Badge } from '@/components/ui/Badge';
 import { Dropzone } from './Dropzone';
 import { buttonClass } from '@/components/ui/buttonClass';
 
 type Phase = 'empty' | 'selected' | 'converting' | 'done' | 'error';
+
+interface ImageDims {
+  w: number;
+  h: number;
+}
 
 interface Result {
   url: string;
   name: string;
   pages: number;
   input: string;
+  size: number;
 }
 
 const isPdf = (f: File) => f.type === 'application/pdf' || /\.pdf$/i.test(f.name);
 const isWebp = (f: File) => f.type === 'image/webp' || /\.webp$/i.test(f.name);
+
+/** Aspect ratio (w/h) of the target page at the chosen size + orientation. */
+function pageAspect(
+  pageSize: PageSizeId,
+  orientation: Orientation,
+  dims: ImageDims | null,
+): number {
+  if (pageSize === 'fit') return dims ? dims.w / dims.h : 210 / 297;
+  let { w: pw, h: ph } = PAGE_PT[pageSize];
+  const landscape =
+    orientation === 'landscape' || (orientation === 'auto' && !!dims && dims.w > dims.h);
+  if (landscape) [pw, ph] = [ph, pw];
+  return pw / ph;
+}
+
+/**
+ * Effective print resolution of an image fit onto the page. Matches imageToPdf's
+ * fit math: DPI = 72 / scale. 'fit' keeps 1px → 1pt, i.e. 72 DPI.
+ */
+function effectiveDpi(dims: ImageDims, pageSize: PageSizeId, orientation: Orientation): number {
+  if (pageSize === 'fit') return 72;
+  let { w: pw, h: ph } = PAGE_PT[pageSize];
+  const landscape = orientation === 'landscape' || (orientation === 'auto' && dims.w > dims.h);
+  if (landscape) [pw, ph] = [ph, pw];
+  return 72 / Math.min(pw / dims.w, ph / dims.h);
+}
+
+function formatBytes(n: number): string {
+  return n < 1024 * 1024
+    ? `${Math.max(1, Math.round(n / 1024))} KB`
+    : `${(n / 1048576).toFixed(1)} MB`;
+}
+
+/** Target page at its true aspect, with the image fit inside (or a type label for PDFs). */
+function PagePreview({
+  aspect,
+  previewUrl,
+  label,
+}: {
+  aspect: number;
+  previewUrl: string | null;
+  label: string;
+}) {
+  const maxW = 200;
+  const maxH = 150;
+  let w = maxW;
+  let h = maxW / aspect;
+  if (h > maxH) {
+    h = maxH;
+    w = maxH * aspect;
+  }
+  const boxStyle: CSSProperties = {
+    width: `${w}px`,
+    height: `${h}px`,
+    ...(previewUrl
+      ? {
+          backgroundImage: `url(${previewUrl})`,
+          backgroundSize: 'contain',
+          backgroundRepeat: 'no-repeat',
+          backgroundPosition: 'center',
+        }
+      : null),
+  };
+  return (
+    <div className="flex h-[168px] w-full items-center justify-center rounded-md border border-hairline bg-hairline-soft">
+      <div
+        className="flex items-center justify-center border border-hairline bg-elevated shadow-[0_1px_3px_rgba(0,0,0,0.08)]"
+        style={boxStyle}
+        aria-hidden="true"
+      >
+        {!previewUrl && <span className="font-mono text-xs text-faint">{label}</span>}
+      </div>
+    </div>
+  );
+}
 
 /** Decode a WebP image to PNG bytes via canvas (pdf-lib embeds PNG/JPEG only). */
 async function webpToPng(source: Blob): Promise<Uint8Array> {
@@ -46,23 +129,44 @@ export function ConvertTool({ dict, locale, eyebrow, title, desc }: CalculatorPr
   const [pageSize, setPageSize] = useState<PageSizeId>('a4');
   const [orientation, setOrientation] = useState<Orientation>('auto');
   const [result, setResult] = useState<Result | null>(null);
+  const [imageDims, setImageDims] = useState<ImageDims | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
-  // Revoke the object URL when the result is replaced or the component unmounts.
+  // Revoke object URLs when the result/preview is replaced or the component unmounts.
   useEffect(() => {
     if (!result) return;
     return () => URL.revokeObjectURL(result.url);
   }, [result]);
+  useEffect(() => {
+    if (!previewUrl) return;
+    return () => URL.revokeObjectURL(previewUrl);
+  }, [previewUrl]);
 
   function selectFile(f: File) {
     setFile(f);
-    // 'fit' only applies to images — a PDF resize needs a concrete page size.
-    if (isPdf(f) && pageSize === 'fit') setPageSize('a4');
+    setImageDims(null);
+    if (isPdf(f)) {
+      // 'fit' only applies to images — a PDF resize needs a concrete page size.
+      if (pageSize === 'fit') setPageSize('a4');
+      setPreviewUrl(null);
+    } else {
+      setPreviewUrl(URL.createObjectURL(f));
+      // Decode just to read natural pixel dimensions for the effective-DPI readout.
+      void createImageBitmap(f)
+        .then((bmp) => {
+          setImageDims({ w: bmp.width, h: bmp.height });
+          bmp.close();
+        })
+        .catch(() => setImageDims(null));
+    }
     setPhase('selected');
   }
 
   function reset() {
     setResult(null);
     setFile(null);
+    setImageDims(null);
+    setPreviewUrl(null);
     setPhase('empty');
   }
 
@@ -90,7 +194,13 @@ export function ConvertTool({ dict, locale, eyebrow, title, desc }: CalculatorPr
       const base = file.name.replace(/\.[^.]+$/, '') || 'converted';
       // pdf-lib returns Uint8Array<ArrayBufferLike>; BlobPart wants ArrayBuffer-backed.
       const url = URL.createObjectURL(new Blob([out as BlobPart], { type: 'application/pdf' }));
-      setResult({ url, name: `${base}-print.pdf`, pages, input: inputLabel(file) });
+      setResult({
+        url,
+        name: `${base}-print.pdf`,
+        pages,
+        input: inputLabel(file),
+        size: out.length,
+      });
       setPhase('done');
     } catch {
       setPhase('error');
@@ -110,6 +220,9 @@ export function ConvertTool({ dict, locale, eyebrow, title, desc }: CalculatorPr
     letter: 'Letter',
     fit: t.sizeFit,
   };
+
+  const previewAspect = pageAspect(pageSize, orientation, imageDims);
+  const dpi = imageDims ? effectiveDpi(imageDims, pageSize, orientation) : null;
 
   return (
     <>
@@ -176,6 +289,28 @@ export function ConvertTool({ dict, locale, eyebrow, title, desc }: CalculatorPr
                 </div>
               </div>
 
+              <div className="rounded-lg border border-hairline bg-elevated p-5">
+                <div className="mb-4 font-mono text-[11px] uppercase tracking-wider text-faint">
+                  {t.previewTitle}
+                </div>
+                <PagePreview
+                  aspect={previewAspect}
+                  previewUrl={previewUrl}
+                  label={inputLabel(file)}
+                />
+                {dpi !== null && (
+                  <div className="mt-4 flex items-center justify-between gap-3 border-t border-hairline pt-3.5 text-sm">
+                    <span className="text-body">{t.effDpiLabel}</span>
+                    <span className="flex items-center gap-2">
+                      <span className="font-medium tabular-nums text-ink">
+                        {Math.round(dpi)} DPI
+                      </span>
+                      {dpi < 150 && <Badge tone="warning">{t.dpiLowBadge}</Badge>}
+                    </span>
+                  </div>
+                )}
+              </div>
+
               {phase === 'converting' ? (
                 <div className="flex items-center gap-3 rounded-lg border border-hairline bg-elevated p-5">
                   <span className="h-5 w-5 animate-spin rounded-full border-2 border-hairline border-t-ink" />
@@ -218,6 +353,7 @@ export function ConvertTool({ dict, locale, eyebrow, title, desc }: CalculatorPr
                     { label: t.specPages, value: String(result.pages) },
                     { label: t.specSize, value: sizeShort[pageSize] },
                     { label: t.specColor, value: 'RGB' },
+                    { label: t.specOutSize, value: formatBytes(result.size) },
                   ].map((row) => (
                     <div
                       key={row.label}

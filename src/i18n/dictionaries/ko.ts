@@ -414,6 +414,9 @@ export const ko = {
       orientAuto: '자동',
       orientPortrait: '세로',
       orientLandscape: '가로',
+      previewTitle: '미리보기',
+      effDpiLabel: '실효 해상도',
+      dpiLowBadge: '해상도 낮음',
       start: '인쇄용 PDF로 변환',
       converting: '변환 중…',
       doneTitle: '변환 완료',
@@ -424,6 +427,7 @@ export const ko = {
       specPages: '페이지 수',
       specSize: '페이지 규격',
       specColor: '색상',
+      specOutSize: '출력 크기',
       reset: '다시 시작',
       cmykNote:
         '출력은 RGB입니다. 정확한 CMYK 변환은 브라우저에서 불가능하므로, 정밀 색상이 필요하면 인쇄소나 전문 툴을 이용하세요.',
