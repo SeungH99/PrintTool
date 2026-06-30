@@ -1,4 +1,5 @@
 import { jsonLdScriptProps } from '@/lib/jsonLd';
+import type { ToolExample } from '@/content/toolExamples';
 
 export interface Guide {
   intro: string;
@@ -12,7 +13,7 @@ export interface Guide {
  * (which also emits FAQPage structured data). It explains what the tool does, the
  * formula, and common questions — the context the calculator UI alone can't convey.
  */
-export function ToolContent({ guide }: { guide: Guide }) {
+export function ToolContent({ guide, example }: { guide: Guide; example?: ToolExample }) {
   const faqJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
@@ -34,6 +35,13 @@ export function ToolContent({ guide }: { guide: Guide }) {
             <p className="mt-2 leading-relaxed text-body">{s.text}</p>
           </div>
         ))}
+
+        {example && (
+          <div className="mt-8 rounded-lg border border-hairline bg-elevated p-5">
+            <h2 className="text-base font-semibold text-ink">{example.heading}</h2>
+            <p className="mt-2 leading-relaxed text-body">{example.body}</p>
+          </div>
+        )}
 
         <h2 className="mt-12 text-xl font-semibold text-ink">{guide.faqTitle}</h2>
         <dl className="mt-4 flex flex-col gap-5">

@@ -175,6 +175,7 @@ export const ko = {
     toolsHead: '도구',
     aboutHead: '안내',
     about: '소개',
+    reference: '인쇄 규격 참고',
     terms: '이용약관',
     privacy: '개인정보 처리방침',
     privacyDesc:

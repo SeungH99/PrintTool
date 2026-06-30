@@ -177,6 +177,7 @@ export const en: Dictionary = {
     toolsHead: 'Tools',
     aboutHead: 'About',
     about: 'About',
+    reference: 'Print reference',
     terms: 'Terms',
     privacy: 'Privacy policy',
     privacyDesc:
