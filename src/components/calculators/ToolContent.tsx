@@ -8,9 +8,9 @@ export interface Guide {
 }
 
 /**
- * SEO content block under each calculator: an intro, how-it-works sections, and an
- * FAQ that also emits FAQPage structured data (rich-snippet eligible). Pure content
- * — gives crawlers real text + intent coverage that the calculator UI alone lacks.
+ * Help content under each calculator: an intro, how-it-works sections, and an FAQ
+ * (which also emits FAQPage structured data). It explains what the tool does, the
+ * formula, and common questions — the context the calculator UI alone can't convey.
  */
 export function ToolContent({ guide }: { guide: Guide }) {
   const faqJsonLd = {

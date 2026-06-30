@@ -30,7 +30,6 @@ export async function generateMetadata({
     metadataBase: new URL(SITE_URL),
     title: { default: dict.home.metaTitle, template: '%s · PrintReady' },
     description: dict.home.heroDesc,
-    keywords: dict.home.keywords,
     applicationName: 'PrintReady',
     alternates: localizedAlternates(locale),
     openGraph: localizedOpenGraph(locale, {

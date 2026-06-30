@@ -12,24 +12,54 @@ export const en: Dictionary = {
     ctaSecondary: 'Browse calculators',
     toolsTitle: 'Pick a tool and start right away',
     toolsDesc: 'From preflight to calculation — every step of print production, covered.',
-    keywords: [
-      'print preflight',
-      'PDF preflight',
-      'print file check',
-      'print-ready PDF conversion',
-      'spine width calculator',
-      'paper weight calculator',
-      'fold layout calculator',
-      'label layout calculator',
-      'image print size',
-      'DPI checker',
-      'CMYK RGB color check',
-      'bleed trim check',
-      'PDF imposition n-up',
-      'add crop marks to PDF',
-      'CMYK soft proof',
-      'print color preview',
-    ],
+    editorial: {
+      title: 'What to check before you send a file to the printer',
+      intro:
+        'PrintReady is a free set of tools that gathers the checks and spec calculations you need before sending a print file to the shop. It helps you catch the one-way mistakes — resolution, color, bleed, fonts — up front, so you avoid reprints and missed deadlines.',
+      sections: [
+        {
+          heading: 'Why preflight matters',
+          body: 'A file that looks fine on screen can print blurry from low resolution, dull from RGB color, or clipped at the edge from missing bleed. Catching these before the file reaches the printer is what saves cost and time.',
+        },
+        {
+          heading: 'What it covers',
+          body: 'File preflight (PDF), image resolution and print size, CMYK/RGB color and soft proofing, bleed and trim, paper weight and spine, saddle-stitch imposition and printer marks — 17 tools for each step from design to hand-off.',
+        },
+        {
+          heading: 'Your files stay in the browser',
+          body: 'Any PDF, image, or ICC profile you open is processed entirely inside your browser, never sent to a server. No sign-up, no install — use it without sending sensitive print data anywhere.',
+        },
+        {
+          heading: 'Understand the results',
+          body: 'Each tool ships with the formula, how-to notes, worked examples, and an FAQ. Final specs vary by printer, though, so confirm important values like bleed width and color profile against your printer’s guide before ordering.',
+        },
+      ],
+    },
+    faq: {
+      title: 'Frequently asked questions',
+      items: [
+        {
+          q: 'Is PrintReady free?',
+          a: 'Yes, every tool is free. No sign-up and no install required.',
+        },
+        {
+          q: 'Are my uploaded files safe?',
+          a: 'Files are processed entirely in your browser and are never uploaded to or stored on a server. Your print data never leaves your device.',
+        },
+        {
+          q: 'What should I check before sending a file to the printer?',
+          a: 'Check resolution (usually 300 DPI), color mode (CMYK), bleed on all sides (usually 3mm), and font embedding. The PDF check tool inspects these at once.',
+        },
+        {
+          q: 'Which tool should I start with?',
+          a: 'If you already have a finished PDF, start with the PDF check. If you are still designing, use the resolution and bleed calculators to set your working size first.',
+        },
+        {
+          q: 'Can I rely on the calculated results?',
+          a: 'They are guidance based on common print conventions. Final specs vary by printer, so confirm important values with your print shop.',
+        },
+      ],
+    },
     categories: {
       preflight: 'Preflight',
       convert: 'Convert',
@@ -167,6 +197,8 @@ export const en: Dictionary = {
     eyebrow: 'Guide',
     title: 'Print production guides',
     desc: 'From file prep to color — the essentials of getting print right.',
+    intro:
+      'Print is one-way: once it runs, you cannot undo it. These guides break down the steps where files most often go wrong before hand-off — resolution, color, bleed, paper, and binding — explained for real production. Each guide links to the related calculators, so you can grasp the concept and then run the numbers. Pick a topic below to start.',
     all: 'All guides',
     faqTitle: 'Frequently asked questions',
   },

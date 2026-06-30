@@ -66,7 +66,6 @@ export async function generateMetadata({
     ? {
         title: meta.title,
         description: meta.desc,
-        keywords: [meta.title, meta.tag, ...dict.home.keywords.slice(0, 4)],
         alternates: localizedAlternates(locale, `/${tool}`),
         openGraph: localizedOpenGraph(locale, {
           title: meta.title,

@@ -6,12 +6,23 @@ import { Card } from '@/components/ui/Card';
 import { buttonClass } from '@/components/ui/buttonClass';
 import { TOOL_ICONS } from '@/components/layout/toolIcons';
 import { groupTools } from '@/lib/tools';
+import { jsonLdScriptProps } from '@/lib/jsonLd';
 
 export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
   const dict = getDictionary(locale);
   const groups = groupTools(dict.tools);
+
+  const faqJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: dict.home.faq.items.map((f) => ({
+      '@type': 'Question',
+      name: f.q,
+      acceptedAnswer: { '@type': 'Answer', text: f.a },
+    })),
+  };
 
   return (
     <>
@@ -92,6 +103,39 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
           ))}
         </div>
       </section>
+
+      {/* EDITORIAL + FAQ */}
+      <section className="border-t border-hairline bg-elevated">
+        <div className="mx-auto max-w-page px-6 py-16 sm:py-20">
+          <div className="mx-auto max-w-[760px]">
+            <h2 className="m-0 text-3xl font-semibold tracking-tight">
+              {dict.home.editorial.title}
+            </h2>
+            <p className="mt-4 text-lg leading-relaxed text-body">{dict.home.editorial.intro}</p>
+
+            {dict.home.editorial.sections.map((s) => (
+              <div key={s.heading} className="mt-8">
+                <h3 className="text-xl font-semibold text-ink">{s.heading}</h3>
+                <p className="mt-2 leading-relaxed text-body">{s.body}</p>
+              </div>
+            ))}
+
+            <h2 className="m-0 mt-14 text-3xl font-semibold tracking-tight">
+              {dict.home.faq.title}
+            </h2>
+            <dl className="mt-4 flex flex-col gap-5">
+              {dict.home.faq.items.map((f) => (
+                <div key={f.q}>
+                  <dt className="font-medium text-ink">{f.q}</dt>
+                  <dd className="mt-1 leading-relaxed text-body">{f.a}</dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+        </div>
+      </section>
+
+      <script {...jsonLdScriptProps(faqJsonLd)} />
     </>
   );
 }
