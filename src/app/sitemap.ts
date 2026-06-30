@@ -11,6 +11,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...toolIds.map((id) => `/${id}`),
     '/guides',
     ...guideSlugs.map((slug) => `/guides/${slug}`),
+    '/reference',
     ...pageSlugs.map((slug) => `/${slug}`),
     '/privacy',
   ];

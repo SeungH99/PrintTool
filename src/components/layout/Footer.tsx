@@ -42,6 +42,11 @@ export function Footer({ locale, dict }: { locale: Locale; dict: Dictionary }) {
                 </Link>
               </li>
               <li>
+                <Link href={`/${locale}/reference`} className={linkClass}>
+                  {dict.footer.reference}
+                </Link>
+              </li>
+              <li>
                 <Link href={`/${locale}/about`} className={linkClass}>
                   {dict.footer.about}
                 </Link>

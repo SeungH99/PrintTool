@@ -43,6 +43,7 @@ export default async function GuidesIndexPage({
       </div>
       <h1 className="m-0 text-3xl font-semibold tracking-tight">{dict.guides.title}</h1>
       <p className="mt-2 max-w-[560px] text-base text-body">{dict.guides.desc}</p>
+      <p className="mt-4 max-w-[680px] leading-relaxed text-body">{dict.guides.intro}</p>
       <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {guides.map((g) => (
           <Link

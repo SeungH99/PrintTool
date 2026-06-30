@@ -27,6 +27,7 @@ import { PrinterMarksTool } from '@/components/calculators/PrinterMarksTool';
 import { SoftProofTool } from '@/components/calculators/SoftProofTool';
 import { ComingSoon } from '@/components/calculators/ComingSoon';
 import { ToolContent } from '@/components/calculators/ToolContent';
+import { getToolExample } from '@/content/toolExamples';
 import { RelatedTools } from '@/components/layout/RelatedTools';
 
 const CALCULATORS: Partial<Record<ToolId, ComponentType<CalculatorProps>>> = {
@@ -66,7 +67,6 @@ export async function generateMetadata({
     ? {
         title: meta.title,
         description: meta.desc,
-        keywords: [meta.title, meta.tag, ...dict.home.keywords.slice(0, 4)],
         alternates: localizedAlternates(locale, `/${tool}`),
         openGraph: localizedOpenGraph(locale, {
           title: meta.title,
@@ -146,7 +146,7 @@ export default async function ToolPage({
           comingSoonDesc={dict.calc.comingSoonDesc}
         />
       )}
-      <ToolContent guide={dict.toolGuides[tool]} />
+      <ToolContent guide={dict.toolGuides[tool]} example={getToolExample(locale, tool)} />
       <RelatedTools locale={locale} dict={dict} ids={relatedToolIds(tool)} />
     </>
   );

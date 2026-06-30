@@ -43,6 +43,10 @@ const ko: Record<StaticPageSlug, StaticPage> = {
         body: '디자이너, 소규모 인쇄소, 자가 출판 작가, 그리고 처음 인쇄를 맡기는 분 모두를 위해 만들었습니다. 인쇄소의 전문 용어와 규격에 익숙하지 않아도, 도구가 안내하는 값을 따라가면 재인쇄 없이 한 번에 출고할 수 있도록 돕는 것이 목표입니다.',
       },
       {
+        heading: '자주 쓰는 상황',
+        body: '명함·전단·브로슈어를 입고하기 전 PDF 검사로 해상도·색상·도련을 점검하고, 소책자는 중철 페이지 계산과 터잡기로 페이지 순서를 맞춥니다. 현수막·배너는 해상도 기준과 그로멧 간격을 확인하고, 책은 페이지 수와 종이로 책등 두께를 계산합니다. 작업 단계에 맞는 도구를 골라 쓰면 됩니다.',
+      },
+      {
         heading: '정확성과 한계',
         body: '계산과 검수 결과는 일반적인 인쇄 기준을 바탕으로 한 안내이며, 최종 사양은 인쇄소마다 다를 수 있습니다. 도련 폭, 색상 프로파일, 제본 방식 같은 중요한 값은 주문 전에 인쇄소 가이드로 한 번 더 확인하시길 권장합니다. PrintReady는 검수를 돕는 도구일 뿐, 인쇄 결과를 보증하지 않습니다.',
       },
@@ -59,6 +63,10 @@ const ko: Record<StaticPageSlug, StaticPage> = {
       {
         heading: '무엇을 보내면 되나요',
         body: '계산 결과가 이상하거나 도구가 동작하지 않는 경우, 어떤 도구에서 어떤 입력으로 문제가 생겼는지 알려 주시면 빠르게 확인할 수 있습니다. 새로 추가했으면 하는 계산기나 가이드 주제 제안도 환영합니다.',
+      },
+      {
+        heading: '피드백이 사이트를 만듭니다',
+        body: 'PrintReady의 도구와 가이드는 사용자 피드백을 반영해 다듬어 갑니다. 자주 들어오는 질문은 가이드에 정리하고, 요청이 많은 계산기는 우선 추가합니다. 인쇄 실무에서 불편했던 점이나 빠진 기능이 있으면 알려 주세요.',
       },
       {
         heading: '답변 안내',
@@ -121,6 +129,10 @@ const en: Record<StaticPageSlug, StaticPage> = {
         body: 'It is built for designers, small print shops, self-publishing authors, and anyone ordering print for the first time. The goal is to help you ship a file correctly on the first run — without reprints — even if you are not fluent in a printer’s jargon and specs.',
       },
       {
+        heading: 'Common situations',
+        body: 'Before sending a card, flyer, or brochure to print, check resolution, color, and bleed with the PDF preflight; for a booklet, get the page count and imposition order right; for a banner, confirm the resolution target and grommet spacing; for a book, calculate spine thickness from page count and paper. Pick the tool that matches your stage.',
+      },
+      {
         heading: 'Accuracy and limits',
         body: 'The calculations and checks are guidance based on common print conventions, and final specs vary by printer. We recommend confirming important values — bleed width, color profile, binding method — against your printer’s guide before ordering. PrintReady is a tool to assist your checks; it does not guarantee print results.',
       },
@@ -137,6 +149,10 @@ const en: Record<StaticPageSlug, StaticPage> = {
       {
         heading: 'What to send',
         body: 'If a result looks wrong or a tool does not work, tell us which tool and what inputs caused the problem so we can look into it quickly. Suggestions for new calculators or guide topics are welcome too.',
+      },
+      {
+        heading: 'Feedback shapes the site',
+        body: 'PrintReady’s tools and guides are refined from user feedback. Common questions get written into a guide, and frequently requested calculators get built first. If something was awkward in real production or a feature is missing, let us know.',
       },
       {
         heading: 'About replies',
