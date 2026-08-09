@@ -1,5 +1,7 @@
 import { expect, test, type Page } from '@playwright/test';
 
+const TEST_ADSENSE_CLIENT = 'ca-pub-0000000000000000';
+
 const slugs = [
   'print-file-prep',
   'resolution-and-dpi',
@@ -7,6 +9,14 @@ const slugs = [
   'bleed-and-trim',
   'saddle-stitch-booklet',
 ] as const;
+
+const sampleCounts = {
+  'print-file-prep': 2,
+  'resolution-and-dpi': 1,
+  'cmyk-vs-rgb': 1,
+  'bleed-and-trim': 2,
+  'saddle-stitch-booklet': 1,
+} as const;
 
 const toolIds = [
   'pdf',
@@ -47,6 +57,9 @@ for (const locale of ['ko', 'en'] as const) {
   for (const slug of slugs) {
     test(`${locale} ${slug} publishes reproducible evidence`, async ({ page }) => {
       const siteErrors = collectSiteErrors(page);
+      await page.route('https://pagead2.googlesyndication.com/**', async (route) => {
+        await route.fulfill({ contentType: 'application/javascript', body: '' });
+      });
       const response = await page.goto(`/${locale}/guides/${slug}`);
 
       expect(response?.status()).toBe(200);
@@ -56,38 +69,69 @@ for (const locale of ['ko', 'en'] as const) {
         page.getByText(locale === 'ko' ? '검증 정보' : 'Verification details', { exact: true }),
       ).toBeVisible();
 
-      const downloadLink = page.getByRole('link', { name: /다운로드|download/i }).first();
-      const href = await downloadLink.getAttribute('href');
-      const downloadName = await downloadLink.getAttribute('download');
-      if (!href || !downloadName) throw new Error('missing sample download metadata');
+      const downloadLinks = page.getByRole('link', { name: /다운로드|download/i });
+      const downloadCount = await downloadLinks.count();
+      expect(downloadCount).toBe(sampleCounts[slug]);
+      for (let index = 0; index < downloadCount; index += 1) {
+        const downloadLink = downloadLinks.nth(index);
+        const href = await downloadLink.getAttribute('href');
+        const downloadName = await downloadLink.getAttribute('download');
+        if (!href || !downloadName) throw new Error('missing sample download metadata');
 
-      const sampleResponse = await page.request.get(href);
-      expect(sampleResponse.ok()).toBe(true);
+        const sampleResponse = await page.request.get(href);
+        expect(sampleResponse.ok()).toBe(true);
 
-      const [download] = await Promise.all([page.waitForEvent('download'), downloadLink.click()]);
-      expect(download.suggestedFilename()).toBe(downloadName);
+        const [download] = await Promise.all([page.waitForEvent('download'), downloadLink.click()]);
+        expect(download.suggestedFilename()).toBe(downloadName);
+        expect(await download.failure()).toBeNull();
+        expect(await download.path()).not.toBeNull();
+      }
 
-      await expect(page.locator('script[src*="adsbygoogle.js"][data-nscript]')).toHaveCount(0);
+      await expect(page.locator('script[src*="adsbygoogle.js"]')).toHaveCount(1);
+      const adSenseScript = page.locator('script[data-printready-adsense][src*="adsbygoogle.js"]');
+      await expect(adSenseScript).toHaveCount(1);
+      expect(
+        await adSenseScript.evaluate((script: HTMLScriptElement) => ({
+          async: script.async,
+          client: new URL(script.src).searchParams.get('client'),
+          crossOrigin: script.crossOrigin,
+          dataNscript: script.getAttribute('data-nscript'),
+        })),
+      ).toEqual({
+        async: true,
+        client: TEST_ADSENSE_CLIENT,
+        crossOrigin: 'anonymous',
+        dataNscript: null,
+      });
       expect(siteErrors).toEqual([]);
     });
   }
 }
 
-test('local mobile smoke exposes four user-facing categories and all 17 tools', async ({
-  page,
-}) => {
+test('local mobile smoke exposes four localized categories and all 17 tools', async ({ page }) => {
   await page.setViewportSize({ width: 375, height: 812 });
-  await page.goto('/ko');
-  await page.getByRole('button', { name: 'Menu' }).click();
+  const locales = [
+    {
+      locale: 'ko',
+      headings: ['검수 · 변환', '규격·해상도', '용지', '제작·터잡기'],
+    },
+    {
+      locale: 'en',
+      headings: ['Preflight · Convert', 'Size & resolution', 'Paper', 'Production'],
+    },
+  ] as const;
 
-  const menu = page.getByRole('dialog');
-  // The home combines 검수 and 변환 into one user-facing category; the mobile
-  // drawer renders those two labels separately while exposing the same four groups.
-  for (const category of ['검수', '변환', '규격·해상도', '용지', '제작·터잡기']) {
-    await expect(menu.getByText(category, { exact: true })).toBeVisible();
-  }
-  for (const toolId of toolIds) {
-    await expect(menu.locator(`a[href="/ko/${toolId}"]`).first()).toBeVisible();
+  for (const { locale, headings } of locales) {
+    await page.goto(`/${locale}`);
+    await page.getByRole('button', { name: 'Menu' }).click();
+
+    const toolGroups = page.getByTestId('mobile-tool-groups');
+    await expect(toolGroups.getByRole('heading')).toHaveText([...headings]);
+    for (const toolId of toolIds) {
+      await expect(page.getByRole('dialog').locator(`a[href="/${locale}/${toolId}"]`)).toHaveCount(
+        1,
+      );
+    }
   }
 });
 

@@ -35,7 +35,7 @@ function ResolutionPreview({ result, label }: { result: ResolutionResult; label:
         style={{ width: `${w}px`, height: `${h}px` }}
         aria-hidden="true"
       >
-        <span className="px-2 text-center font-mono text-[11px] tabular-nums text-mute">
+        <span className="px-2 text-center font-mono text-[11px] tabular-nums text-link-deep">
           {label}
         </span>
       </div>

@@ -3,16 +3,31 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import type { Dictionary } from '@/i18n/dictionaries';
-import { buttonClass } from '@/components/ui/buttonClass';
 import { groupTools } from '@/lib/tools';
 
 /**
  * Mobile header navigation (`md:hidden`) — a burger button that opens a drawer
- * with home, the full tool list, and the primary CTA. Closes on overlay click,
- * Escape, or selecting a link. The desktop nav (md+) is unaffected.
+ * with home and the full tool list. Closes on overlay click, Escape, or selecting
+ * a link. The desktop nav (md+) is unaffected.
  */
 export function MobileNav({ locale, dict }: { locale: string; dict: Dictionary }) {
   const [open, setOpen] = useState(false);
+  const groupedTools = groupTools(dict.tools);
+  const mobileGroups = [
+    {
+      key: 'file-preparation',
+      label: `${dict.home.categories.preflight} · ${dict.home.categories.convert}`,
+      tools: groupedTools
+        .filter(({ key }) => key === 'preflight' || key === 'convert')
+        .flatMap(({ tools }) => tools),
+    },
+    ...groupedTools
+      .filter(({ key }) => key !== 'preflight' && key !== 'convert')
+      .map((group) => ({
+        ...group,
+        label: dict.home.categories[group.key],
+      })),
+  ];
 
   useEffect(() => {
     if (!open) return;
@@ -54,36 +69,31 @@ export function MobileNav({ locale, dict }: { locale: string; dict: Dictionary }
             >
               {dict.nav.home}
             </Link>
-            {groupTools(dict.tools).map((group) => (
-              <div key={group.key}>
-                <div
-                  className={
-                    locale === 'ko'
-                      ? 'mt-2 px-3 py-1 text-[13px] font-semibold text-faint'
-                      : 'mt-2 px-3 py-1 font-mono text-[11px] uppercase tracking-wide text-faint'
-                  }
-                >
-                  {dict.home.categories[group.key]}
-                </div>
-                {group.tools.map((tool) => (
-                  <Link
-                    key={tool.id}
-                    href={`/${locale}/${tool.id}`}
-                    onClick={() => setOpen(false)}
-                    className="block rounded-sm px-3 py-2.5 text-sm text-body no-underline transition-colors hover:bg-hairline-soft hover:text-ink"
+            <div data-testid="mobile-tool-groups">
+              {mobileGroups.map((group) => (
+                <div key={group.key}>
+                  <h2
+                    className={
+                      locale === 'ko'
+                        ? 'mt-2 px-3 py-1 text-[13px] font-semibold text-faint'
+                        : 'mt-2 px-3 py-1 font-mono text-[11px] uppercase tracking-wide text-faint'
+                    }
                   >
-                    {tool.title}
-                  </Link>
-                ))}
-              </div>
-            ))}
-            <Link
-              href={`/${locale}/pdf`}
-              onClick={() => setOpen(false)}
-              className={`mt-3 ${buttonClass({ variant: 'primary', shape: 'pill', full: true })}`}
-            >
-              {dict.nav.cta}
-            </Link>
+                    {group.label}
+                  </h2>
+                  {group.tools.map((tool) => (
+                    <Link
+                      key={tool.id}
+                      href={`/${locale}/${tool.id}`}
+                      onClick={() => setOpen(false)}
+                      className="block rounded-sm px-3 py-2.5 text-sm text-body no-underline transition-colors hover:bg-hairline-soft hover:text-ink"
+                    >
+                      {tool.title}
+                    </Link>
+                  ))}
+                </div>
+              ))}
+            </div>
           </nav>
         </div>
       )}

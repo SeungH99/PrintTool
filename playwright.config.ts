@@ -1,7 +1,9 @@
 import { defineConfig, devices } from '@playwright/test';
 
+const TEST_ADSENSE_CLIENT = 'ca-pub-0000000000000000';
+
 // E2E specs live in ./e2e (Vitest unit tests live in ./tests and ./src).
-// Requires a production build first: `npm run build` (webServer runs `npm run start`).
+// The web server creates an isolated production build with the test AdSense client.
 export default defineConfig({
   testDir: './e2e',
   fullyParallel: true,
@@ -14,9 +16,10 @@ export default defineConfig({
   },
   projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
   webServer: {
-    command: 'npm run start',
+    command: 'npm run build && npm run start',
+    env: { NEXT_PUBLIC_ADSENSE_CLIENT: TEST_ADSENSE_CLIENT },
     url: 'http://localhost:3000/ko',
-    reuseExistingServer: !process.env.CI,
+    reuseExistingServer: false,
     timeout: 120 * 1000,
   },
 });
