@@ -10,8 +10,25 @@ export const en: Dictionary = {
       'PDF, images, book spine, paper weight, fold layouts — every calculation and check you need for print production, in one place.',
     ctaPrimary: 'Start PDF check',
     ctaSecondary: 'Browse calculators',
+    workflow: {
+      title: 'Convert, check, and resolve the result',
+      steps: [
+        'Convert an image to the intended PDF size',
+        'Check the PDF size, DPI, and color',
+        'Understand each warning and choose the next action',
+      ],
+    },
     toolsTitle: 'Pick a tool and start right away',
     toolsDesc: 'From preflight to calculation — every step of print production, covered.',
+    featured: {
+      title: 'Workflows verified with real files',
+      description: 'Each case publishes its input, expected value, and observed result.',
+    },
+    methodology: {
+      title: 'Verification methods and privacy',
+      body: 'Calculations and PDF checks include reproducible examples and their limitations. Uploaded files are processed only in your browser, and your selected print provider’s specification remains the final authority.',
+      link: 'Read our methodology and limitations',
+    },
     editorial: {
       title: 'What to check before you send a file to the printer',
       intro:
@@ -200,6 +217,11 @@ export const en: Dictionary = {
     desc: 'From file prep to color — the essentials of getting print right.',
     intro:
       'Print is one-way: once it runs, you cannot undo it. These guides break down the steps where files most often go wrong before hand-off — resolution, color, bleed, paper, and binding — explained for real production. Each guide links to the related calculators, so you can grasp the concept and then run the numbers. Pick a topic below to start.',
+    verifiedTitle: 'Verified workflows',
+    verifiedDesc:
+      'Reproducible print-production workflows built around the same samples and observed results.',
+    referencesTitle: 'Sourced references',
+    referencesDesc: 'Editorial guides grounded in standards and print-production references.',
     all: 'All guides',
     faqTitle: 'Frequently asked questions',
   },

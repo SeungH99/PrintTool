@@ -8,11 +8,42 @@ test('redirects the root to the default locale', async ({ page }) => {
 test('renders the KO home and switches to EN', async ({ page }) => {
   await page.goto('/ko');
   await expect(page.getByRole('heading', { level: 1 })).toContainText('인쇄소에 보내기 전');
+  await expect(
+    page.getByRole('heading', { name: /변환.*검사.*해결|convert.*check.*resolve/i }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole('link', { name: /이미지에서 PDF 검사까지|From image to PDF preflight/i }),
+  ).toBeVisible();
+  await expect(page.locator('[data-testid="tool-category"]')).toHaveCount(4);
 
   await page.getByRole('button', { name: '언어 선택' }).click();
   await page.getByRole('link', { name: 'English' }).click();
   await expect(page).toHaveURL(/\/en$/);
   await expect(page.getByRole('heading', { level: 1 })).toContainText('print shop');
+  await expect(
+    page.getByRole('heading', { name: /변환.*검사.*해결|convert.*check.*resolve/i }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole('link', { name: /이미지에서 PDF 검사까지|From image to PDF preflight/i }),
+  ).toBeVisible();
+  await expect(page.locator('[data-testid="tool-category"]')).toHaveCount(4);
+});
+
+test('groups verified workflows before sourced references', async ({ page }) => {
+  await page.goto('/ko/guides');
+
+  const verified = page.getByRole('region', { name: '실전 검증 가이드' });
+  const references = page.getByRole('region', { name: '출처 기반 참고 자료' });
+  await expect(verified.getByRole('link')).toHaveCount(5);
+  await expect(references.getByRole('link')).toHaveCount(2);
+  await expect(verified.getByRole('link').first()).toHaveAttribute(
+    'href',
+    '/ko/guides/print-file-prep',
+  );
+
+  await page.goto('/en/guides');
+  await expect(page.getByRole('region', { name: 'Verified workflows' })).toBeVisible();
+  await expect(page.getByRole('region', { name: 'Sourced references' })).toBeVisible();
 });
 
 test('resolution calculator computes size and downgrades on low DPI', async ({ page }) => {
@@ -45,7 +76,7 @@ test('header tools menu opens and navigates to a tool', async ({ page }) => {
 
 test('a calculator shows an error message on invalid input', async ({ page }) => {
   await page.goto('/ko/res');
-  await page.getByLabel('가로 (픽셀)').fill('-5');
+  await page.getByLabel('가로 (픽셀)').fill('0');
   await expect(page.getByText('모든 값은 0보다 큰 숫자여야 합니다.')).toBeVisible();
 });
 
@@ -69,11 +100,15 @@ test('mobile nav drawer opens and navigates to a tool', async ({ page }) => {
   await expect(page).toHaveURL(/\/ko\/convert$/);
 });
 
-test('serves a web manifest and JSON-LD structured data', async ({ page }) => {
+test('serves a web manifest without generic FAQ structured data on home', async ({ page }) => {
   const m = await page.goto('/manifest.webmanifest');
   expect(m?.status()).toBe(200);
   await page.goto('/ko');
-  expect(await page.locator('script[type="application/ld+json"]').count()).toBeGreaterThan(0);
+  await expect(page.getByRole('heading', { name: '자주 묻는 질문' })).toHaveCount(0);
+  const homeStructuredData = await page
+    .locator('script[type="application/ld+json"]')
+    .allTextContents();
+  expect(homeStructuredData.some((value) => value.includes('"FAQPage"'))).toBe(false);
   await page.goto('/ko/spine');
   expect(await page.locator('script[type="application/ld+json"]').count()).toBeGreaterThan(0);
 });
