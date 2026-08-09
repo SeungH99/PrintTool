@@ -3,7 +3,16 @@ import AxeBuilder from '@axe-core/playwright';
 
 // Automated accessibility scan (axe-core) on representative pages. Catches WCAG
 // violations (contrast, names, roles, landmarks) and guards against regressions.
-const paths = ['/ko', '/en', '/ko/res', '/ko/pdf', '/ko/convert', '/ko/privacy'];
+const paths = [
+  '/ko',
+  '/en',
+  '/ko/res',
+  '/ko/pdf',
+  '/ko/convert',
+  '/ko/privacy',
+  '/ko/guides/print-file-prep',
+  '/en/guides/bleed-and-trim',
+];
 
 for (const path of paths) {
   test(`a11y: ${path} has no detectable axe violations`, async ({ page }) => {
