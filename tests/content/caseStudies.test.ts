@@ -39,4 +39,10 @@ describe('case-study registry', () => {
     expect(ko?.metrics).toBe(en?.metrics);
     expect(ko?.title).not.toBe(en?.title);
   });
+
+  it('preserves the approved Korean saddle-stitch title', () => {
+    expect(getCaseStudy('ko', 'saddle-stitch-booklet')?.title).toBe(
+      '6·8·12페이지 중철 배치를 직접 검산하기',
+    );
+  });
 });

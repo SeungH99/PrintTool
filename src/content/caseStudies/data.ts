@@ -601,7 +601,7 @@ export const caseStudies: CaseStudyRecord[] = [
     ],
     copy: {
       ko: {
-        title: '6·8·12페이지 중철 배치를 직접 검증하기',
+        title: '6·8·12페이지 중철 배치를 직접 검산하기',
         description:
           '중철 한 장이 4페이지를 담는 원리로 6페이지의 빈 페이지 보정과 8·12페이지의 용지 수를 계산하고 공개 JSON과 비교합니다.',
         eyebrow: '검증 사례 05',
