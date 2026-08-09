@@ -5,6 +5,7 @@ describe('case-study evidence helpers', () => {
   it('accepts only YYYY-MM-DD dates', () => {
     expect(isIsoDate('2026-08-09')).toBe(true);
     expect(isIsoDate('2026/08/09')).toBe(false);
+    expect(isIsoDate('2026-02-29')).toBe(false);
   });
 
   it('passes numeric evidence inside tolerance', () => {
