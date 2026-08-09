@@ -27,6 +27,7 @@ import { PrinterMarksTool } from '@/components/calculators/PrinterMarksTool';
 import { SoftProofTool } from '@/components/calculators/SoftProofTool';
 import { ComingSoon } from '@/components/calculators/ComingSoon';
 import { ToolContent } from '@/components/calculators/ToolContent';
+import { getToolCaseLink } from '@/content/toolCaseLinks';
 import { getToolExample } from '@/content/toolExamples';
 import { RelatedTools } from '@/components/layout/RelatedTools';
 
@@ -108,7 +109,9 @@ export default async function ToolPage({
   const Calculator = CALCULATORS[tool];
 
   const catKey = categoryOf(tool);
-  const crumbs = [{ '@type': 'ListItem', position: 1, name: dict.nav.home, item: `${SITE_URL}/${locale}` }];
+  const crumbs = [
+    { '@type': 'ListItem', position: 1, name: dict.nav.home, item: `${SITE_URL}/${locale}` },
+  ];
   if (catKey) {
     crumbs.push({
       '@type': 'ListItem',
@@ -146,7 +149,11 @@ export default async function ToolPage({
           comingSoonDesc={dict.calc.comingSoonDesc}
         />
       )}
-      <ToolContent guide={dict.toolGuides[tool]} example={getToolExample(locale, tool)} />
+      <ToolContent
+        guide={dict.toolGuides[tool]}
+        example={getToolExample(locale, tool)}
+        relatedCase={getToolCaseLink(locale, tool)}
+      />
       <RelatedTools locale={locale} dict={dict} ids={relatedToolIds(tool)} />
     </>
   );
