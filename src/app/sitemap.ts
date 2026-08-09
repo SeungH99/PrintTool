@@ -3,6 +3,7 @@ import { locales } from '@/i18n/config';
 import { toolIds } from '@/lib/tools';
 import { guideSlugs } from '@/content/guides';
 import { pageSlugs } from '@/content/pages';
+import { contentLastModified } from '@/content/contentDates';
 import { SITE_URL } from '@/lib/site';
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -15,12 +16,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...pageSlugs.map((slug) => `/${slug}`),
     '/privacy',
   ];
-  const now = new Date();
-
   return locales.flatMap((locale) =>
     paths.map((path) => ({
       url: `${SITE_URL}/${locale}${path}`,
-      lastModified: now,
+      lastModified: contentLastModified(path),
       changeFrequency: 'monthly' as const,
       priority: path === '' ? 1 : 0.7,
     })),
