@@ -6,16 +6,16 @@ const ADSENSE_SRC =
 
 function appendMarkedScript({
   async = true,
-  crossOrigin = 'anonymous',
+  crossOrigin,
   dataNscript,
 }: {
   async?: boolean;
-  crossOrigin?: string;
+  crossOrigin?: string | null;
   dataNscript?: string;
 } = {}): HTMLScriptElement {
   const script = document.createElement('script');
   script.async = async;
-  script.crossOrigin = crossOrigin;
+  if (crossOrigin !== null) script.crossOrigin = crossOrigin ?? 'anonymous';
   script.src = ADSENSE_SRC;
   script.setAttribute('data-printready-adsense', 'true');
   if (dataNscript) script.setAttribute('data-nscript', dataNscript);
@@ -102,7 +102,9 @@ describe('ensureAdSenseScript', () => {
   });
 
   it('replaces a same-URL script with no cross-origin mode', () => {
-    const stale = appendMarkedScript({ crossOrigin: '' });
+    const stale = appendMarkedScript({ crossOrigin: null });
+    expect(stale).not.toHaveAttribute('crossorigin');
+
     const script = ensureAdSenseScript('ca-pub-123');
 
     expect(script).not.toBe(stale);
