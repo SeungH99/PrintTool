@@ -1,6 +1,36 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { ensureAdSenseScript } from '@/lib/ads/loadAdSense';
 
+const ADSENSE_SRC =
+  'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-123';
+
+function appendMarkedScript({
+  async = true,
+  crossOrigin = 'anonymous',
+  dataNscript,
+}: {
+  async?: boolean;
+  crossOrigin?: string;
+  dataNscript?: string;
+} = {}): HTMLScriptElement {
+  const script = document.createElement('script');
+  script.async = async;
+  script.crossOrigin = crossOrigin;
+  script.src = ADSENSE_SRC;
+  script.setAttribute('data-printready-adsense', 'true');
+  if (dataNscript) script.setAttribute('data-nscript', dataNscript);
+  document.head.appendChild(script);
+  return script;
+}
+
+function expectNativeScript(script: HTMLScriptElement): void {
+  expect(document.head.querySelectorAll('script[data-printready-adsense]')).toHaveLength(1);
+  expect(script.src).toBe(ADSENSE_SRC);
+  expect(script.async).toBe(true);
+  expect(script.crossOrigin).toBe('anonymous');
+  expect(script).not.toHaveAttribute('data-nscript');
+}
+
 describe('ensureAdSenseScript', () => {
   beforeEach(() => document.head.replaceChildren());
 
@@ -51,5 +81,53 @@ describe('ensureAdSenseScript', () => {
     expect(script.src).toBe(
       'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca%20pub%26%3F%2F%2B%23',
     );
+  });
+
+  it('replaces a same-URL Next.js managed script', () => {
+    const stale = appendMarkedScript({ dataNscript: 'afterInteractive' });
+    const script = ensureAdSenseScript('ca-pub-123');
+
+    expect(script).not.toBe(stale);
+    expect(stale.isConnected).toBe(false);
+    expectNativeScript(script);
+  });
+
+  it('replaces a same-URL script that is not async', () => {
+    const stale = appendMarkedScript({ async: false });
+    const script = ensureAdSenseScript('ca-pub-123');
+
+    expect(script).not.toBe(stale);
+    expect(stale.isConnected).toBe(false);
+    expectNativeScript(script);
+  });
+
+  it('replaces a same-URL script with no cross-origin mode', () => {
+    const stale = appendMarkedScript({ crossOrigin: '' });
+    const script = ensureAdSenseScript('ca-pub-123');
+
+    expect(script).not.toBe(stale);
+    expect(stale.isConnected).toBe(false);
+    expectNativeScript(script);
+  });
+
+  it('replaces a same-URL script with the wrong cross-origin mode', () => {
+    const stale = appendMarkedScript({ crossOrigin: 'use-credentials' });
+    const script = ensureAdSenseScript('ca-pub-123');
+
+    expect(script).not.toBe(stale);
+    expect(stale.isConnected).toBe(false);
+    expectNativeScript(script);
+  });
+
+  it('replaces duplicate marked scripts even when they have the requested URL', () => {
+    const first = appendMarkedScript();
+    const duplicate = appendMarkedScript();
+    const script = ensureAdSenseScript('ca-pub-123');
+
+    expect(script).not.toBe(first);
+    expect(script).not.toBe(duplicate);
+    expect(first.isConnected).toBe(false);
+    expect(duplicate.isConnected).toBe(false);
+    expectNativeScript(script);
   });
 });
