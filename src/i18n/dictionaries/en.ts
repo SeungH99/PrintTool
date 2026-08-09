@@ -1,7 +1,14 @@
 import type { Dictionary } from './ko';
 
 export const en: Dictionary = {
-  nav: { home: 'Home', tools: 'Tools', guides: 'Guides', cta: 'Check PDF' },
+  nav: {
+    home: 'Home',
+    tools: 'Tools',
+    guides: 'Guides',
+    cta: 'Check PDF',
+    menu: 'Tools menu',
+    closeMenu: 'Close menu',
+  },
   home: {
     metaTitle: 'Print Preflight & Spec Calculators · PrintReady',
     eyebrow: 'Print production toolkit',
@@ -95,7 +102,7 @@ export const en: Dictionary = {
     {
       id: 'convert',
       title: 'Print PDF Convert',
-      desc: 'Turn an image or PDF into a print-ready PDF fitted to a page size.',
+      desc: 'Fit an image or PDF to a selected PDF page size while preserving RGB color.',
       tag: 'Convert',
     },
     {
@@ -275,9 +282,9 @@ export const en: Dictionary = {
       leavesLabel: 'Body leaves',
       previewCaption: 'Cover spread — back · spine · front',
       warn: 'Page count should be a multiple of 4. The current value may leave blank pages.',
-      note: 'Actual thickness varies with paper bulk, coating and binding — confirm with your printer before production. (estimate)',
+      note: 'This value infers caliper from the entered GSM using a fixed bulk heuristic. Confirm it against the stock data sheet and bindery specification.',
       guide: [
-        'A 1mm spine error shifts the cover artwork and title position.',
+        'There is no caliper input; interior and cover GSM are used to infer per-sheet thickness.',
         'Perfect binding wraps the cover around the spine; saddle stitch has almost no spine; case binding adds board thickness.',
       ],
     },
@@ -808,18 +815,18 @@ export const en: Dictionary = {
     },
     spine: {
       intro:
-        'The spine calculator estimates text-block thickness from page count and paper caliper, which can vary by mill, stock finish, and binding process even at the same GSM.',
+        'The spine calculator infers per-sheet caliper from the entered GSM with a fixed bulk heuristic. It does not accept or measure caliper directly.',
       body: [
         {
-          heading: 'Caliper and bindery variation',
-          text: 'The real spine depends on sheet caliper, cover construction, adhesive, and compression. Use the estimate to begin a layout, then confirm it with the supplied stock specification or a bindery dummy before ordering.',
+          heading: 'GSM-based estimate and provider confirmation',
+          text: 'The fixed factor assumes a typical paper bulk. Before ordering, confirm the estimate with the paper mill or stock data sheet and the bindery’s cover, adhesive, and compression conditions.',
         },
       ],
       faqTitle: 'Frequently asked questions',
       faq: [
         {
           q: 'Does the same GSM always produce the same spine?',
-          a: 'No. Coating and bulk can give two papers with the same GSM different thickness per sheet.',
+          a: 'No. Coating and bulk can give two papers with the same GSM different caliper, so confirm against the stock data sheet or a bindery sample.',
         },
       ],
     },

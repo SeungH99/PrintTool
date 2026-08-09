@@ -24,7 +24,6 @@ describe('focused tool guidance', () => {
       color: 'cmyk-vs-rgb',
       bleed: 'bleed-and-trim',
       booklet: 'saddle-stitch-booklet',
-      impose: 'saddle-stitch-booklet',
     };
 
     for (const locale of ['ko', 'en'] as const) {
@@ -44,6 +43,40 @@ describe('focused tool guidance', () => {
       }
     }
   });
+
+  it.each([
+    {
+      locale: 'ko' as const,
+      required: [/GSM.*고정 벌크 계수.*캘리퍼.*추정/, /종이 사양서|제지사|제본소/],
+      falseClaim: /입력한 캘리퍼|실측 캘리퍼를 바탕|캘리퍼 입력값으로/,
+    },
+    {
+      locale: 'en' as const,
+      required: [
+        /infers.*caliper.*GSM.*fixed bulk heuristic/i,
+        /stock data sheet|paper mill|bindery/i,
+      ],
+      falseClaim: /entered caliper value|measured caliper input|based on entered caliper/i,
+    },
+  ])(
+    'describes the $locale spine input and heuristic accurately',
+    ({ locale, required, falseClaim }) => {
+      const dict = getDictionary(locale);
+      const guide = dict.toolGuides.spine;
+      const example = getToolExample(locale, 'spine');
+      const copy = [
+        dict.calc.spine.note,
+        ...dict.calc.spine.guide,
+        guide.intro,
+        ...guide.body.map(({ text }) => text),
+        ...guide.faq.map(({ a }) => a),
+        example?.body ?? '',
+      ].join(' ');
+
+      for (const phrase of required) expect(copy).toMatch(phrase);
+      expect(copy).not.toMatch(falseClaim);
+    },
+  );
 
   it.each([
     {

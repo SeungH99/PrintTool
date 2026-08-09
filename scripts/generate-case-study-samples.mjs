@@ -87,9 +87,13 @@ await savePdf('printready-a4-3mm-bleed.pdf', (doc) => {
 
 await writeFile(
   new URL('booklet-scenarios.json', OUT),
-  JSON.stringify([
-    { pages: 6, paddedPages: 8, blanks: 2, sheets: 2 },
-    { pages: 8, paddedPages: 8, blanks: 0, sheets: 2 },
-    { pages: 12, paddedPages: 12, blanks: 0, sheets: 3 },
-  ]),
+  `${JSON.stringify(
+    [
+      { pages: 6, paddedPages: 8, blanks: 2, sheets: 2 },
+      { pages: 8, paddedPages: 8, blanks: 0, sheets: 2 },
+      { pages: 12, paddedPages: 12, blanks: 0, sheets: 3 },
+    ],
+    null,
+    2,
+  )}\n`,
 );

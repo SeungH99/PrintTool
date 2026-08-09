@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import type { GuideSummary } from '@/content/guides';
+import type { CaseStudySummary } from '@/content/guides';
 import type { Locale } from '@/i18n/config';
 
 const copy = {
@@ -7,7 +7,7 @@ const copy = {
   en: { label: 'Verified case', updated: 'Updated' },
 } as const;
 
-export function CaseStudyCard({ locale, study }: { locale: Locale; study: GuideSummary }) {
+export function CaseStudyCard({ locale, study }: { locale: Locale; study: CaseStudySummary }) {
   const labels = copy[locale];
 
   return (

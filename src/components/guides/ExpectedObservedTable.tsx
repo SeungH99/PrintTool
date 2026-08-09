@@ -10,7 +10,9 @@ const copy = {
     status: '상태',
     match: '일치',
     mismatch: '불일치',
-    manualReview: '수동 검토',
+    warning: '경고',
+    warningMismatch: '경고 — 불일치',
+    manualReview: '수동 확인',
     yes: '예',
     no: '아니요',
     empty: '값 없음',
@@ -23,6 +25,8 @@ const copy = {
     status: 'Status',
     match: 'Match',
     mismatch: 'Does not match',
+    warning: 'Warning',
+    warningMismatch: 'Warning — does not match',
     manualReview: 'Manual review',
     yes: 'Yes',
     no: 'No',
@@ -30,11 +34,27 @@ const copy = {
   },
 } as const;
 
+const localizedUnits: Record<Locale, Record<string, string>> = {
+  ko: { pages: '페이지', sheets: '장' },
+  en: { pages: 'pages', sheets: 'sheets' },
+};
+
+const localizedValues: Record<Locale, Record<string, string>> = {
+  ko: { 'manual-review': '수동 확인' },
+  en: { 'manual-review': 'Manual review' },
+};
+
 function formatValue(value: CaseStudyMetric['expected'], unit: string | undefined, locale: Locale) {
   const labels = copy[locale];
   if (value === null) return labels.empty;
   if (typeof value === 'boolean') return value ? labels.yes : labels.no;
-  return unit ? `${value} ${unit}` : String(value);
+  const displayValue =
+    typeof value === 'string' ? (localizedValues[locale][value] ?? value) : value;
+  const displayUnit = unit ? (localizedUnits[locale][unit] ?? unit) : undefined;
+  if (!displayUnit) return String(displayValue);
+  return locale === 'ko' && (unit === 'pages' || unit === 'sheets')
+    ? `${displayValue}${displayUnit}`
+    : `${displayValue} ${displayUnit}`;
 }
 
 export function ExpectedObservedTable({
@@ -72,11 +92,18 @@ export function ExpectedObservedTable({
           {metrics.map((metric) => {
             const comparison = compareMetric(metric);
             const isManualReview = metric.status === 'manual-review';
+            const isWarning = metric.status === 'warning';
+            const isWarningMismatch = isWarning && !comparison.matches;
+            const isPass = metric.status === 'pass' && comparison.matches;
             const statusLabel = isManualReview
               ? labels.manualReview
-              : comparison.matches
-                ? labels.match
-                : labels.mismatch;
+              : isWarningMismatch
+                ? labels.warningMismatch
+                : isWarning
+                  ? labels.warning
+                  : isPass
+                    ? labels.match
+                    : labels.mismatch;
 
             return (
               <tr className="border-b border-line" key={metric.id}>
@@ -91,9 +118,13 @@ export function ExpectedObservedTable({
                 </td>
                 <td
                   className={
-                    isManualReview || !comparison.matches
-                      ? 'px-3 py-3 font-medium text-amber-700'
-                      : 'px-3 py-3 font-medium text-emerald-700'
+                    isWarningMismatch
+                      ? 'px-3 py-3 font-medium text-red-700'
+                      : isManualReview || isWarning
+                        ? 'px-3 py-3 font-medium text-amber-700'
+                        : isPass
+                          ? 'px-3 py-3 font-medium text-emerald-700'
+                          : 'px-3 py-3 font-medium text-red-700'
                   }
                 >
                   {statusLabel}

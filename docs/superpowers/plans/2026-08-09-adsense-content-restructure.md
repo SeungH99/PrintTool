@@ -689,6 +689,7 @@ describe('focused tool guidance', () => {
     expect(getToolCaseLink('ko', 'pdf')?.href).toBe('/ko/guides/print-file-prep');
     expect(getToolCaseLink('en', 'res')?.href).toBe('/en/guides/resolution-and-dpi');
     expect(getToolCaseLink('ko', 'spine')).toBeUndefined();
+    expect(getToolCaseLink('en', 'impose')).toBeUndefined();
   });
 });
 ~~~
@@ -708,7 +709,6 @@ const TOOL_CASES: Partial<Record<ToolId, CaseStudySlug>> = {
   color: 'cmyk-vs-rgb',
   bleed: 'bleed-and-trim',
   booklet: 'saddle-stitch-booklet',
-  impose: 'saddle-stitch-booklet',
 };
 ~~~
 

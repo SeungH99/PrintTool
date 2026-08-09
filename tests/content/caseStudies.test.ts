@@ -40,6 +40,30 @@ describe('case-study registry', () => {
     expect(ko?.title).not.toBe(en?.title);
   });
 
+  it('publishes independently checked resolution values and tolerances', () => {
+    const study = caseStudies.find(({ slug }) => slug === 'resolution-and-dpi');
+    expect(study?.inputs).toEqual({ widthPx: 1200, widthsMm: '100, 200, 297' });
+    expect(
+      study?.metrics.map(({ expected, observed, tolerance, unit, status }) => ({
+        expected,
+        observed,
+        tolerance,
+        unit,
+        status,
+      })),
+    ).toEqual([
+      { expected: 304.8, observed: 304.8, tolerance: 0.05, unit: 'DPI', status: 'pass' },
+      { expected: 152.4, observed: 152.4, tolerance: 0.05, unit: 'DPI', status: 'pass' },
+      {
+        expected: 102.63,
+        observed: 102.63,
+        tolerance: 0.05,
+        unit: 'DPI',
+        status: 'warning',
+      },
+    ]);
+  });
+
   it('preserves the approved Korean saddle-stitch title', () => {
     expect(getCaseStudy('ko', 'saddle-stitch-booklet')?.title).toBe(
       '6·8·12페이지 중철 배치를 직접 검산하기',

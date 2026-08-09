@@ -94,7 +94,7 @@ test('page responses carry baseline security headers', async ({ page }) => {
 test('mobile nav drawer opens and navigates to a tool', async ({ page }) => {
   await page.setViewportSize({ width: 375, height: 667 });
   await page.goto('/ko');
-  await page.getByRole('button', { name: 'Menu' }).click();
+  await page.getByRole('button', { name: '도구 메뉴' }).click();
   const dialog = page.getByRole('dialog');
   await dialog.getByRole('link', { name: '인쇄용 PDF 변환' }).click();
   await expect(page).toHaveURL(/\/ko\/convert$/);

@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import { CaseStudyView } from '@/components/guides/CaseStudyView';
 import { RelatedTools } from '@/components/layout/RelatedTools';
+import { ARTICLE_AUTHOR_NAME } from '@/content/articleMeta';
 import { getCaseStudy } from '@/content/caseStudies';
 import {
   getEditorialGuide,
@@ -52,6 +53,10 @@ function EditorialGuideView({
   dict: Dictionary;
 }) {
   const sourcesLabel = locale === 'ko' ? '출처' : 'Sources';
+  const articleLabels =
+    locale === 'ko'
+      ? { author: '작성', published: '게시', modified: '수정' }
+      : { author: 'Author', published: 'Published', modified: 'Modified' };
 
   return (
     <article className="mx-auto max-w-page px-6 pb-8 pt-12">
@@ -67,6 +72,24 @@ function EditorialGuideView({
         </div>
         <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">{guide.title}</h1>
         <p className="mt-4 text-lg leading-relaxed text-body">{guide.intro}</p>
+        <dl className="mt-4 flex flex-wrap gap-x-5 gap-y-1 text-sm text-mute">
+          <div className="flex gap-1">
+            <dt>{articleLabels.author}:</dt>
+            <dd>{ARTICLE_AUTHOR_NAME}</dd>
+          </div>
+          <div className="flex gap-1">
+            <dt>{articleLabels.published}:</dt>
+            <dd>
+              <time dateTime={guide.publishedAt}>{guide.publishedAt}</time>
+            </dd>
+          </div>
+          <div className="flex gap-1">
+            <dt>{articleLabels.modified}:</dt>
+            <dd>
+              <time dateTime={guide.updatedAt}>{guide.updatedAt}</time>
+            </dd>
+          </div>
+        </dl>
 
         {guide.sections.map((section) => (
           <section className="mt-8" key={section.heading}>
@@ -135,16 +158,15 @@ export default async function GuidePage({
   const guide = study ?? editorial!;
   const dict = getDictionary(locale);
   const url = `${SITE_URL}/${locale}/guides/${slug}`;
-  const organization = { '@type': 'Organization', name: 'PrintReady' } as const;
+  const organization = { '@type': 'Organization', name: ARTICLE_AUTHOR_NAME } as const;
   const articleJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Article',
     headline: guide.title,
     description: guide.description,
     inLanguage: locale === 'ko' ? 'ko-KR' : 'en-US',
-    ...(study
-      ? { datePublished: study.publishedAt, dateModified: study.updatedAt }
-      : { dateModified: editorial!.updatedAt }),
+    datePublished: guide.publishedAt,
+    dateModified: guide.updatedAt,
     author: organization,
     publisher: {
       ...organization,

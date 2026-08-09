@@ -109,7 +109,7 @@ for (const locale of ['ko', 'en'] as const) {
 }
 
 test('local mobile smoke exposes four localized categories and all 17 tools', async ({ page }) => {
-  await page.setViewportSize({ width: 375, height: 812 });
+  await page.setViewportSize({ width: 375, height: 480 });
   const locales = [
     {
       locale: 'ko',
@@ -123,7 +123,7 @@ test('local mobile smoke exposes four localized categories and all 17 tools', as
 
   for (const { locale, headings } of locales) {
     await page.goto(`/${locale}`);
-    await page.getByRole('button', { name: 'Menu' }).click();
+    await page.getByRole('button', { name: locale === 'ko' ? '도구 메뉴' : 'Tools menu' }).click();
 
     const toolGroups = page.getByTestId('mobile-tool-groups');
     await expect(toolGroups.getByRole('heading')).toHaveText([...headings]);
@@ -132,6 +132,11 @@ test('local mobile smoke exposes four localized categories and all 17 tools', as
         1,
       );
     }
+
+    const finalTool = page.getByRole('dialog').locator(`a[href="/${locale}/grommet"]`);
+    await finalTool.scrollIntoViewIfNeeded();
+    await finalTool.click();
+    await expect(page).toHaveURL(`/${locale}/grommet`);
   }
 });
 

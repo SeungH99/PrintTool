@@ -22,6 +22,19 @@ describe('case-study evidence helpers', () => {
     ).toEqual({ matches: true, delta: 0.03 });
   });
 
+  it('compares the unrounded numeric delta against tolerance', () => {
+    expect(
+      compareMetric({
+        id: 'boundary',
+        label: { ko: '허용 오차 경계', en: 'Tolerance boundary' },
+        expected: 1,
+        observed: 1.054,
+        tolerance: 0.05,
+        status: 'pass',
+      }),
+    ).toEqual({ matches: false, delta: 0.05 });
+  });
+
   it('compares booleans exactly', () => {
     expect(
       compareMetric({

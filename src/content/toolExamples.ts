@@ -27,7 +27,7 @@ const ko: Partial<Record<ToolId, ToolExample>> = {
   },
   spine: {
     heading: '예: 책등 두께',
-    body: '200쪽 책을 한 장 0.1mm 종이로 무선제본하면 책등은 약 (200 ÷ 2) × 0.1 = 10mm에 표지 두께를 더한 값입니다. 종이가 두꺼울수록 책등도 두꺼워집니다.',
+    body: '내지 100 GSM, 표지 250 GSM, 200쪽 무선제본을 입력하면 고정 벌크 계수로 캘리퍼를 추정해 약 13.23mm가 나옵니다. 실제 값은 선택한 종이 사양서와 제본소에서 확인하세요.',
   },
   weight: {
     heading: '예: 용지 무게',
@@ -89,7 +89,7 @@ const en: Partial<Record<ToolId, ToolExample>> = {
     body: 'You check an A4 catalog and the cover image flags at 180 DPI and the body color flags as RGB. Replace the cover with a 300 DPI original, convert everything to CMYK, and re-run the check — the warnings clear.',
   },
   convert: {
-    heading: 'Example: image to print-ready PDF',
+    heading: 'Example: image to a sized PDF',
     body: 'Converting a 3000×2000px photo to an A4 PDF places it at about 254 DPI. For sharper output, start from a larger original or place it at a smaller size.',
   },
   res: {
@@ -98,7 +98,7 @@ const en: Partial<Record<ToolId, ToolExample>> = {
   },
   spine: {
     heading: 'Example: spine thickness',
-    body: 'A 200-page book perfect-bound on 0.1mm sheets has a spine of about (200 ÷ 2) × 0.1 = 10mm plus the cover thickness. Thicker paper means a thicker spine.',
+    body: 'Entering 100 GSM interior stock, 250 GSM cover stock, and 200 pages for perfect binding gives about 13.23mm after the fixed bulk heuristic infers caliper. Confirm it with the stock data sheet and bindery.',
   },
   weight: {
     heading: 'Example: paper weight',

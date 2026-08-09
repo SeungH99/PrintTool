@@ -71,8 +71,9 @@ export function isIsoDate(value: string): boolean {
 
 export function compareMetric(metric: CaseStudyMetric): { matches: boolean; delta: number | null } {
   if (typeof metric.expected === 'number' && typeof metric.observed === 'number') {
-    const delta = Math.round(Math.abs(metric.expected - metric.observed) * 100) / 100;
-    return { matches: delta <= (metric.tolerance ?? 0), delta };
+    const rawDelta = Math.abs(metric.expected - metric.observed);
+    const delta = Math.round(rawDelta * 100) / 100;
+    return { matches: rawDelta <= (metric.tolerance ?? 0), delta };
   }
   return { matches: metric.expected === metric.observed, delta: null };
 }

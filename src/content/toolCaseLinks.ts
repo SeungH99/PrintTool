@@ -9,7 +9,6 @@ const TOOL_CASES: Partial<Record<ToolId, CaseStudySlug>> = {
   color: 'cmyk-vs-rgb',
   bleed: 'bleed-and-trim',
   booklet: 'saddle-stitch-booklet',
-  impose: 'saddle-stitch-booklet',
 };
 
 const CASE_LINK_LABELS: Record<Locale, string> = {
