@@ -684,18 +684,18 @@ export const en: Dictionary = {
     },
     color: {
       intro:
-        'The color converter calculates approximate RGB and CMYK channel values; it is not an ICC profile conversion for a particular press and paper.',
+        'The color converter uses Little CMS and a bundled default CMYK ICC profile to convert between RGB and CMYK values in the browser.',
       body: [
         {
-          heading: 'Numeric conversion versus print profiles',
-          text: 'The result uses a general channel formula. Actual output depends on ICC profiles, inks, stock, and rendering intent, so do not treat these numbers as contract-proof or device-specific separation values.',
+          heading: 'Conversion through the bundled profile',
+          text: 'The displayed values come from the bundled profile’s relative-colorimetric conversion. A commercial printer may use a different output profile, ink set, stock, or rendering setup, so confirm the required profile before production.',
         },
       ],
       faqTitle: 'Frequently asked questions',
       faq: [
         {
           q: 'Will the calculated CMYK values print exactly like the screen?',
-          a: 'No. They are profile-free numeric estimates suited to comparison and early setup, not a prediction of a specific press.',
+          a: 'No. The conversion is ICC-based, but it reflects the bundled default profile rather than every press condition. Commercial output can differ with the printer’s profile and materials.',
         },
       ],
     },
@@ -888,18 +888,18 @@ export const en: Dictionary = {
     },
     impose: {
       intro:
-        'The PDF imposition tool rearranges pages into saddle-stitch printer spreads whose pairs return to reading order after folding and binding.',
+        'The PDF imposition tool repeats only the source PDF’s first page across a larger sheet in an N-up grid, using the selected margin and spacing to find how many copies fit.',
       body: [
         {
-          heading: 'Printer spreads and page order',
-          text: 'Sequential reader pages are paired across outer and inner sheets for the selected saddle-stitch order. The result does not add a device-specific plate size, gripper, or sheet-turning method.',
+          heading: 'First-page grid placement',
+          text: 'The first page supplies the piece size and artwork. The tool subtracts the sheet margin, applies the chosen gap, and compares upright and 90-degree rotated grids; additional PDF pages are not placed.',
         },
       ],
       faqTitle: 'Frequently asked questions',
       faq: [
         {
-          q: 'Should printer spreads be used for on-screen reading?',
-          a: 'No. Their sequence is intentionally rearranged for binding; distribute the original sequential PDF for screen use.',
+          q: 'What happens when the source PDF has several pages?',
+          a: 'Only the first page is repeated in the output grid. Split or process other pages separately if each one also needs an N-up sheet.',
         },
       ],
     },
@@ -922,11 +922,11 @@ export const en: Dictionary = {
     },
     grommet: {
       intro:
-        'The banner grommet calculator applies an edge offset and distributes grommets at approximately equal intervals along each side.',
+        'The banner grommet calculator anchors a grommet at every corner and divides each edge into approximately equal intervals no greater than the requested spacing; there is no edge-offset control.',
       body: [
         {
-          heading: 'Edge offset and equal spacing',
-          text: 'It anchors the corner positions and divides the remaining edge length evenly. The model assumes a rectangle and equal spacing; seams, reinforcement, and wind-load requirements may call for additional positions.',
+          heading: 'Corner anchors and equal spacing',
+          text: 'Width, height, and target spacing determine the positions. The rectangular model redistributes each full edge evenly from corner to corner; seams, reinforcement, and wind load may require a different production layout.',
         },
       ],
       faqTitle: 'Frequently asked questions',
