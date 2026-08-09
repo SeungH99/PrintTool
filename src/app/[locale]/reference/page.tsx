@@ -41,14 +41,18 @@ export default async function ReferencePage({ params }: { params: Promise<{ loca
           updated: '업데이트',
           sources: '출처',
           sourcesFor: (title: string) => `${title} 출처`,
-          commercialConvention: '출처: 인쇄소별 상업 관행 — 선택한 인쇄소의 사양을 확인하세요.',
+          basisConvention: '근거/관행',
+          basisFor: (title: string) => `${title} 근거/관행`,
+          commercialConvention: '인쇄소별 상업 관행 — 선택한 인쇄소의 사양을 확인하세요.',
         }
       : {
           updated: 'Updated',
           sources: 'Sources',
           sourcesFor: (title: string) => `Sources for ${title}`,
+          basisConvention: 'Basis/Convention',
+          basisFor: (title: string) => `Basis/Convention for ${title}`,
           commercialConvention:
-            "Source: printer-dependent commercial convention — confirm the selected printer's specification.",
+            "Printer-dependent commercial convention — confirm the selected printer's specification.",
         };
 
   const breadcrumbJsonLd = {
@@ -88,18 +92,21 @@ export default async function ReferencePage({ params }: { params: Promise<{ loca
                   <tbody>
                     {table.rows.map((row) => (
                       <tr key={row[0]} className="border-b border-hairline-soft">
-                        {row.map((cell, i) => (
-                          <td
-                            key={i}
-                            className={
-                              i === 0
-                                ? 'py-2.5 pr-4 font-medium text-ink'
-                                : 'py-2.5 pr-4 tabular-nums text-body'
-                            }
-                          >
-                            {cell}
-                          </td>
-                        ))}
+                        {row.map((cell, i) => {
+                          const className =
+                            i === 0
+                              ? 'py-2.5 pr-4 text-left font-medium text-ink'
+                              : 'py-2.5 pr-4 tabular-nums text-body';
+                          return i === 0 ? (
+                            <th key={i} scope="row" className={className}>
+                              {cell}
+                            </th>
+                          ) : (
+                            <td key={i} className={className}>
+                              {cell}
+                            </td>
+                          );
+                        })}
                       </tr>
                     ))}
                   </tbody>
@@ -109,6 +116,7 @@ export default async function ReferencePage({ params }: { params: Promise<{ loca
                     aria-label={labels.sourcesFor(table.title)}
                     className="mt-3 flex list-none flex-wrap gap-x-4 gap-y-1 p-0 text-[13px] text-mute"
                   >
+                    {table.sourceContext && <li className="basis-full">{table.sourceContext}</li>}
                     {table.sourceIds.map((sourceId) => {
                       const source = SOURCES[sourceId];
                       return (
@@ -128,10 +136,10 @@ export default async function ReferencePage({ params }: { params: Promise<{ loca
                   </ul>
                 ) : (
                   <p
-                    aria-label={labels.sourcesFor(table.title)}
+                    aria-label={labels.basisFor(table.title)}
                     className="mt-3 text-[13px] leading-relaxed text-mute"
                   >
-                    {labels.commercialConvention}
+                    {labels.basisConvention}: {labels.commercialConvention}
                   </p>
                 )}
               </div>

@@ -43,6 +43,38 @@ describe('reference and methodology trust signals', () => {
     },
   );
 
+  it.each(['ko', 'en'] as const)(
+    'separates the Adobe 300 PPI threshold from the %s 150 DPI calculation example',
+    (locale) => {
+      const dpiTable = getReference(locale).tables[3];
+
+      expect(dpiTable.sourceIds).toEqual(['adobePrintPdf']);
+      expect(dpiTable.columns[1]).toMatch(/300 (?:DPI|PPI)/);
+      expect(dpiTable.columns[2]).toMatch(
+        locale === 'ko'
+          ? /150 DPI.*계산 예시.*권장.*아님/
+          : /150 DPI.*calculation example.*not a recommendation/i,
+      );
+      expect(dpiTable.sourceContext).toMatch(
+        locale === 'ko' ? /Adobe.*300.*PDF/ : /Adobe.*300.*PDF/i,
+      );
+      expect(dpiTable.sourceContext).not.toMatch(/150/);
+      expect(dpiTable.note).toMatch(
+        locale === 'ko' ? /인쇄소.*사양.*우선/ : /printer.*specification.*takes precedence/i,
+      );
+    },
+  );
+
+  it.each(['ko', 'en'] as const)('keeps unsupported safe-margin advice out of %s', (locale) => {
+    const bleedTable = getReference(locale).tables[4];
+    const visibleCopy = [bleedTable.title, ...bleedTable.rows.flat(), bleedTable.note ?? ''].join(
+      ' ',
+    );
+
+    expect(bleedTable.sourceIds).toEqual(['adobeBleed']);
+    expect(visibleCopy).not.toMatch(locale === 'ko' ? /여백/ : /margin/i);
+  });
+
   it.each(['ko', 'en'] as const)('publishes methodology and limitations in %s', (locale) => {
     const about = getPage(locale, 'about');
 
@@ -91,5 +123,42 @@ describe('reference and methodology trust signals', () => {
     expect(sourceLink).toHaveAttribute('href', SOURCES.iso216.url);
     expect(sourceLink).toHaveAttribute('target', '_blank');
     expect(sourceLink).toHaveAttribute('rel', 'noreferrer');
+  });
+
+  it('renders the Adobe source scope without attributing the 150 DPI example to Adobe', async () => {
+    const result = await ReferencePage({ params: Promise.resolve({ locale: 'en' }) });
+    render(result);
+
+    const dpiTable = screen.getByRole('table', {
+      name: 'Print resolution and print-ready PDF notes',
+    });
+    const sourceList = dpiTable.nextElementSibling;
+
+    expect(sourceList).toHaveTextContent(
+      'Adobe source scope: the 300 PPI low-resolution threshold and print-ready PDF export checks',
+    );
+    expect(sourceList).not.toHaveTextContent(/Adobe source scope:.*150/i);
+  });
+
+  it('renders body-row labels as scoped row headers', async () => {
+    const result = await ReferencePage({ params: Promise.resolve({ locale: 'en' }) });
+    const { container } = render(result);
+
+    const bodyRows = Array.from(container.querySelectorAll('tbody tr'));
+    expect(bodyRows.length).toBeGreaterThan(0);
+    for (const row of bodyRows) {
+      const firstCell = row.firstElementChild;
+      expect(firstCell?.tagName).toBe('TH');
+      expect(firstCell).toHaveAttribute('scope', 'row');
+    }
+  });
+
+  it('labels the unsourced trim convention as basis rather than source', async () => {
+    const result = await ReferencePage({ params: Promise.resolve({ locale: 'ko' }) });
+    render(result);
+
+    const convention = screen.getByLabelText('국내 책 판형 (참고) 근거/관행');
+    expect(convention).toHaveTextContent(/^근거\/관행: 인쇄소별 상업 관행/);
+    expect(convention).not.toHaveTextContent(/^출처:/);
   });
 });

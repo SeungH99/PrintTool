@@ -7,6 +7,7 @@ export interface RefTable {
   rows: string[][];
   sourceIds: SourceId[];
   basis: 'standard' | 'calculated' | 'commercial-convention';
+  sourceContext?: string;
   note?: string;
 }
 
@@ -71,7 +72,7 @@ const ko: ReferenceContent = {
     },
     {
       title: '인쇄 해상도와 PDF 준비 참고',
-      columns: ['규격', '300 DPI', '150 DPI'],
+      columns: ['규격', '300 PPI (Adobe 저해상도 기준)', '150 DPI 계산 예시 (권장값 아님)'],
       rows: [
         ['A4 (210×297)', '2480 × 3508', '1240 × 1754'],
         ['A5 (148×210)', '1748 × 2480', '874 × 1240'],
@@ -81,14 +82,14 @@ const ko: ReferenceContent = {
       ],
       sourceIds: ['adobePrintPdf'],
       basis: 'calculated',
-      note: '픽셀 수는 크기(mm) ÷ 25.4 × DPI로 계산했습니다. 300/150 DPI는 작업을 시작할 때 쓰는 참고 목표이며, PDF 내보내기와 이미지 해상도는 인쇄소의 사양을 우선하세요.',
+      sourceContext: 'Adobe 출처 범위: 300 PPI 미만 저해상도 경고와 인쇄용 PDF 내보내기 확인 사항',
+      note: '픽셀 수는 크기(mm) ÷ 25.4 × DPI로 계산했습니다. 150 DPI 열은 중립적인 계산 예시이며 권장값이 아닙니다. 이미지 해상도와 PDF 내보내기에서는 선택한 인쇄소의 사양이 우선합니다.',
     },
     {
-      title: '도련·여백 확인 기준',
+      title: '도련 확인 기준',
       columns: ['항목', '확인 내용'],
       rows: [
         ['도련(블리드)', '재단선 바깥까지 아트워크를 연장하고 폭은 인쇄소에 확인'],
-        ['안전 여백', '중요 요소를 재단선 안쪽에 배치하고 폭은 인쇄소에 확인'],
         ['사방 3mm 예시', '흔한 상업 관행이지만 선택한 인쇄소에 확인 필요'],
       ],
       sourceIds: ['adobeBleed'],
@@ -160,7 +161,11 @@ const en: ReferenceContent = {
     },
     {
       title: 'Print resolution and print-ready PDF notes',
-      columns: ['Size', '300 DPI', '150 DPI'],
+      columns: [
+        'Size',
+        '300 PPI (Adobe low-resolution threshold)',
+        '150 DPI calculation example (not a recommendation)',
+      ],
       rows: [
         ['A4 (210×297)', '2480 × 3508', '1240 × 1754'],
         ['A5 (148×210)', '1748 × 2480', '874 × 1240'],
@@ -170,17 +175,15 @@ const en: ReferenceContent = {
       ],
       sourceIds: ['adobePrintPdf'],
       basis: 'calculated',
-      note: "Pixel counts use pixels = size(mm) ÷ 25.4 × DPI. Treat 300/150 DPI as working targets; the printer's requirements take precedence for image resolution and PDF export settings.",
+      sourceContext:
+        'Adobe source scope: the 300 PPI low-resolution threshold and print-ready PDF export checks',
+      note: "Pixel counts use pixels = size(mm) ÷ 25.4 × DPI. The 150 DPI column is a neutral calculation example, not a recommendation. The selected printer's specification takes precedence for image resolution and PDF export settings.",
     },
     {
-      title: 'Bleed and margin checks',
+      title: 'Bleed checks',
       columns: ['Item', 'What to confirm'],
       rows: [
         ['Bleed', 'Extend artwork beyond the trim and confirm the width with the printer'],
-        [
-          'Safe margin',
-          'Keep important elements inside the trim and confirm the inset with the printer',
-        ],
         [
           '3mm per-side example',
           'A common commercial convention; confirm with the selected printer',
