@@ -1,17 +1,30 @@
 'use client';
 
-import { openConsentManager } from '@/lib/consent/consent';
+import { useEffect, useState } from 'react';
+import { observeConsentManager, openConsentManager } from '@/lib/consent/consent';
 
-// Footer "cookie settings" entry point. Wired to the consent stub today; a real
-// CMP will take over openConsentManager() without changing this call site (ADR-0001).
-export function CookieSettingsButton({ label }: { label: string }) {
+// Google only loads its regional CMP API for applicable visitors. The privacy-policy
+// URL remains a functional fallback everywhere else instead of exposing a no-op button.
+export function CookieSettingsButton({
+  label,
+  privacyHref,
+}: {
+  label: string;
+  privacyHref: string;
+}) {
+  const [cmpApplies, setCmpApplies] = useState(false);
+
+  useEffect(() => observeConsentManager(setCmpApplies), []);
+
   return (
-    <button
-      type="button"
-      onClick={() => openConsentManager()}
-      className="cursor-pointer border-0 bg-transparent p-0 text-left text-[13px] text-body transition-colors hover:text-ink"
+    <a
+      href={privacyHref}
+      onClick={(event) => {
+        if (cmpApplies && openConsentManager()) event.preventDefault();
+      }}
+      className="text-[13px] text-body no-underline transition-colors hover:text-ink"
     >
       {label}
-    </button>
+    </a>
   );
 }

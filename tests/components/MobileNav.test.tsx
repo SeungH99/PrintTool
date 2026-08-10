@@ -4,6 +4,20 @@ import { MobileNav } from '@/components/layout/MobileNav';
 import { ko } from '@/i18n/dictionaries/ko';
 
 describe('MobileNav', () => {
+  it('portals the fixed dialog outside the backdrop-filter header', () => {
+    render(
+      <div data-testid="header-shell">
+        <MobileNav locale="ko" dict={ko} />
+      </div>,
+    );
+    fireEvent.click(screen.getByRole('button', { name: ko.nav.menu }));
+
+    const headerShell = screen.getByTestId('header-shell');
+    const dialog = screen.getByRole('dialog', { name: ko.nav.menu });
+    expect(headerShell).not.toContainElement(dialog);
+    expect(dialog.parentElement).toBe(document.body);
+  });
+
   it('groups every tool once under four user-facing headings', () => {
     render(<MobileNav locale="ko" dict={ko} />);
     fireEvent.click(screen.getByRole('button', { name: '도구 메뉴' }));
@@ -34,6 +48,27 @@ describe('MobileNav', () => {
     const link = screen.getByRole('link', { name: '인쇄용 PDF 변환' });
     link.addEventListener('click', (event) => event.preventDefault());
     fireEvent.click(link);
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+  });
+
+  it('closes the drawer when its backdrop is clicked', () => {
+    render(<MobileNav locale="ko" dict={ko} />);
+    fireEvent.click(screen.getByRole('button', { name: ko.nav.menu }));
+    const dialog = screen.getByRole('dialog', { name: ko.nav.menu });
+    const backdrop = dialog.querySelector<HTMLElement>('[aria-hidden="true"]');
+
+    expect(backdrop).not.toBeNull();
+    fireEvent.click(backdrop as HTMLElement);
+
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+  });
+
+  it('closes the drawer with its named close button', () => {
+    render(<MobileNav locale="ko" dict={ko} />);
+    fireEvent.click(screen.getByRole('button', { name: ko.nav.menu }));
+
+    fireEvent.click(screen.getByRole('button', { name: ko.nav.closeMenu }));
+
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
   });
 

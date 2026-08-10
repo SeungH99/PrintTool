@@ -27,7 +27,7 @@ const ko = String.raw`
     <p>Google이 파트너 사이트에서 수집한 정보를 처리하는 방법은 <a href="https://policies.google.com/technologies/partner-sites?hl=ko" target="_blank" rel="noopener noreferrer">Google 파트너 사이트 데이터 사용 안내</a>에서 확인할 수 있습니다.</p>
   </section>
 
-  <h2>동의 및 쿠키 설정</h2>
+  <h2 id="consent-and-cookie-settings">동의 및 쿠키 설정</h2>
   <p>필수 기능을 제외한 분석 및 광고 저장은 사용자의 선택에 따라 제어됩니다. 서비스의 쿠키 설정에서 동의를 변경하거나 철회할 수 있고, 지원되는 브라우저의 Global Privacy Control 신호도 존중합니다. 브라우저 설정에서 쿠키를 차단하거나 삭제할 수도 있습니다.</p>
 
   <h2>공유, 보관 및 보안</h2>
@@ -68,7 +68,7 @@ const en = String.raw`
     <p>For details about Google's processing on sites that use its services, see <a href="https://policies.google.com/technologies/partner-sites" target="_blank" rel="noopener noreferrer">How Google uses data on partner sites</a>.</p>
   </section>
 
-  <h2>Consent and cookie controls</h2>
+  <h2 id="consent-and-cookie-settings">Consent and cookie controls</h2>
   <p>Except for essential functionality, analytics and advertising storage are controlled by your choices. You can change or withdraw consent through the site's cookie settings. We also respect supported Global Privacy Control signals, and you may block or delete cookies through your browser settings.</p>
 
   <h2>Sharing, retention, and security</h2>
