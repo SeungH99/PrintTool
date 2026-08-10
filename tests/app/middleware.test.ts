@@ -1,10 +1,10 @@
 import { describe, expect, it } from 'vitest';
 import { NextRequest } from 'next/server';
-import { proxy } from '@/proxy';
+import { middleware } from '@/middleware';
 
-describe('proxy security headers', () => {
+describe('middleware security headers', () => {
   it('allows the Google ad traffic quality frame in the report-only CSP', () => {
-    const response = proxy(new NextRequest('https://printreadyhq.com/ko'));
+    const response = middleware(new NextRequest('https://printreadyhq.com/ko'));
     const policy = response.headers.get('Content-Security-Policy-Report-Only');
 
     expect(policy).toContain(
