@@ -53,12 +53,12 @@ export const CONSENT_REQUIRED_REGIONS = [
   'CH',
 ] as const;
 
-const STORAGE_KEY = 'printready.consent';
+export const CONSENT_STORAGE_KEY = 'printready.consent';
 
 export function readConsent(): ConsentState {
   if (typeof window === 'undefined') return defaultConsent;
   try {
-    const raw = window.localStorage.getItem(STORAGE_KEY);
+    const raw = window.localStorage.getItem(CONSENT_STORAGE_KEY);
     if (!raw) return defaultConsent;
     return { ...defaultConsent, ...(JSON.parse(raw) as Partial<ConsentState>) };
   } catch {
@@ -119,7 +119,6 @@ export function openConsentManager(): void {
     fc.callbackQueue.push(() => fc.showRevocationMessage?.());
     return;
   }
-  // eslint-disable-next-line no-console
   console.warn(
     '[consent] CMP not loaded (set NEXT_PUBLIC_ADSENSE_CLIENT). See ADR-0001 / MVP-005.',
   );

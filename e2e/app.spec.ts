@@ -61,6 +61,25 @@ test('a real tool route resolves (spine)', async ({ page }) => {
   await expect(page.getByRole('heading', { level: 1 })).toContainText('책등');
 });
 
+test('color conversion loads the self-hosted LCMS module and profile', async ({ page }) => {
+  const glueResponse = page.waitForResponse((response) => response.url().endsWith('/lcms/lcms.js'));
+  const wasmResponse = page.waitForResponse((response) =>
+    response.url().endsWith('/lcms/lcms.wasm'),
+  );
+  const profileResponse = page.waitForResponse((response) =>
+    response.url().endsWith('/profiles/default_cmyk.icc'),
+  );
+
+  const pageResponse = await page.goto('/en/color');
+  const [glue, wasm, profile] = await Promise.all([glueResponse, wasmResponse, profileResponse]);
+
+  expect(pageResponse?.status()).toBe(200);
+  expect(glue.ok()).toBe(true);
+  expect(wasm.ok()).toBe(true);
+  expect(profile.ok()).toBe(true);
+  await expect(page.getByRole('textbox', { name: 'HEX' })).toHaveValue(/^#[0-9a-f]{6}$/i);
+});
+
 test('unknown tool returns 404', async ({ page }) => {
   const res = await page.goto('/ko/zzz');
   expect(res?.status()).toBe(404);
