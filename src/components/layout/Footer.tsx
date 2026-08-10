@@ -57,9 +57,9 @@ export function Footer({ locale, dict }: { locale: Locale; dict: Dictionary }) {
                 </Link>
               </li>
               <li>
-                <Link href={`/${locale}/privacy`} className={linkClass}>
+                <a href={`/${locale}/privacy`} className={linkClass}>
                   {dict.footer.privacy}
-                </Link>
+                </a>
               </li>
               <li>
                 <Link href={`/${locale}/terms`} className={linkClass}>
@@ -67,7 +67,10 @@ export function Footer({ locale, dict }: { locale: Locale; dict: Dictionary }) {
                 </Link>
               </li>
               <li>
-                <CookieSettingsButton label={dict.footer.cookieSettings} />
+                <CookieSettingsButton
+                  label={dict.footer.cookieSettings}
+                  privacyHref={`/${locale}/privacy#consent-and-cookie-settings`}
+                />
               </li>
             </ul>
           </div>

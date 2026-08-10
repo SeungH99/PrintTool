@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react';
 import Script from 'next/script';
+import { usePathname } from 'next/navigation';
 import { ensureAdSenseScript } from '@/lib/ads/loadAdSense';
 import {
   consentModeParams,
@@ -9,6 +10,9 @@ import {
   gpcOptOutParams,
   CONSENT_REQUIRED_REGIONS,
 } from '@/lib/consent/consent';
+
+const CONSENT_REQUIRING_GOOGLE_TAGS =
+  'script[src*="adsbygoogle.js"], script[src*="googletagmanager.com/gtag/js"], #consent-mode-default, #ga-loader, #ga-init';
 
 /**
  * Loads Google Consent Mode v2 plus the analytics/ads tags, each gated on its own
@@ -21,12 +25,18 @@ import {
 export function ConsentScripts() {
   const client = process.env.NEXT_PUBLIC_ADSENSE_CLIENT;
   const ga = process.env.NEXT_PUBLIC_GA_ID;
+  const pathname = usePathname();
+  const isPrivacyPolicy = pathname === '/privacy' || pathname.endsWith('/privacy');
 
   useEffect(() => {
-    if (client) ensureAdSenseScript(client);
-  }, [client]);
+    if (isPrivacyPolicy) {
+      if (document.querySelector(CONSENT_REQUIRING_GOOGLE_TAGS)) window.location.reload();
+      return;
+    }
+    if (client && !isPrivacyPolicy) ensureAdSenseScript(client);
+  }, [client, isPrivacyPolicy]);
 
-  if (!client && !ga) return null;
+  if (isPrivacyPolicy || (!client && !ga)) return null;
 
   // Regulated regions: denied + wait for the CMP. The region-less default covers the rest (granted).
   const regional = JSON.stringify({

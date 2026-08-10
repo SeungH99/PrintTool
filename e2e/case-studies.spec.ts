@@ -130,6 +130,19 @@ test('local mobile smoke exposes four localized categories and all 17 tools', as
     await page.getByRole('button', { name: locale === 'ko' ? '도구 메뉴' : 'Tools menu' }).click();
 
     const toolGroups = page.getByTestId('mobile-tool-groups');
+    const dialog = page.getByRole('dialog');
+    await expect(dialog).toHaveCSS('position', 'fixed');
+    expect(await dialog.evaluate((element) => element.parentElement === document.body)).toBe(true);
+    expect(await dialog.evaluate((element) => element.getBoundingClientRect().height)).toBe(480);
+    expect(
+      await dialog
+        .getByRole('link', { name: locale === 'ko' ? '홈' : 'Home', exact: true })
+        .evaluate((link) => {
+          const rect = link.getBoundingClientRect();
+          const topElement = document.elementFromPoint(rect.left + 4, rect.top + 4);
+          return Boolean(topElement?.closest('[role="dialog"]'));
+        }),
+    ).toBe(true);
     await expect(toolGroups.getByRole('heading')).toHaveText([...headings]);
     for (const toolId of toolIds) {
       await expect(page.getByRole('dialog').locator(`a[href="/${locale}/${toolId}"]`)).toHaveCount(
@@ -155,4 +168,26 @@ test('local desktop smoke opens a featured evidence route without redirect', asy
   await expect(page.locator('h1')).toHaveText(
     'From image to PDF preflight: a reproducible workflow',
   );
+});
+
+test('privacy stays free of consent-requiring Google tags after browser history', async ({
+  page,
+}) => {
+  await page.route('https://pagead2.googlesyndication.com/**', async (route) => {
+    await route.fulfill({ contentType: 'application/javascript', body: '' });
+  });
+  const googleTags = page.locator(
+    'script[src*="adsbygoogle.js"], script[src*="googletagmanager.com/gtag/js"], #consent-mode-default, #ga-loader, #ga-init',
+  );
+
+  await page.goto('/ko/privacy');
+  await expect(googleTags).toHaveCount(0);
+
+  await page.getByRole('link', { name: 'PrintReady', exact: true }).first().click();
+  await expect(page).toHaveURL('/ko');
+  await expect(page.locator('script[src*="adsbygoogle.js"]')).toHaveCount(1);
+
+  await page.goBack();
+  await expect(page).toHaveURL('/ko/privacy');
+  await expect(googleTags).toHaveCount(0);
 });

@@ -30,6 +30,9 @@ describe('privacy policy', () => {
         name: 'Google 파트너 사이트 데이터 사용 안내',
       }),
     ).toHaveAttribute('href', 'https://policies.google.com/technologies/partner-sites?hl=ko');
+    expect(
+      within(article).getByRole('heading', { level: 2, name: '동의 및 쿠키 설정' }),
+    ).toHaveAttribute('id', 'consent-and-cookie-settings');
   });
 
   it('renders the English policy with the required Google advertising disclosures', async () => {
@@ -55,5 +58,8 @@ describe('privacy policy', () => {
         name: 'How Google uses data on partner sites',
       }),
     ).toHaveAttribute('href', 'https://policies.google.com/technologies/partner-sites');
+    expect(
+      within(article).getByRole('heading', { level: 2, name: 'Consent and cookie controls' }),
+    ).toHaveAttribute('id', 'consent-and-cookie-settings');
   });
 });

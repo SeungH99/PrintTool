@@ -4,6 +4,20 @@ import { MobileNav } from '@/components/layout/MobileNav';
 import { ko } from '@/i18n/dictionaries/ko';
 
 describe('MobileNav', () => {
+  it('portals the fixed dialog outside the backdrop-filter header', () => {
+    render(
+      <div data-testid="header-shell">
+        <MobileNav locale="ko" dict={ko} />
+      </div>,
+    );
+    fireEvent.click(screen.getByRole('button', { name: ko.nav.menu }));
+
+    const headerShell = screen.getByTestId('header-shell');
+    const dialog = screen.getByRole('dialog', { name: ko.nav.menu });
+    expect(headerShell).not.toContainElement(dialog);
+    expect(dialog.parentElement).toBe(document.body);
+  });
+
   it('groups every tool once under four user-facing headings', () => {
     render(<MobileNav locale="ko" dict={ko} />);
     fireEvent.click(screen.getByRole('button', { name: '도구 메뉴' }));

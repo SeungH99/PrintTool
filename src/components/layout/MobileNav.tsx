@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import Link from 'next/link';
 import type { Dictionary } from '@/i18n/dictionaries';
 import { groupTools } from '@/lib/tools';
@@ -92,59 +93,61 @@ export function MobileNav({ locale, dict }: { locale: string; dict: Dictionary }
         <span aria-hidden="true">☰</span>
       </button>
 
-      {open && (
-        <div
-          ref={dialogRef}
-          className="fixed inset-0 z-50"
-          role="dialog"
-          aria-label={dict.nav.menu}
-          aria-modal="true"
-        >
-          <div className="absolute inset-0 bg-black/30" aria-hidden="true" onClick={closeMenu} />
-          <nav className="absolute right-0 top-0 flex h-full w-72 max-w-[80%] flex-col gap-1 overflow-y-auto border-l border-hairline bg-canvas p-4 shadow-[0_8px_28px_-6px_rgba(0,0,0,0.25)]">
-            <button
-              type="button"
-              aria-label={dict.nav.closeMenu}
-              onClick={closeMenu}
-              className="mb-2 self-end px-2 text-base text-mute transition-colors hover:text-ink"
-            >
-              ✕
-            </button>
-            <Link
-              href={`/${locale}`}
-              onClick={closeMenu}
-              className="rounded-sm px-3 py-2.5 text-sm font-medium text-ink no-underline transition-colors hover:bg-hairline-soft"
-            >
-              {dict.nav.home}
-            </Link>
-            <div data-testid="mobile-tool-groups">
-              {mobileGroups.map((group) => (
-                <div key={group.key}>
-                  <h2
-                    className={
-                      locale === 'ko'
-                        ? 'mt-2 px-3 py-1 text-[13px] font-semibold text-faint'
-                        : 'mt-2 px-3 py-1 font-mono text-[11px] uppercase tracking-wide text-faint'
-                    }
-                  >
-                    {group.label}
-                  </h2>
-                  {group.tools.map((tool) => (
-                    <Link
-                      key={tool.id}
-                      href={`/${locale}/${tool.id}`}
-                      onClick={closeMenu}
-                      className="block rounded-sm px-3 py-2.5 text-sm text-body no-underline transition-colors hover:bg-hairline-soft hover:text-ink"
+      {open &&
+        createPortal(
+          <div
+            ref={dialogRef}
+            className="fixed inset-0 z-50"
+            role="dialog"
+            aria-label={dict.nav.menu}
+            aria-modal="true"
+          >
+            <div className="absolute inset-0 bg-black/30" aria-hidden="true" onClick={closeMenu} />
+            <nav className="absolute right-0 top-0 flex h-full w-72 max-w-[80%] flex-col gap-1 overflow-y-auto border-l border-hairline bg-canvas p-4 shadow-[0_8px_28px_-6px_rgba(0,0,0,0.25)]">
+              <button
+                type="button"
+                aria-label={dict.nav.closeMenu}
+                onClick={closeMenu}
+                className="mb-2 self-end px-2 text-base text-mute transition-colors hover:text-ink"
+              >
+                ✕
+              </button>
+              <Link
+                href={`/${locale}`}
+                onClick={closeMenu}
+                className="rounded-sm px-3 py-2.5 text-sm font-medium text-ink no-underline transition-colors hover:bg-hairline-soft"
+              >
+                {dict.nav.home}
+              </Link>
+              <div data-testid="mobile-tool-groups">
+                {mobileGroups.map((group) => (
+                  <div key={group.key}>
+                    <h2
+                      className={
+                        locale === 'ko'
+                          ? 'mt-2 px-3 py-1 text-[13px] font-semibold text-faint'
+                          : 'mt-2 px-3 py-1 font-mono text-[11px] uppercase tracking-wide text-faint'
+                      }
                     >
-                      {tool.title}
-                    </Link>
-                  ))}
-                </div>
-              ))}
-            </div>
-          </nav>
-        </div>
-      )}
+                      {group.label}
+                    </h2>
+                    {group.tools.map((tool) => (
+                      <Link
+                        key={tool.id}
+                        href={`/${locale}/${tool.id}`}
+                        onClick={closeMenu}
+                        className="block rounded-sm px-3 py-2.5 text-sm text-body no-underline transition-colors hover:bg-hairline-soft hover:text-ink"
+                      >
+                        {tool.title}
+                      </Link>
+                    ))}
+                  </div>
+                ))}
+              </div>
+            </nav>
+          </div>,
+          document.body,
+        )}
     </div>
   );
 }

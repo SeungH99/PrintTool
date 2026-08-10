@@ -104,22 +104,75 @@ export function applyConsentMode(state: ConsentState): void {
   (window as unknown as GtagWindow).gtag?.('consent', 'update', consentModeParams(state));
 }
 
+type TcfListenerId = number | string;
+type TcfData = { gdprApplies?: boolean; listenerId?: TcfListenerId };
+type TcfApi = (
+  command: 'addEventListener' | 'removeEventListener',
+  version: number,
+  callback: (data: TcfData | undefined, success: boolean) => void,
+  listenerId?: TcfListenerId,
+) => void;
+
 type FundingChoicesWindow = {
   googlefc?: {
-    callbackQueue?: { push: (cb: () => void) => void };
+    callbackQueue?: {
+      push: (entry: { CONSENT_API_READY: () => void }) => unknown;
+    };
     showRevocationMessage?: () => void;
   };
+  __tcfapi?: TcfApi;
 };
 
-/** Re-open the CMP consent UI (Funding Choices). No-op + warning if the CMP isn't loaded. */
-export function openConsentManager(): void {
-  if (typeof window === 'undefined') return;
+/** Observe whether Google's ready TCF API says EU regulations apply to this visitor. */
+export function observeConsentManager(onChange: (available: boolean) => void): () => void {
+  if (typeof window === 'undefined') return () => undefined;
+  let active = true;
+  let tcfApi: TcfApi | undefined;
+  let listenerId: TcfListenerId | undefined;
+  const globals = window as unknown as FundingChoicesWindow;
+  const fc = (globals.googlefc ??= {});
+  const callbackQueue = (fc.callbackQueue ??= [] as Array<{
+    CONSENT_API_READY: () => void;
+  }>);
+
+  callbackQueue.push({
+    CONSENT_API_READY: () => {
+      if (!active) return;
+      tcfApi = globals.__tcfapi;
+      if (!tcfApi) {
+        if (active) onChange(false);
+        return;
+      }
+      tcfApi('addEventListener', 0, (data, success) => {
+        if (data?.listenerId !== undefined) {
+          listenerId = data.listenerId;
+          if (!active) {
+            tcfApi?.('removeEventListener', 0, () => undefined, listenerId);
+            listenerId = undefined;
+            return;
+          }
+        }
+        if (active) onChange(Boolean(success && data?.gdprApplies));
+      });
+    },
+  });
+
+  return () => {
+    active = false;
+    if (tcfApi && listenerId !== undefined) {
+      tcfApi('removeEventListener', 0, () => undefined, listenerId);
+      listenerId = undefined;
+    }
+  };
+}
+
+/** Re-open the regional CMP UI when Google has loaded it for this visitor. */
+export function openConsentManager(): boolean {
+  if (typeof window === 'undefined') return false;
   const fc = (window as unknown as FundingChoicesWindow).googlefc;
-  if (fc?.callbackQueue) {
-    fc.callbackQueue.push(() => fc.showRevocationMessage?.());
-    return;
+  if (fc?.showRevocationMessage) {
+    fc.showRevocationMessage();
+    return true;
   }
-  console.warn(
-    '[consent] CMP not loaded (set NEXT_PUBLIC_ADSENSE_CLIENT). See ADR-0001 / MVP-005.',
-  );
+  return false;
 }
