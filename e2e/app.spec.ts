@@ -61,6 +61,25 @@ test('a real tool route resolves (spine)', async ({ page }) => {
   await expect(page.getByRole('heading', { level: 1 })).toContainText('책등');
 });
 
+test('color conversion loads the self-hosted LCMS module and profile', async ({ page }) => {
+  const glueResponse = page.waitForResponse((response) => response.url().endsWith('/lcms/lcms.js'));
+  const wasmResponse = page.waitForResponse((response) =>
+    response.url().endsWith('/lcms/lcms.wasm'),
+  );
+  const profileResponse = page.waitForResponse((response) =>
+    response.url().endsWith('/profiles/default_cmyk.icc'),
+  );
+
+  const pageResponse = await page.goto('/en/color');
+  const [glue, wasm, profile] = await Promise.all([glueResponse, wasmResponse, profileResponse]);
+
+  expect(pageResponse?.status()).toBe(200);
+  expect(glue.ok()).toBe(true);
+  expect(wasm.ok()).toBe(true);
+  expect(profile.ok()).toBe(true);
+  await expect(page.getByRole('textbox', { name: 'HEX' })).toHaveValue(/^#[0-9a-f]{6}$/i);
+});
+
 test('unknown tool returns 404', async ({ page }) => {
   const res = await page.goto('/ko/zzz');
   expect(res?.status()).toBe(404);
@@ -135,9 +154,14 @@ test('ads.txt carries the publisher line', async ({ page }) => {
   expect(await res.text()).toMatch(/google\.com,\s*pub-7142354312657545,\s*DIRECT/);
 });
 
-test('privacy page renders the policy with a cookies section', async ({ page }) => {
+test('privacy page renders localized AdSense cookie disclosures', async ({ page }) => {
   const res = await page.goto('/ko/privacy');
   expect(res?.status()).toBe(200);
-  await expect(page.getByRole('heading', { name: 'PRIVACY POLICY', level: 1 })).toBeVisible();
-  await expect(page.locator('#cookies')).toBeVisible();
+  await expect(page.getByRole('heading', { name: '개인정보 처리방침', level: 1 })).toBeVisible();
+  const adsenseSection = page.locator('#google-adsense');
+  await expect(adsenseSection).toContainText('Google을 포함한 제3자 광고 제공업체');
+  await expect(adsenseSection.getByRole('link', { name: 'Google 광고 설정' })).toHaveAttribute(
+    'href',
+    'https://adssettings.google.com/',
+  );
 });
