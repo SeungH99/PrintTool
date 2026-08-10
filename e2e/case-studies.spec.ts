@@ -88,20 +88,24 @@ for (const locale of ['ko', 'en'] as const) {
       }
 
       await expect(page.locator('script[src*="adsbygoogle.js"]')).toHaveCount(1);
-      const adSenseScript = page.locator('script[data-printready-adsense][src*="adsbygoogle.js"]');
+      const adSenseScript = page.locator('script[src*="adsbygoogle.js"]');
       await expect(adSenseScript).toHaveCount(1);
       expect(
         await adSenseScript.evaluate((script: HTMLScriptElement) => ({
+          attributes: script.getAttributeNames().sort(),
           async: script.async,
           client: new URL(script.src).searchParams.get('client'),
           crossOrigin: script.crossOrigin,
           dataNscript: script.getAttribute('data-nscript'),
+          legacyMarker: script.getAttribute('data-printready-adsense'),
         })),
       ).toEqual({
+        attributes: ['async', 'crossorigin', 'src'],
         async: true,
         client: TEST_ADSENSE_CLIENT,
         crossOrigin: 'anonymous',
         dataNscript: null,
+        legacyMarker: null,
       });
       expect(siteErrors).toEqual([]);
     });

@@ -14,7 +14,7 @@ const CSP_REPORT_ONLY = [
   "img-src 'self' data: https:",
   "font-src 'self' data:",
   "connect-src 'self' https://*.google-analytics.com https://*.googletagmanager.com https://*.googlesyndication.com https://*.google.com https://*.adtrafficquality.google",
-  'frame-src https://*.googlesyndication.com https://*.google.com https://*.doubleclick.net',
+  'frame-src https://*.googlesyndication.com https://*.google.com https://*.doubleclick.net https://*.adtrafficquality.google',
 ].join('; ');
 
 /** Baseline security headers on every page response. */

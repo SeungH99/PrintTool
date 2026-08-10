@@ -154,9 +154,14 @@ test('ads.txt carries the publisher line', async ({ page }) => {
   expect(await res.text()).toMatch(/google\.com,\s*pub-7142354312657545,\s*DIRECT/);
 });
 
-test('privacy page renders the policy with a cookies section', async ({ page }) => {
+test('privacy page renders localized AdSense cookie disclosures', async ({ page }) => {
   const res = await page.goto('/ko/privacy');
   expect(res?.status()).toBe(200);
-  await expect(page.getByRole('heading', { name: 'PRIVACY POLICY', level: 1 })).toBeVisible();
-  await expect(page.locator('#cookies')).toBeVisible();
+  await expect(page.getByRole('heading', { name: '개인정보 처리방침', level: 1 })).toBeVisible();
+  const adsenseSection = page.locator('#google-adsense');
+  await expect(adsenseSection).toContainText('Google을 포함한 제3자 광고 제공업체');
+  await expect(adsenseSection.getByRole('link', { name: 'Google 광고 설정' })).toHaveAttribute(
+    'href',
+    'https://adssettings.google.com/',
+  );
 });
