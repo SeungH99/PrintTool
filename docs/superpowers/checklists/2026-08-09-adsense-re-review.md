@@ -1,0 +1,9 @@
+- [ ] Five Korean and five English evidence pages return HTTP 200.
+- [ ] Every evidence page shows sample, expected result, observed result, source, date, and limitation.
+- [ ] Search Console URL Inspection reports the five Korean evidence URLs as indexed or successfully submitted for recrawl.
+- [ ] Search Console Manual Actions shows no issue.
+- [ ] Sitemap entries show real content dates.
+- [ ] Mobile navigation, downloads, and the image-to-PDF-to-preflight flow pass on production.
+- [ ] AdSense loader produces no site-owned console error and no data-nscript warning.
+- [ ] Ads are separated from upload, conversion, download, and primary action controls.
+- [ ] Reconsideration is requested only after substantive pages have been recrawled.

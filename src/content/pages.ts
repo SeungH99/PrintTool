@@ -10,6 +10,7 @@ export interface StaticPage {
   title: string;
   description: string;
   intro: string;
+  updatedAt: string;
   sections: PageSection[];
   /** Rendered as a mailto button when present (contact page). */
   email?: string;
@@ -26,29 +27,30 @@ const ko: Record<StaticPageSlug, StaticPage> = {
     slug: 'about',
     title: 'PrintReady 소개',
     description:
-      'PrintReady는 인쇄 파일 준비에 필요한 검수와 계산을 브라우저에서 무료로 제공하는 도구 모음입니다. 업로드 없이 로컬에서 동작합니다.',
+      'PrintReady가 제공하는 인쇄 계산·PDF 검사 범위와 검증 방법, 한계, 콘텐츠 업데이트 및 오류 수정 원칙을 설명합니다.',
     intro:
-      'PrintReady는 인쇄·제작 파일을 입고하기 전에 필요한 검수와 규격 계산을 한곳에 모은 무료 웹 도구 모음입니다. 회원가입이나 설치 없이 브라우저에서 바로 사용할 수 있습니다.',
+      'PrintReady는 인쇄·제작 파일을 보내기 전에 계산값과 PDF 속성을 확인하는 브라우저 기반 도구 모음입니다. 결과는 참고용 안내이며 생산 결과를 보증하지 않습니다. 최종 판단에서는 선택한 인쇄소의 사양이 항상 우선합니다.',
+    updatedAt: '2026-08-09',
     sections: [
       {
-        heading: '무엇을 제공하나요',
-        body: 'PDF 프리플라이트, 해상도·DPI 계산, CMYK↔RGB 변환과 소프트프루프, 도련·재단 계산, 평량(GSM) 변환, 책등 두께, 중철 터잡기, 인쇄 마크 등 인쇄 실무에 자주 쓰는 17가지 도구를 제공합니다. 각 도구에는 사용법·공식·예시와 자주 묻는 질문을 함께 실어, 결과 숫자가 무엇을 뜻하는지까지 이해할 수 있도록 했습니다.',
+        heading: '무엇을 제공하는가',
+        body: 'PDF 속성 검사, 해상도·DPI 계산, 색상 수치 변환, 도련·재단 계산, 평량과 책등 두께, 중철·터잡기 등 인쇄 준비에 쓰는 도구와 재현 가능한 디지털 사례를 제공합니다. 파일은 서버로 업로드하거나 저장하지 않고 사용자의 브라우저 안에서 처리합니다.',
       },
       {
-        heading: '파일은 브라우저에서만 처리됩니다',
-        body: '업로드한 PDF·이미지·ICC 프로파일은 사용자의 브라우저 안에서만 처리되며, 서버로 전송하거나 저장하지 않습니다. 인쇄 데이터처럼 민감한 파일도 외부로 나가지 않으므로 안심하고 사용할 수 있습니다.',
+        heading: '계산값을 검증하는 방법',
+        body: '계산 공식은 단위가 분명한 입력과 구현 코드와 별도로 산출한 예상값을 fixture로 만들고 자동 테스트로 비교합니다. 사례 페이지에는 같은 입력 파일, 예상값, 도구가 관찰한 값을 함께 기록하여 결과를 다시 검산할 수 있게 합니다.',
       },
       {
-        heading: '누구를 위한 도구인가요',
-        body: '디자이너, 소규모 인쇄소, 자가 출판 작가, 그리고 처음 인쇄를 맡기는 분 모두를 위해 만들었습니다. 인쇄소의 전문 용어와 규격에 익숙하지 않아도, 도구가 안내하는 값을 따라가면 재인쇄 없이 한 번에 출고할 수 있도록 돕는 것이 목표입니다.',
+        heading: 'PDF 검사가 확인할 수 없는 것',
+        body: '브라우저 검사는 페이지 크기, 일부 색상 공간, 이미지 해상도, TrimBox와 BleedBox 같은 감지 가능한 속성을 최선의 범위에서 읽습니다. 실제 아트워크가 도련까지 충분히 이어지는지, 모든 ICC·폰트·잉크 조건이 적합한지, 특정 인쇄소의 생산 규격을 충족하는지는 확정할 수 없습니다. 감지할 수 없는 항목은 정상으로 단정하지 않고 수동 확인 대상으로 안내합니다.',
       },
       {
-        heading: '자주 쓰는 상황',
-        body: '명함·전단·브로슈어를 입고하기 전 PDF 검사로 해상도·색상·도련을 점검하고, 소책자는 중철 페이지 계산과 터잡기로 페이지 순서를 맞춥니다. 현수막·배너는 해상도 기준과 그로멧 간격을 확인하고, 책은 페이지 수와 종이로 책등 두께를 계산합니다. 작업 단계에 맞는 도구를 골라 쓰면 됩니다.',
+        heading: '콘텐츠와 테스트 업데이트',
+        body: '참고표와 가이드는 근거가 되는 출처와 실제 수정일을 함께 관리합니다. 계산 로직이나 검사 범위가 바뀌면 관련 fixture와 자동 테스트를 갱신하고, 한국어와 영어 콘텐츠가 같은 범위와 한계를 설명하는지 확인합니다.',
       },
       {
-        heading: '정확성과 한계',
-        body: '계산과 검수 결과는 일반적인 인쇄 기준을 바탕으로 한 안내이며, 최종 사양은 인쇄소마다 다를 수 있습니다. 도련 폭, 색상 프로파일, 제본 방식 같은 중요한 값은 주문 전에 인쇄소 가이드로 한 번 더 확인하시길 권장합니다. PrintReady는 검수를 돕는 도구일 뿐, 인쇄 결과를 보증하지 않습니다.',
+        heading: '오류 제보와 수정 원칙',
+        body: '제보된 오류는 먼저 같은 입력을 담은 fixture로 재현한 뒤 수정합니다. 수정 전 실패와 수정 후 통과를 자동 테스트로 남기고, 결과의 해석이나 적용 범위가 달라지면 관련 설명과 수정일도 함께 갱신합니다.',
       },
     ],
   },
@@ -59,6 +61,7 @@ const ko: Record<StaticPageSlug, StaticPage> = {
       'PrintReady 문의·피드백·오류 신고 연락처입니다. 이메일로 보내주시면 확인 후 답변드립니다.',
     intro:
       '도구에 대한 질문, 기능 제안, 오류 신고, 협업 문의는 언제든 이메일로 보내주세요. 보내주신 내용은 직접 확인하고 있습니다.',
+    updatedAt: '2026-06-30',
     sections: [
       {
         heading: '무엇을 보내면 되나요',
@@ -78,10 +81,10 @@ const ko: Record<StaticPageSlug, StaticPage> = {
   terms: {
     slug: 'terms',
     title: '이용약관',
-    description:
-      'PrintReady 이용약관 — 서비스 제공 조건, 면책, 저작권, 광고에 대한 안내입니다.',
+    description: 'PrintReady 이용약관 — 서비스 제공 조건, 면책, 저작권, 광고에 대한 안내입니다.',
     intro:
       '이 약관은 PrintReady(이하 "서비스") 이용에 적용됩니다. 서비스를 사용하면 아래 내용에 동의한 것으로 봅니다.',
+    updatedAt: '2026-06-30',
     sections: [
       {
         heading: '서비스 제공',
@@ -112,29 +115,30 @@ const en: Record<StaticPageSlug, StaticPage> = {
     slug: 'about',
     title: 'About PrintReady',
     description:
-      'PrintReady is a free, browser-based set of tools for checking and calculating print files. Everything runs locally, with no uploads.',
+      'How PrintReady validates print calculations and PDF checks, defines limitations, updates content, and corrects reported errors.',
     intro:
-      'PrintReady is a free set of web tools that gathers the checks and spec calculations you need before sending a file to print — all in one place. No sign-up, no install: it runs right in your browser.',
+      "PrintReady is a browser-based set of tools for checking calculations and detectable PDF properties before production. Results are guidance, not a production guarantee, and the selected printer's specification always takes precedence.",
+    updatedAt: '2026-08-09',
     sections: [
       {
-        heading: 'What it offers',
-        body: 'PrintReady provides 17 tools used in everyday print production: PDF preflight, resolution and DPI math, CMYK↔RGB conversion and soft proofing, bleed and trim calculations, paper weight (GSM) conversion, spine thickness, saddle-stitch imposition, printer marks, and more. Each tool ships with how-to notes, the formula, worked examples, and an FAQ, so you understand what the numbers mean — not just what they are.',
+        heading: 'What PrintReady provides',
+        body: 'PrintReady provides tools and reproducible digital examples for detectable PDF properties, resolution and DPI, numeric color conversion, bleed and trim, paper weight and spine calculations, booklet layout, and imposition. Files stay in your browser; they are not uploaded to or stored on a server.',
       },
       {
-        heading: 'Your files stay in the browser',
-        body: 'Any PDF, image, or ICC profile you open is processed entirely inside your browser — never uploaded to or stored on a server. Even sensitive print data never leaves your device, so you can use the tools with confidence.',
+        heading: 'How calculations are validated',
+        body: 'For each formula, we create fixtures with explicit units and expected values derived separately from the implementation, then compare the tool output in automated tests. Case studies publish the same input file, expected value, and observed result so the calculation can be checked again.',
       },
       {
-        heading: 'Who it is for',
-        body: 'It is built for designers, small print shops, self-publishing authors, and anyone ordering print for the first time. The goal is to help you ship a file correctly on the first run — without reprints — even if you are not fluent in a printer’s jargon and specs.',
+        heading: 'What PDF preflight cannot confirm',
+        body: "The browser check reads detectable properties such as page size, some color spaces, image resolution, TrimBox, and BleedBox on a best-effort basis. It cannot certify that artwork reaches the bleed, that every ICC, font, or ink condition is suitable, or that a particular printer's production requirements are met. Undetectable properties are presented for manual review rather than reported as healthy.",
       },
       {
-        heading: 'Common situations',
-        body: 'Before sending a card, flyer, or brochure to print, check resolution, color, and bleed with the PDF preflight; for a booklet, get the page count and imposition order right; for a banner, confirm the resolution target and grommet spacing; for a book, calculate spine thickness from page count and paper. Pick the tool that matches your stage.',
+        heading: 'Content and test updates',
+        body: 'Reference tables and guides keep their supporting sources and actual revision dates. When a calculation or detection boundary changes, we update the relevant fixtures and automated tests and check that Korean and English copy describe the same scope and limitations.',
       },
       {
-        heading: 'Accuracy and limits',
-        body: 'The calculations and checks are guidance based on common print conventions, and final specs vary by printer. We recommend confirming important values — bleed width, color profile, binding method — against your printer’s guide before ordering. PrintReady is a tool to assist your checks; it does not guarantee print results.',
+        heading: 'Error reporting and corrections',
+        body: 'For each reported error, we first create a fixture that causes the issue to be reproduced before correction. The automated test records the failure before the fix and the passing result after it; when interpretation or scope changes, we update the related explanation and revision date too.',
       },
     ],
   },
@@ -145,6 +149,7 @@ const en: Record<StaticPageSlug, StaticPage> = {
       'How to reach PrintReady for questions, feedback, or bug reports. Email us and we will reply after reviewing your message.',
     intro:
       'For questions about a tool, feature suggestions, bug reports, or partnership inquiries, email us any time. Messages are read personally.',
+    updatedAt: '2026-06-30',
     sections: [
       {
         heading: 'What to send',
@@ -168,6 +173,7 @@ const en: Record<StaticPageSlug, StaticPage> = {
       'PrintReady Terms of Use — how the service is provided, plus disclaimer, copyright, and advertising notes.',
     intro:
       'These terms apply to your use of PrintReady (the "Service"). By using the Service, you agree to what follows.',
+    updatedAt: '2026-06-30',
     sections: [
       {
         heading: 'The service',

@@ -27,7 +27,7 @@ const ko: Partial<Record<ToolId, ToolExample>> = {
   },
   spine: {
     heading: '예: 책등 두께',
-    body: '200쪽 책을 한 장 0.1mm 종이로 무선제본하면 책등은 약 (200 ÷ 2) × 0.1 = 10mm에 표지 두께를 더한 값입니다. 종이가 두꺼울수록 책등도 두꺼워집니다.',
+    body: '내지 100 GSM, 표지 250 GSM, 200쪽 무선제본을 입력하면 고정 벌크 계수로 캘리퍼를 추정해 약 13.23mm가 나옵니다. 실제 값은 선택한 종이 사양서와 제본소에서 확인하세요.',
   },
   weight: {
     heading: '예: 용지 무게',
@@ -70,8 +70,8 @@ const ko: Partial<Record<ToolId, ToolExample>> = {
     body: 'RGB의 형광 초록(0, 255, 0)은 CMYK 색역을 벗어나, 인쇄하면 탁한 초록으로 바뀝니다. 소프트프루프로 미리 확인하고 채도를 낮추세요.',
   },
   impose: {
-    heading: '예: 8쪽 터잡기',
-    body: '8쪽 문서를 중철 임포지션하면 A3 2장에 4-up으로 앉고, 인쇄해 접어 묶으면 1~8쪽 순서가 됩니다.',
+    heading: '예: 첫 페이지 10-up 반복 배치',
+    body: '90×50mm PDF의 첫 페이지를 A4 용지에 여백 10mm, 간격 3mm로 놓으면 정방향 2열×5행의 10-up N-up 격자에 반복됩니다. 원본의 두 번째 페이지부터는 결과에 포함되지 않습니다.',
   },
   marks: {
     heading: '예: 마크 배치',
@@ -89,7 +89,7 @@ const en: Partial<Record<ToolId, ToolExample>> = {
     body: 'You check an A4 catalog and the cover image flags at 180 DPI and the body color flags as RGB. Replace the cover with a 300 DPI original, convert everything to CMYK, and re-run the check — the warnings clear.',
   },
   convert: {
-    heading: 'Example: image to print-ready PDF',
+    heading: 'Example: image to a sized PDF',
     body: 'Converting a 3000×2000px photo to an A4 PDF places it at about 254 DPI. For sharper output, start from a larger original or place it at a smaller size.',
   },
   res: {
@@ -98,7 +98,7 @@ const en: Partial<Record<ToolId, ToolExample>> = {
   },
   spine: {
     heading: 'Example: spine thickness',
-    body: 'A 200-page book perfect-bound on 0.1mm sheets has a spine of about (200 ÷ 2) × 0.1 = 10mm plus the cover thickness. Thicker paper means a thicker spine.',
+    body: 'Entering 100 GSM interior stock, 250 GSM cover stock, and 200 pages for perfect binding gives about 13.23mm after the fixed bulk heuristic infers caliper. Confirm it with the stock data sheet and bindery.',
   },
   weight: {
     heading: 'Example: paper weight',
@@ -141,8 +141,8 @@ const en: Partial<Record<ToolId, ToolExample>> = {
     body: 'A neon RGB green (0, 255, 0) falls outside the CMYK gamut and prints as a duller green. Check it with soft proofing first and lower the saturation.',
   },
   impose: {
-    heading: 'Example: imposing 8 pages',
-    body: 'Imposing an 8-page document for saddle stitch lays it 4-up on 2 A3 sheets; printed, folded, and bound it reads in 1–8 order.',
+    heading: 'Example: repeating the first page 10-up',
+    body: 'With a 90×50mm PDF, an A4 sheet, 10mm margins, and 3mm spacing, the first page is repeated in an upright 2-column × 5-row N-up grid. Pages after the first are not included in the output.',
   },
   marks: {
     heading: 'Example: mark placement',

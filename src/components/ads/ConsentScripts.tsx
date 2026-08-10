@@ -1,6 +1,8 @@
 'use client';
 
+import { useEffect } from 'react';
 import Script from 'next/script';
+import { ensureAdSenseScript } from '@/lib/ads/loadAdSense';
 import {
   consentModeParams,
   defaultConsent,
@@ -19,6 +21,11 @@ import {
 export function ConsentScripts() {
   const client = process.env.NEXT_PUBLIC_ADSENSE_CLIENT;
   const ga = process.env.NEXT_PUBLIC_GA_ID;
+
+  useEffect(() => {
+    if (client) ensureAdSenseScript(client);
+  }, [client]);
+
   if (!client && !ga) return null;
 
   // Regulated regions: denied + wait for the CMP. The region-less default covers the rest (granted).
@@ -51,15 +58,6 @@ export function ConsentScripts() {
             {`gtag('js',new Date());gtag('config','${ga}');`}
           </Script>
         </>
-      )}
-
-      {client && (
-        <Script
-          id="adsbygoogle"
-          strategy="afterInteractive"
-          crossOrigin="anonymous"
-          src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${client}`}
-        />
       )}
     </>
   );
