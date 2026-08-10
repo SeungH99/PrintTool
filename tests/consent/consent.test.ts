@@ -113,4 +113,69 @@ describe('observeConsentManager', () => {
 
     expect(tcfApi).toHaveBeenLastCalledWith('removeEventListener', 0, expect.any(Function), 17);
   });
+
+  it('reports unavailable when readiness arrives without the TCF API', () => {
+    (window as typeof window & { googlefc?: unknown }).googlefc = {
+      callbackQueue: {
+        push: (entry: { CONSENT_API_READY: () => void }) => entry.CONSENT_API_READY(),
+      },
+    };
+    const onChange = vi.fn();
+
+    observeConsentManager(onChange);
+
+    expect(onChange).toHaveBeenCalledOnce();
+    expect(onChange).toHaveBeenCalledWith(false);
+  });
+
+  it.each([
+    { name: 'the TCF API reports failure', data: { gdprApplies: true }, success: false },
+    { name: 'the TCF response omits applicability', data: {}, success: true },
+  ])('keeps the CMP unavailable when $name', ({ data, success }) => {
+    (window as typeof window & { googlefc?: unknown }).googlefc = {
+      callbackQueue: {
+        push: (entry: { CONSENT_API_READY: () => void }) => entry.CONSENT_API_READY(),
+      },
+    };
+    (window as typeof window & { __tcfapi?: unknown }).__tcfapi = (
+      _command: string,
+      _version: number,
+      callback: (value: { gdprApplies?: boolean }, ok: boolean) => void,
+    ) => callback(data, success);
+    const onChange = vi.fn();
+
+    observeConsentManager(onChange);
+
+    expect(onChange).toHaveBeenCalledOnce();
+    expect(onChange).toHaveBeenCalledWith(false);
+  });
+
+  it('removes a listener that first responds after cleanup without updating state', () => {
+    (window as typeof window & { googlefc?: unknown }).googlefc = {
+      callbackQueue: {
+        push: (entry: { CONSENT_API_READY: () => void }) => entry.CONSENT_API_READY(),
+      },
+    };
+    let listener:
+      | ((data: { gdprApplies?: boolean; listenerId?: number }, success: boolean) => void)
+      | undefined;
+    const tcfApi = vi.fn(
+      (
+        command: string,
+        _version: number,
+        callback: (data: { gdprApplies?: boolean; listenerId?: number }, success: boolean) => void,
+      ) => {
+        if (command === 'addEventListener') listener = callback;
+      },
+    );
+    (window as typeof window & { __tcfapi?: unknown }).__tcfapi = tcfApi;
+    const onChange = vi.fn();
+
+    const cleanup = observeConsentManager(onChange);
+    cleanup();
+    listener?.({ gdprApplies: true, listenerId: 23 }, true);
+
+    expect(onChange).not.toHaveBeenCalled();
+    expect(tcfApi).toHaveBeenLastCalledWith('removeEventListener', 0, expect.any(Function), 23);
+  });
 });

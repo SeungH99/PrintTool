@@ -16,7 +16,9 @@ vi.mock('next/navigation', () => ({
 }));
 
 vi.mock('next/script', () => ({
-  default: ({ id }: { id?: string }) => <span data-testid={id ?? 'external-script'} />,
+  default: ({ id, src, strategy }: { id?: string; src?: string; strategy?: string }) => (
+    <span data-testid={id ?? 'external-script'} data-src={src} data-strategy={strategy} />
+  ),
 }));
 
 describe('ConsentScripts', () => {
@@ -50,5 +52,35 @@ describe('ConsentScripts', () => {
     expect(screen.getByTestId('consent-mode-default')).toBeInTheDocument();
     expect(screen.getByTestId('ga-loader')).toBeInTheDocument();
     expect(screen.getByTestId('ga-init')).toBeInTheDocument();
+  });
+
+  it('loads consent mode and Analytics when only GA is configured', () => {
+    vi.stubEnv('NEXT_PUBLIC_ADSENSE_CLIENT', '');
+    vi.stubEnv('NEXT_PUBLIC_GA_ID', 'G-ONLY');
+    mocks.usePathname.mockReturnValue('/en');
+
+    render(<ConsentScripts />);
+
+    expect(mocks.ensureAdSenseScript).not.toHaveBeenCalled();
+    expect(screen.getByTestId('consent-mode-default')).toBeInTheDocument();
+    expect(screen.getByTestId('ga-loader')).toHaveAttribute(
+      'data-src',
+      'https://www.googletagmanager.com/gtag/js?id=G-ONLY',
+    );
+    expect(screen.getByTestId('ga-loader')).toHaveAttribute('data-strategy', 'afterInteractive');
+    expect(screen.getByTestId('ga-init')).toBeInTheDocument();
+  });
+
+  it('renders no Google tags when neither integration is configured', () => {
+    vi.stubEnv('NEXT_PUBLIC_ADSENSE_CLIENT', '');
+    vi.stubEnv('NEXT_PUBLIC_GA_ID', '');
+    mocks.usePathname.mockReturnValue('/en');
+
+    render(<ConsentScripts />);
+
+    expect(mocks.ensureAdSenseScript).not.toHaveBeenCalled();
+    expect(screen.queryByTestId('consent-mode-default')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('ga-loader')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('ga-init')).not.toBeInTheDocument();
   });
 });

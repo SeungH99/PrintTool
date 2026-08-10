@@ -191,3 +191,28 @@ test('privacy stays free of consent-requiring Google tags after browser history'
   await expect(page).toHaveURL('/ko/privacy');
   await expect(googleTags).toHaveCount(0);
 });
+
+test('footer privacy link uses a clean document navigation', async ({ page }) => {
+  await page.route('https://pagead2.googlesyndication.com/**', async (route) => {
+    await route.fulfill({ contentType: 'application/javascript', body: '' });
+  });
+  await page.goto('/ko');
+  await page.evaluate(() => {
+    (window as Window & { __printReadyDocumentMarker?: boolean }).__printReadyDocumentMarker = true;
+  });
+
+  await page.locator('footer a[href="/ko/privacy"]').click();
+
+  await expect(page).toHaveURL('/ko/privacy');
+  expect(
+    await page.evaluate(
+      () =>
+        (window as Window & { __printReadyDocumentMarker?: boolean }).__printReadyDocumentMarker,
+    ),
+  ).toBeUndefined();
+  await expect(
+    page.locator(
+      'script[src*="adsbygoogle.js"], script[src*="googletagmanager.com/gtag/js"], #consent-mode-default, #ga-loader, #ga-init',
+    ),
+  ).toHaveCount(0);
+});

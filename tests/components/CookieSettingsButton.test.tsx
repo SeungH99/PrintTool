@@ -11,10 +11,14 @@ describe('CookieSettingsButton', () => {
   function installGoogleCmp(gdprApplies: boolean) {
     const showRevocationMessage = vi.fn();
     const push = vi.fn((entry: { CONSENT_API_READY: () => void }) => entry.CONSENT_API_READY());
-    (window as typeof window & { googlefc?: unknown }).googlefc = {
+    const googlefc: {
+      callbackQueue: { push: typeof push };
+      showRevocationMessage?: typeof showRevocationMessage;
+    } = {
       callbackQueue: { push },
       showRevocationMessage,
     };
+    (window as typeof window & { googlefc?: unknown }).googlefc = googlefc;
     (window as typeof window & { __tcfapi?: unknown }).__tcfapi = vi.fn(
       (
         _command: string,
@@ -22,7 +26,7 @@ describe('CookieSettingsButton', () => {
         callback: (data: { gdprApplies: boolean }, success: boolean) => void,
       ) => callback({ gdprApplies }, true),
     );
-    return { push, showRevocationMessage };
+    return { googlefc, push, showRevocationMessage };
   }
 
   function clickWithoutNavigation(link: HTMLElement) {
@@ -82,5 +86,23 @@ describe('CookieSettingsButton', () => {
     expect(push).toHaveBeenCalledOnce();
     expect(showRevocationMessage).toHaveBeenCalledOnce();
     expect(componentPreventedDefault).toBe(true);
+  });
+
+  it('keeps the fallback when the revocation API disappears before the click', () => {
+    const { googlefc, showRevocationMessage } = installGoogleCmp(true);
+    render(
+      <CookieSettingsButton
+        label="Cookie settings"
+        privacyHref="/en/privacy#consent-and-cookie-settings"
+      />,
+    );
+    googlefc.showRevocationMessage = undefined;
+
+    const componentPreventedDefault = clickWithoutNavigation(
+      screen.getByRole('link', { name: 'Cookie settings' }),
+    );
+
+    expect(showRevocationMessage).not.toHaveBeenCalled();
+    expect(componentPreventedDefault).toBe(false);
   });
 });

@@ -51,6 +51,27 @@ describe('MobileNav', () => {
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
   });
 
+  it('closes the drawer when its backdrop is clicked', () => {
+    render(<MobileNav locale="ko" dict={ko} />);
+    fireEvent.click(screen.getByRole('button', { name: ko.nav.menu }));
+    const dialog = screen.getByRole('dialog', { name: ko.nav.menu });
+    const backdrop = dialog.querySelector<HTMLElement>('[aria-hidden="true"]');
+
+    expect(backdrop).not.toBeNull();
+    fireEvent.click(backdrop as HTMLElement);
+
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+  });
+
+  it('closes the drawer with its named close button', () => {
+    render(<MobileNav locale="ko" dict={ko} />);
+    fireEvent.click(screen.getByRole('button', { name: ko.nav.menu }));
+
+    fireEvent.click(screen.getByRole('button', { name: ko.nav.closeMenu }));
+
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+  });
+
   it('names the dialog, traps focus, closes on Escape, and restores the trigger', () => {
     render(<MobileNav locale="ko" dict={ko} />);
     const trigger = screen.getByRole('button', { name: '도구 메뉴' });
