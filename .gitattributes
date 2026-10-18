@@ -1,0 +1,4 @@
+# Generated teaching fixtures must retain exact bytes on Windows and in CI.
+public/samples/*.pdf binary
+public/samples/*.png binary
+public/samples/*.json text eol=lf

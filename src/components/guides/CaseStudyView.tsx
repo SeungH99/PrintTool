@@ -1,6 +1,7 @@
 import type { getCaseStudy } from '@/content/caseStudies';
 import { ARTICLE_AUTHOR_NAME } from '@/content/articleMeta';
 import type { Locale } from '@/i18n/config';
+import Image from 'next/image';
 import { ExpectedObservedTable } from './ExpectedObservedTable';
 import { VerificationMeta } from './VerificationMeta';
 
@@ -11,6 +12,9 @@ const copy = {
     problem: '문제',
     inputConditions: '입력 조건',
     samples: '재현 샘플',
+    evidence: '시각적 비교',
+    evidenceNote:
+      '직접 만든 디지털 교육 예제입니다. PDF 미리보기는 파일에 넣은 동일한 비트맵을 사용하며, 실물 인쇄 시험이나 교정본이 아닙니다. 화면 크기는 출력 크기와 다르므로 PDF의 실제 치수로 비교하세요.',
     download: '다운로드',
     steps: '검증 절차',
     explanation: '결과 해석',
@@ -23,6 +27,9 @@ const copy = {
     problem: 'Problem',
     inputConditions: 'Input conditions',
     samples: 'Reproduction samples',
+    evidence: 'Visual evidence',
+    evidenceNote:
+      'Original digital teaching examples. PDF previews use the same embedded bitmaps, not physical print tests or proofs. On-screen sizes are normalized; compare actual PDF dimensions, not display size.',
     download: 'Download',
     steps: 'Verification steps',
     explanation: 'How to interpret the results',
@@ -125,6 +132,42 @@ export function CaseStudyView({ locale, study }: { locale: Locale; study: Locali
             </div>
           ))}
         </dl>
+      </section>
+
+      <section className="mt-10" aria-labelledby="case-study-evidence">
+        <h2 className="text-xl font-semibold text-ink" id="case-study-evidence">
+          {labels.evidence}
+        </h2>
+        <p className="mt-2 text-sm leading-relaxed text-mute">{labels.evidenceNote}</p>
+        <div className="mt-4 grid gap-6 sm:grid-cols-2">
+          {study.figures.map((figure) => (
+            <figure className="min-w-0" key={figure.src}>
+              <div className="relative overflow-hidden rounded-lg border border-line bg-white">
+                <Image
+                  src={figure.src}
+                  width={figure.width}
+                  height={figure.height}
+                  alt={figure.alt[locale]}
+                  className="h-auto w-full"
+                  unoptimized
+                />
+                {figure.trimGuide && (
+                  <div
+                    aria-hidden="true"
+                    className="pointer-events-none absolute border-2 border-dashed border-white"
+                    style={{
+                      inset: `${figure.trimGuide.insetYPercent}% ${figure.trimGuide.insetXPercent}%`,
+                      boxShadow: '0 0 0 1px #162a36',
+                    }}
+                  />
+                )}
+              </div>
+              <figcaption className="mt-3 text-sm leading-relaxed text-body">
+                {figure.caption[locale]}
+              </figcaption>
+            </figure>
+          ))}
+        </div>
       </section>
 
       <section className="mt-10" aria-labelledby="case-study-samples">

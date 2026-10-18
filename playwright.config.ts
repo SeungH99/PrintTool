@@ -17,7 +17,10 @@ export default defineConfig({
   projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
   webServer: {
     command: 'npm run build && npm run start',
-    env: { NEXT_PUBLIC_ADSENSE_CLIENT: TEST_ADSENSE_CLIENT },
+    env: {
+      NEXT_PUBLIC_ADSENSE_CLIENT: TEST_ADSENSE_CLIENT,
+      NEXT_PUBLIC_GA_ID: 'G-PRINTREADYTEST',
+    },
     url: 'http://localhost:3000/ko',
     reuseExistingServer: false,
     timeout: 120 * 1000,

@@ -1,8 +1,10 @@
 'use client';
 
 import { usePathname } from 'next/navigation';
+import { useEffect } from 'react';
 import { localeFromPath } from '@/i18n/config';
 import { getDictionary } from '@/i18n/dictionaries';
+import { shutdownOptionalRuntime } from '@/lib/consent/runtimeShutdown';
 
 /**
  * Root crash boundary. The root layout is a pass-through, so this supplies its
@@ -17,10 +19,14 @@ export default function GlobalError({
 }) {
   const locale = localeFromPath(usePathname());
   const t = getDictionary(locale).error;
+  useEffect(() => {
+    shutdownOptionalRuntime(process.env.NEXT_PUBLIC_GA_ID);
+  }, []);
 
   return (
     <html lang={locale}>
       <body
+        data-printready-error
         style={{
           margin: 0,
           minHeight: '100vh',

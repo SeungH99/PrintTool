@@ -20,10 +20,10 @@ test('PDF preflight reports the committed A4 landscape RGB sample risks', async 
   const reportRow = (label: string) =>
     page.getByText(label, { exact: true }).locator('xpath=../..');
 
-  await expect(reportRow('색상 모드')).toContainText(/rgb/i);
-  await expect(reportRow('색상 모드')).toContainText('미설정');
+  await expect(reportRow('이미지 색상 분류')).toContainText('RGB / 비CMYK 검출');
+  await expect(reportRow('이미지 색상 분류')).toContainText('확인 필요');
   await expect(reportRow('이미지 해상도')).toContainText('102.6 DPI');
-  await expect(reportRow('이미지 해상도')).toContainText('미설정');
-  await expect(reportRow('재단선 (Trim Box)')).toContainText('미설정');
-  await expect(reportRow('재단 여백 (Bleed Box)')).toContainText('미설정');
+  await expect(reportRow('이미지 해상도')).toContainText('권장 DPI 미만');
+  await expect(reportRow('재단선 (Trim Box)')).toContainText('박스 없음');
+  await expect(reportRow('재단 여백 (Bleed Box)')).toContainText('박스 없음');
 });

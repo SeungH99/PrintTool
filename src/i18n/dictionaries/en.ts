@@ -592,14 +592,18 @@ export const en: Dictionary = {
         trim: 'Trim box',
         bleed: 'Bleed box',
         resolution: 'Image resolution',
-        color: 'Color mode',
+        color: 'Image color classification',
         fonts: 'Embedded fonts',
       },
       statusPass: 'Detected',
-      statusWarn: 'Not set',
-      statusUnknown: 'Detection limited',
+      statusWarn: 'Needs review',
+      statusUnknown: 'Manual review needed',
+      boxMissing: 'Box missing',
+      resolutionLow: 'Below recommended DPI (300 DPI threshold)',
+      colorDetected: 'RGB / non-CMYK detected',
+      fontsIncomplete: 'Some or all fonts not embedded',
       disclaimer:
-        'This is a basic in-browser metadata check. Page size, trim/bleed, font embedding, image resolution and color space are detected on a best-effort basis (some formats, nested layouts or color spaces may be missed) — not a production guarantee. Confirm with your printer or a professional preflight tool.',
+        'This first-pass structural check is not production approval or an automatic repair. Size, boxes, fonts and minimum image DPI describe the first page; image color classification checks direct image objects across pages. RGB / non-CMYK may include grayscale, and nested objects can be missed. A box does not prove artwork reaches the bleed edge. 300 DPI is this tool’s review threshold, not every printer’s requirement. Manually check bleed artwork, spot colors, overprint, output profiles and remaining pages in the source and a professional preflight tool.',
     },
     convert: {
       dropTitle: 'Drop an image or PDF here',
@@ -633,16 +637,17 @@ export const en: Dictionary = {
       specPages: 'Pages',
       specSize: 'Page size',
       specColor: 'Color',
+      pdfColorsPreserved: 'Original PDF colors preserved',
       specOutSize: 'Output size',
       reset: 'Start over',
       cmykNote:
-        'Output is RGB. True CMYK conversion is not possible in the browser — for precise color, use your print shop or a professional tool.',
+        'RGB image inputs stay RGB. Existing PDFs are resized while preserving their content’s color spaces. This converter does not perform CMYK profile conversion; prepare required color settings using your provider’s workflow.',
       disclaimer:
         'Converted in your browser; files are not sent to a server. The original aspect ratio is preserved and fitted to the page.',
       guideTitle: 'Guide',
       guide: [
-        'Images are fitted to the chosen size (A4·Letter) preserving aspect ratio, or kept at original size with "Fit to image size".',
-        'PDFs have every page re-fitted to the chosen size. Color stays RGB; no CMYK conversion is performed.',
+        'Images fit the selected page while keeping their proportions. "Fit to image size" uses 1 pixel per point (72 DPI), not the physical dimensions in the original DPI tag.',
+        'PDF pages are re-fitted proportionally to the chosen size. Their content’s color spaces remain unchanged; no CMYK conversion is performed. Recheck trim and bleed after resizing.',
       ],
     },
   },
@@ -692,7 +697,7 @@ export const en: Dictionary = {
       body: [
         {
           heading: 'Supported images and fitting',
-          text: 'Supported JPEG, PNG, and WebP files are scaled to fit inside the selected page without stretching. A large image is reduced; an image with a different aspect ratio can leave empty page area rather than being cropped.',
+          text: 'Supported JPEG, PNG, and WebP files fit the selected page without cropping or distorting their proportions, so empty space may remain. Fit-to-image mode uses 1px=1pt at 72 DPI rather than the original DPI tag. An existing PDF has each page’s content scaled proportionally while its color spaces remain unchanged.',
         },
         {
           heading: 'RGB is preserved',
@@ -719,6 +724,10 @@ export const en: Dictionary = {
           heading: 'Conversion through the bundled profile',
           text: 'The displayed values come from the bundled profile’s relative-colorimetric conversion. A commercial printer may use a different output profile, ink set, stock, or rendering setup, so confirm the required profile before production.',
         },
+        {
+          heading: 'Record a usable color handoff',
+          text: 'Choose the RGB-to-CMYK or reverse direction and record the original channels alongside the result. Identical CMYK numbers can produce different colors under different output profiles. Approve a critical logo color using the provider’s profile and proofing process. This tool converts one color value; it does not convert an image or an entire PDF, or specify a spot-color ink.',
+        },
       ],
       faqTitle: 'Frequently asked questions',
       faq: [
@@ -735,6 +744,10 @@ export const en: Dictionary = {
         {
           heading: 'Monitor and profile dependency',
           text: 'Accuracy depends on the correct output ICC profile and a calibrated display. Paper texture, gloss, fluorescent or metallic inks, and changing room light cannot be reproduced completely on screen.',
+        },
+        {
+          heading: 'Read highlighted areas as editing candidates',
+          text: 'Compare the original and simulation, then upload the provider’s ICC, if available, and compare the same image again. Review highlighted skin tones, logos or gradients in the source editor and proof again. The change percentage is a signal under that profile and this tool’s criteria, not an approval threshold. The downloaded PNG is a screen simulation, not a production CMYK file.',
         },
       ],
       faqTitle: 'Frequently asked questions',
@@ -753,6 +766,10 @@ export const en: Dictionary = {
           heading: 'Pixels divided by inches',
           text: 'Effective DPI is the pixel count on each axis divided by that axis in inches. Enlarging the same image spreads its pixels over more space and lowers DPI; printing it smaller raises DPI.',
         },
+        {
+          heading: 'Choose an original for the intended size',
+          text: 'Start with the original file’s actual width and height in pixels and the provider’s required final DPI. If you need a larger placement than the calculated output size, consider a larger original. For example, 1200px spans 101.6mm at 300 DPI or 203.2mm at 150 DPI. Lowering the target raises the size number, not the detail. If artwork and page proportions differ, decide separately whether to crop or leave unused space.',
+        },
       ],
       faqTitle: 'Frequently asked questions',
       faq: [
@@ -769,6 +786,10 @@ export const en: Dictionary = {
         {
           heading: 'Physical size to pixels',
           text: 'Divide millimeters by 25.4 to get inches, then multiply by the target DPI. A4 at 210×297mm and 300 DPI, for example, needs about 2480×3508 pixels.',
+        },
+        {
+          heading: 'Distinguish trim from the artwork canvas',
+          text: 'Decide whether you are calculating finished trim or the larger size including bleed. A4 with 3mm on each side needs a 216×303mm calculation. Pixel counts are rounded, so keep physical size and DPI in the design record too. Placing a small image on the calculated large canvas does not add original resolution, and this tool does not draw extended bleed artwork or safe-area guides.',
         },
       ],
       faqTitle: 'Frequently asked questions',
@@ -787,6 +808,10 @@ export const en: Dictionary = {
           heading: 'Area × GSM × quantity',
           text: 'Convert width and height to meters, multiply the area by GSM for grams per sheet, then multiply by the sheet count. Packaging, ink, moisture, and manufacturing tolerance are outside this paper-only result.',
         },
+        {
+          heading: 'Separate order quantity from shipping mass',
+          text: 'Enter physical sheets rather than printed sides. Calculate different cover and interior stocks separately and add their results; include agreed production overs in the quantity. Five hundred finished pieces and five hundred parent sheets containing several pieces are different inputs. Use the paper-only estimate for packing plans, then verify a shipping rate against the completed package’s measured mass.',
+        },
       ],
       faqTitle: 'Frequently asked questions',
       faq: [
@@ -803,6 +828,10 @@ export const en: Dictionary = {
         {
           heading: 'A basis-weight approximation',
           text: 'Pounds are defined from a different basis-sheet size for Bond, Text, Cover, and other grades. The same lb number can therefore represent different GSM values, so use the conversion as a stock-selection estimate.',
+        },
+        {
+          heading: 'Compare an imported stock in the right order',
+          text: 'Find both the lb value and stock category on the specification, then set the conversion direction and category. If a quote says only “100lb”, ask whether it is Cover or Text first. Converted GSM compares mass per area; it does not describe grain, opacity, surface or sheet thickness. Before ordering, reconcile the named product with its manufacturer’s directly stated GSM.',
         },
       ],
       faqTitle: 'Frequently asked questions',
@@ -821,6 +850,10 @@ export const en: Dictionary = {
           heading: 'GSM-based estimate and provider confirmation',
           text: 'The fixed factor assumes a typical paper bulk. Before ordering, confirm the estimate with the paper mill or stock data sheet and the bindery’s cover, adhesive, and compression conditions.',
         },
+        {
+          heading: 'Separate draft dimensions from cover approval',
+          text: 'Enter interior pages as printed sides: 200 pages correspond to 100 leaves. Entering 100 pages instead halves the calculated text-block thickness. Select the binding method and interior/cover GSM to estimate a draft spine, then update the cover spread using the bindery-approved width. In particular, do not interpret a saddle-stitch estimate as a flat spine panel or an allowable width for spine lettering.',
+        },
       ],
       faqTitle: 'Frequently asked questions',
       faq: [
@@ -837,6 +870,10 @@ export const en: Dictionary = {
         {
           heading: 'Trim size versus bleed size',
           text: 'Artwork width and height equal the trim size plus bleed on both opposing sides. Bleed extends backgrounds beyond the cut line and is not part of the finished piece.',
+        },
+        {
+          heading: 'Do the artwork work after calculating dimensions',
+          text: 'Extend backgrounds and photographs into the calculated area, and keep logos and text within the provider’s safety allowance. A 90×50mm trim with assumed 3mm bleed and a separate 3mm inward safety allowance gives 96×56mm artwork and an 84×44mm safe area. These are example inputs, not universal product rules. Boxes and printer marks cannot create missing background artwork, so visually inspect the exported PDF.',
         },
       ],
       faqTitle: 'Frequently asked questions',
@@ -855,6 +892,10 @@ export const en: Dictionary = {
           heading: 'Inner-panel allowance',
           text: 'A roll fold can buckle unless inward panels are slightly narrower. The required allowance changes with stock caliper and folding equipment, so confirm the final split with a folded sample on the intended paper.',
         },
+        {
+          heading: 'Check unfolded width and folding direction first',
+          text: 'Enter the full width before folding and select the fold type. Match the shortened-panel indicator to the design’s actual folding direction, then check a mockup labeled with panel names, front/back and top/bottom. Widths totaling correctly cannot detect text crossing a crease or an upside-down back panel. Approve crease positions using the allowance agreed with the finishing provider.',
+        },
       ],
       faqTitle: 'Frequently asked questions',
       faq: [
@@ -871,6 +912,10 @@ export const en: Dictionary = {
         {
           heading: 'Margins, gaps, and usable area',
           text: 'Subtract left, right, top, and bottom margins, then divide the remaining dimensions by the label size plus its gap. The rectangular result depends on your inputs; enter the converter’s gripper margin and cutting tolerance where applicable.',
+        },
+        {
+          heading: 'Distinguish new tooling from pre-cut label sheets',
+          text: 'For a new layout, reserve inter-label gaps and outer margins before reading the rows and columns. Gaps occur only between labels: three columns contain two horizontal gaps. For pre-cut sheets, use the manufacturer’s pitch and starting position rather than the mathematically largest count. The calculator does not test printer feeding alignment or interference between nonrectangular die shapes.',
         },
       ],
       faqTitle: 'Frequently asked questions',
@@ -889,6 +934,10 @@ export const en: Dictionary = {
           heading: 'Four-page units and blanks',
           text: 'One folded sheet creates four pages, so a saddle-stitched booklet is built in four-page units. If the manuscript count does not fit, decide where the calculated blank pages belong during layout.',
         },
+        {
+          heading: 'Agree the page scope and verify with numbers',
+          text: 'Confirm whether the provider counts the cover in the same folded section or as separate stock, then enter all printed sides in that scope. Keep intended blanks as actual PDF pages so content does not shift. Compare the outer/inner page pairs against a numbered mockup, and ask whether delivery should use single pages or spreads. This calculation does not determine stock-dependent creep or maximum bindable thickness.',
+        },
       ],
       faqTitle: 'Frequently asked questions',
       faq: [
@@ -905,6 +954,10 @@ export const en: Dictionary = {
         {
           heading: 'Fit count, gap, and rotation',
           text: 'It divides usable sheet width and height by item dimensions plus the chosen gap, then compares the rotated result. Gripper space, trim grip, and paper grain remain production constraints outside the count.',
+        },
+        {
+          heading: 'Turn a maximum count into a production plan',
+          text: 'Use sheet dimensions remaining after gripper or other reserved areas, and account for bleed in the piece size and gap. A higher rotated count still needs compatible grain, front/back direction and finishing. This tool compares uniform rectangular grids; it does not mix orientations for an optimized nest or generate a PDF. For a downloadable repeated-first-page layout, use the PDF imposition tool.',
         },
       ],
       faqTitle: 'Frequently asked questions',
@@ -923,6 +976,10 @@ export const en: Dictionary = {
           heading: 'First-page grid placement',
           text: 'The first page supplies the piece size and artwork. The tool subtracts the sheet margin, applies the chosen gap, and compares upright and 90-degree rotated grids; additional PDF pages are not placed.',
         },
+        {
+          heading: 'Check the first page and piece size before download',
+          text: 'Confirm that the first source page contains the intended single piece, then choose sheet, margin and gap. The whole PDF page defines one cell, so blank surroundings or existing marks affect its size. Bleed is not generated automatically. Reopen the downloaded sheet to verify rows, columns, rotation and clipping; design duplex alignment or mixed artwork separately with the provider.',
+        },
       ],
       faqTitle: 'Frequently asked questions',
       faq: [
@@ -940,6 +997,10 @@ export const en: Dictionary = {
           heading: 'Marks do not create bleed',
           text: 'A crop mark identifies where to cut; it does not extend an image past that line. If artwork stops at trim, extend its background into a bleed area in the design source before adding marks.',
         },
+        {
+          heading: 'Verify the trim boundary before adding marks',
+          text: 'Marks use the source TrimBox, falling back to the CropBox or MediaBox when absent. If a page including bleed is mistaken for finished trim, the marks target a different boundary, so check boxes first. Add marks only when requested, set bleed allowance, extra offset and length, and reopen the download to ensure no overlap with artwork. A larger outer page does not mean a different finished trim size.',
+        },
       ],
       faqTitle: 'Frequently asked questions',
       faq: [
@@ -956,6 +1017,10 @@ export const en: Dictionary = {
         {
           heading: 'Corner anchors and equal spacing',
           text: 'Width, height, and target spacing determine the positions. The rectangular model redistributes each full edge evenly from corner to corner; seams, reinforcement, and wind load may require a different production layout.',
+        },
+        {
+          heading: 'Check shared corners and actual finishing positions',
+          text: 'Enter finished banner dimensions in millimetres, not the size of a scaled artwork file. Each edge count includes its two corners; the total counts each shared corner only once. Copy the actual intervals and quantity into the order, but obtain a provider drawing for inward hole-centre distances, seams and reinforcement. A spacing model is not an assessment of structural safety, wind loading or fixing strength.',
         },
       ],
       faqTitle: 'Frequently asked questions',

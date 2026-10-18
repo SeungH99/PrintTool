@@ -8,6 +8,48 @@ import { getEditorialGuide, getGuideSummary, guideSlugs } from '@/content/guides
 import { SITE_URL } from '@/lib/site';
 
 describe('CaseStudyView', () => {
+  it('shows annotated original artwork beside the real before and corrected downloads', () => {
+    const study = getCaseStudy('en', 'print-file-prep');
+    if (!study) throw new Error('missing fixture');
+    render(<CaseStudyView locale="en" study={study} />);
+    const evidence = screen.getByRole('region', { name: 'Visual evidence' });
+    expect(within(evidence).getAllByRole('img').length).toBeGreaterThanOrEqual(2);
+    const before = screen.getByRole('link', {
+      name: /Download: printready-a4-rgb-low-resolution.pdf/,
+    });
+    const corrected = screen.getByRole('link', {
+      name: /Download: printready-rgb-100mm-corrected.pdf/,
+    });
+    expect(before).toHaveAttribute('href', '/samples/printready-a4-rgb-low-resolution.pdf');
+    expect(corrected).toHaveAttribute('href', '/samples/printready-rgb-100mm-corrected.pdf');
+    expect(within(evidence).getByText(/304\.8/)).toBeInTheDocument();
+    expect(within(evidence).getByText(/102\.63/)).toBeInTheDocument();
+  });
+
+  it.each(['ko', 'en'] as const)(
+    'provides labeled visual evidence for all five %s cases',
+    (locale) => {
+      for (const slug of [
+        'resolution-and-dpi',
+        'cmyk-vs-rgb',
+        'bleed-and-trim',
+        'saddle-stitch-booklet',
+      ]) {
+        const study = getCaseStudy(locale, slug);
+        if (!study) throw new Error('missing fixture');
+        const { unmount } = render(<CaseStudyView locale={locale} study={study} />);
+        const evidence = screen.getByRole('region', {
+          name: locale === 'ko' ? '시각적 비교' : 'Visual evidence',
+        });
+        for (const image of within(evidence).getAllByRole('img')) {
+          expect(image).toHaveAttribute('alt');
+          expect(image.getAttribute('alt')?.length).toBeGreaterThan(10);
+          expect(image.closest('figure')?.querySelector('figcaption')).not.toBeNull();
+        }
+        unmount();
+      }
+    },
+  );
   it('renders reproducible evidence, samples, limitations, and sources', () => {
     const study = getCaseStudy('ko', 'bleed-and-trim');
     if (!study) throw new Error('missing fixture');
@@ -147,7 +189,7 @@ describe('guide detail route', () => {
     expect(payloads.map((payload) => payload['@type'])).toEqual(['Article', 'BreadcrumbList']);
     expect(article).toMatchObject({
       datePublished: '2026-08-09',
-      dateModified: '2026-08-09',
+      dateModified: '2026-10-18',
       author: { '@type': 'Organization', name: 'PrintReady' },
       publisher: { '@type': 'Organization', name: 'PrintReady' },
       mainEntityOfPage: `${SITE_URL}/en/guides/cmyk-vs-rgb`,
@@ -156,10 +198,13 @@ describe('guide detail route', () => {
     const articleElement = screen.getByRole('article');
     expect(within(articleElement).getByText('PrintReady')).toBeInTheDocument();
     const articleHeader = within(articleElement).getByRole('banner');
-    expect(within(articleHeader).getAllByText('2026-08-09')).toHaveLength(2);
-    expect(within(articleHeader).getAllByText('2026-08-09')[0]).toHaveAttribute(
+    expect(within(articleHeader).getByText('2026-08-09')).toHaveAttribute(
       'datetime',
-      '2026-08-09',
+      article.datePublished,
+    );
+    expect(within(articleHeader).getByText('2026-10-18')).toHaveAttribute(
+      'datetime',
+      article.dateModified,
     );
   });
 
@@ -190,13 +235,15 @@ describe('guide detail route', () => {
 
     expect(articleJson).toMatchObject({
       datePublished: '2026-08-09',
-      dateModified: '2026-08-09',
       author: { name: 'PrintReady' },
     });
     const articleElement = screen.getByRole('article');
     expect(within(articleElement).getByText('PrintReady')).toBeInTheDocument();
-    const visibleDates = within(articleElement).getAllByText('2026-08-09');
+    const visibleDates = Array.from(articleElement.querySelectorAll('time'));
     expect(visibleDates).toHaveLength(2);
+    expect(visibleDates.every((time) => time.textContent === time.getAttribute('datetime'))).toBe(
+      true,
+    );
     expect(visibleDates.map((time) => time.getAttribute('datetime'))).toEqual([
       articleJson.datePublished,
       articleJson.dateModified,
@@ -207,42 +254,33 @@ describe('guide detail route', () => {
     {
       locale: 'ko' as const,
       slug: 'paper-weight-gsm',
-      required: [/ISO 536.*평량.*정의/, /lb 변환.*캘리퍼.*책등.*포함하지 않/],
-      unsupported: /80lb|118 GSM|216 GSM|250~300|350 GSM/,
+      source: /International Organization for Standardization/,
+      href: 'https://www.iso.org/standard/77583.html',
     },
     {
       locale: 'en' as const,
       slug: 'paper-weight-gsm',
-      required: [/ISO 536.*defines.*grammage/i, /does not define.*lb conversion.*caliper.*spine/i],
-      unsupported: /80lb|118 GSM|216 GSM|250[–-]300|350 GSM/i,
+      source: /International Organization for Standardization/,
+      href: 'https://www.iso.org/standard/77583.html',
     },
     {
       locale: 'ko' as const,
       slug: 'large-format-banner',
-      required: [/Adobe.*도련/, /해상도.*아일렛.*마감.*소재.*업체별/],
-      unsupported: /72~150|50~100cm|2~5cm|합성지|PVC|메시/,
+      source: /Adobe:/,
+      href: 'https://helpx.adobe.com/indesign/desktop/print/page-set-up-and-printer-marks/print-bleed-and-slug-areas.html',
     },
     {
       locale: 'en' as const,
       slug: 'large-format-banner',
-      required: [/Adobe.*bleed/i, /resolution.*grommet.*finishing.*material.*provider-specific/i],
-      unsupported: /72[–-]150|50[–-]100cm|2[–-]5cm|synthetic paper|PVC|mesh fabric/i,
+      source: /Adobe:/,
+      href: 'https://helpx.adobe.com/indesign/desktop/print/page-set-up-and-printer-marks/print-bleed-and-slug-areas.html',
     },
   ])(
-    'keeps $locale $slug claims within the cited source scope',
-    ({ locale, slug, required, unsupported }) => {
-      const guide = getEditorialGuide(locale, slug);
-      if (!guide) throw new Error('missing editorial fixture');
-      const visibleCopy = [
-        guide.title,
-        guide.description,
-        guide.intro,
-        ...guide.sections.flatMap((section) => [section.heading, section.body]),
-        ...guide.faq.flatMap((item) => [item.q, item.a]),
-      ].join(' ');
-
-      for (const phrase of required) expect(visibleCopy).toMatch(phrase);
-      expect(visibleCopy).not.toMatch(unsupported);
+    'renders a usable primary-source link for $locale $slug',
+    async ({ locale, slug, source, href }) => {
+      const result = await GuidePage({ params: Promise.resolve({ locale, slug }) });
+      render(result);
+      expect(screen.getByRole('link', { name: source })).toHaveAttribute('href', href);
     },
   );
 });

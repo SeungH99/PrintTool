@@ -41,10 +41,21 @@ export interface CaseStudyCopy {
   actions: string[];
 }
 
+export interface CaseStudyFigure {
+  src: string;
+  width: number;
+  height: number;
+  alt: LocalizedText;
+  caption: LocalizedText;
+  /** A display-only trim guide; it is deliberately not baked into the downloadable artwork. */
+  trimGuide?: { insetXPercent: number; insetYPercent: number };
+}
+
 export interface CaseStudyRecord {
   slug: CaseStudySlug;
   relatedTools: ToolId[];
   samples: CaseStudySample[];
+  figures: CaseStudyFigure[];
   inputs: Record<string, number | string | boolean>;
   metrics: CaseStudyMetric[];
   testedAt: string;
