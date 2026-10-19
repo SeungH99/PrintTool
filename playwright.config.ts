@@ -19,6 +19,7 @@ export default defineConfig({
     command: 'npm run build && npm run start',
     env: {
       NEXT_PUBLIC_ADSENSE_CLIENT: TEST_ADSENSE_CLIENT,
+      NEXT_PUBLIC_ADSENSE_ENABLED: process.env.NEXT_PUBLIC_ADSENSE_ENABLED ?? 'true',
       NEXT_PUBLIC_GA_ID: 'G-PRINTREADYTEST',
     },
     url: 'http://localhost:3000/ko',

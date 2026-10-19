@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import { useConsent } from '@/hooks/useConsent';
 import { useGoogleConsent } from '@/hooks/useGoogleConsent';
 import { ensureAdSenseScript } from '@/lib/ads/loadAdSense';
+import { isAdSenseEnabled } from '@/lib/ads/config';
 import { isAdEligibleRoute } from '@/lib/ads/routeEligibility';
 import {
   consentModeParams,
@@ -59,11 +60,12 @@ export function ConsentScripts() {
   const loaded = useRef<ConsentState>({ ads: false, analytics: false });
   const reloading = useRef(false);
   const eligible = isAdEligibleRoute(pathname);
-  const { ads: adsAllowed, analytics: analyticsAllowed } = resolveConsent(
+  const { ads: consentedAds, analytics: analyticsAllowed } = resolveConsent(
     local,
     google,
     hasGlobalPrivacyControl(),
   );
+  const adsAllowed = isAdSenseEnabled() && consentedAds;
 
   useEffect(() => {
     const inherited = window as unknown as GoogleWindow;
