@@ -1,4 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
+import { acceptOptionalCookies, installGoogleConsentFixture } from './helpers/consent';
 
 const TEST_ADSENSE_CLIENT = 'ca-pub-0000000000000000';
 
@@ -11,8 +12,8 @@ const slugs = [
 ] as const;
 
 const sampleCounts = {
-  'print-file-prep': 2,
-  'resolution-and-dpi': 1,
+  'print-file-prep': 3,
+  'resolution-and-dpi': 3,
   'cmyk-vs-rgb': 1,
   'bleed-and-trim': 2,
   'saddle-stitch-booklet': 1,
@@ -57,17 +58,24 @@ for (const locale of ['ko', 'en'] as const) {
   for (const slug of slugs) {
     test(`${locale} ${slug} publishes reproducible evidence`, async ({ page }) => {
       const siteErrors = collectSiteErrors(page);
-      await page.route('https://pagead2.googlesyndication.com/**', async (route) => {
-        await route.fulfill({ contentType: 'application/javascript', body: '' });
-      });
+      await installGoogleConsentFixture(page);
       const response = await page.goto(`/${locale}/guides/${slug}`);
 
       expect(response?.status()).toBe(200);
       await expect(page.locator('h1')).toBeVisible();
       await expect(page.getByRole('table')).toBeVisible();
+      const evidenceImages = page.locator('main figure img');
+      expect(await evidenceImages.count()).toBeGreaterThan(0);
+      for (const image of await evidenceImages.all()) {
+        await expect(image).toBeVisible();
+        await expect
+          .poll(() => image.evaluate((element: HTMLImageElement) => element.naturalWidth))
+          .toBeGreaterThan(0);
+      }
       await expect(
         page.getByText(locale === 'ko' ? '검증 정보' : 'Verification details', { exact: true }),
       ).toBeVisible();
+      await acceptOptionalCookies(page, locale);
 
       const downloadLinks = page.getByRole('link', { name: /다운로드|download/i });
       const downloadCount = await downloadLinks.count();
@@ -173,13 +181,14 @@ test('local desktop smoke opens a featured evidence route without redirect', asy
 test('privacy stays free of consent-requiring Google tags after browser history', async ({
   page,
 }) => {
-  await page.route('https://pagead2.googlesyndication.com/**', async (route) => {
-    await route.fulfill({ contentType: 'application/javascript', body: '' });
-  });
+  await installGoogleConsentFixture(page);
   const googleTags = page.locator(
     'script[src*="adsbygoogle.js"], script[src*="googletagmanager.com/gtag/js"], #consent-mode-default, #ga-loader, #ga-init',
   );
 
+  await page.goto('/ko');
+  await acceptOptionalCookies(page);
+  await expect(page.locator('script[src*="adsbygoogle.js"]')).toHaveCount(1);
   await page.goto('/ko/privacy');
   await expect(googleTags).toHaveCount(0);
 
@@ -193,10 +202,9 @@ test('privacy stays free of consent-requiring Google tags after browser history'
 });
 
 test('footer privacy link uses a clean document navigation', async ({ page }) => {
-  await page.route('https://pagead2.googlesyndication.com/**', async (route) => {
-    await route.fulfill({ contentType: 'application/javascript', body: '' });
-  });
+  await installGoogleConsentFixture(page);
   await page.goto('/ko');
+  await acceptOptionalCookies(page);
   await page.evaluate(() => {
     (window as Window & { __printReadyDocumentMarker?: boolean }).__printReadyDocumentMarker = true;
   });

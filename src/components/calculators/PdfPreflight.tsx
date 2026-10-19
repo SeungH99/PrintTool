@@ -58,6 +58,14 @@ export function PdfPreflight({ dict, locale, eyebrow, title, desc }: CalculatorP
   };
 
   const report = analysis ? buildPreflightReport(analysis) : null;
+  const warningReasons = {
+    pageSize: t.statusWarn,
+    trim: t.boxMissing,
+    bleed: t.boxMissing,
+    resolution: t.resolutionLow,
+    color: t.colorDetected,
+    fonts: t.fontsIncomplete,
+  };
 
   return (
     <>
@@ -135,12 +143,12 @@ export function PdfPreflight({ dict, locale, eyebrow, title, desc }: CalculatorP
                         {round(analysis.minImageDpi, 1)} DPI
                       </div>
                     )}
-                    {item.key === 'color' &&
-                      (analysis.colorMode === 'cmyk' || analysis.colorMode === 'rgb') && (
-                        <div className="mt-0.5 text-xs uppercase text-mute">
-                          {analysis.colorMode}
-                        </div>
-                      )}
+                    {item.key === 'color' && analysis.colorMode === 'cmyk' && (
+                      <div className="mt-0.5 text-xs uppercase text-mute">{analysis.colorMode}</div>
+                    )}
+                    {(item.status === 'warn' || item.status === 'error') && (
+                      <div className="mt-0.5 text-xs text-mute">{warningReasons[item.key]}</div>
+                    )}
                   </div>
                   <Badge tone={status[item.status].tone}>{status[item.status].text}</Badge>
                 </div>

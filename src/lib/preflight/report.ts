@@ -27,9 +27,9 @@ export interface PreflightOptions {
 
 /**
  * Maps a structural PDF analysis into the 6-item preflight report. `pageSize` is
- * detected; `trim`/`bleed` are detected as present-or-missing; `resolution`,
- * `color` and `fonts` are beyond this in-browser check and reported as `unknown`
- * (detection-limited) rather than guessed.
+ * detected; `trim`/`bleed` report box presence, not artwork coverage. Image DPI,
+ * image color classification and font embedding use best-effort detected values;
+ * unavailable values remain `unknown` and require manual review.
  */
 export function buildPreflightReport(
   analysis: PdfAnalysis,

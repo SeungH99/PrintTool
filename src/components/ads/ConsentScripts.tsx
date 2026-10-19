@@ -1,74 +1,146 @@
 'use client';
 
-import { useEffect } from 'react';
-import Script from 'next/script';
+import { useEffect, useRef } from 'react';
 import { usePathname } from 'next/navigation';
+import { useConsent } from '@/hooks/useConsent';
+import { useGoogleConsent } from '@/hooks/useGoogleConsent';
 import { ensureAdSenseScript } from '@/lib/ads/loadAdSense';
+import { isAdEligibleRoute } from '@/lib/ads/routeEligibility';
 import {
   consentModeParams,
   defaultConsent,
-  gpcOptOutParams,
-  CONSENT_REQUIRED_REGIONS,
+  hasGlobalPrivacyControl,
+  resolveConsent,
+  type ConsentState,
 } from '@/lib/consent/consent';
+import { shutdownOptionalRuntime } from '@/lib/consent/runtimeShutdown';
+type GoogleWindow = Window & {
+  dataLayer?: unknown[];
+  gtag?: (...args: unknown[]) => void;
+  __printreadyAnalyticsAllowed?: boolean;
+  __printreadyAdsLoaded?: boolean;
+  __printreadyAnalyticsLoaded?: boolean;
+  [key: `ga-disable-${string}`]: boolean;
+};
 
-const CONSENT_REQUIRING_GOOGLE_TAGS =
-  'script[src*="adsbygoogle.js"], script[src*="googletagmanager.com/gtag/js"], #consent-mode-default, #ga-loader, #ga-init';
+/** Initialize the callable global before loading either Google integration. */
+function initializeConsentMode(): GoogleWindow {
+  const globals = window as unknown as GoogleWindow;
+  if (!globals.gtag) {
+    globals.dataLayer ??= [];
+    globals.gtag = function gtag(...args: unknown[]) {
+      if (args[0] === 'event' && !globals.__printreadyAnalyticsAllowed) return;
+      // gtag's data-layer command protocol specifically requires Arguments objects.
+      // eslint-disable-next-line prefer-rest-params -- Google's command queue uses this exact protocol.
+      globals.dataLayer!.push(arguments);
+    };
+    globals.gtag('consent', 'default', consentModeParams(defaultConsent));
+  }
+  return globals;
+}
 
-/**
- * Loads Google Consent Mode v2 plus the analytics/ads tags, each gated on its own
- * env var. Defaults to DENIED in regulated regions (EEA/UK/CH — the certified CMP,
- * Funding Choices, collects consent) and GRANTED elsewhere so non-regulated traffic
- * is measured. A GPC (Global Privacy Control) signal forces ad signals off (CCPA
- * "do not sell/share"). Renders nothing when neither GA nor AdSense is configured
- * (e.g. local dev) — ADR-0001 / MVP-005.
- */
+/** CMP bootstrap is separate from AdSense: it must work before optional tags. */
+function ensureConsentManager(client: string): void {
+  if (document.getElementById('google-consent-manager')) return;
+  const script = document.createElement('script');
+  script.id = 'google-consent-manager';
+  script.async = true;
+  script.src = `https://fundingchoicesmessages.google.com/i/${encodeURIComponent(client.replace(/^ca-/, ''))}?ers=1`;
+  document.head.appendChild(script);
+}
+
+/** Basic consent mode: no optional network requests until BOTH gates allow them. */
 export function ConsentScripts() {
   const client = process.env.NEXT_PUBLIC_ADSENSE_CLIENT;
   const ga = process.env.NEXT_PUBLIC_GA_ID;
   const pathname = usePathname();
-  const isPrivacyPolicy = pathname === '/privacy' || pathname.endsWith('/privacy');
+  const local = useConsent();
+  const google = useGoogleConsent(Boolean(client));
+  const loaded = useRef<ConsentState>({ ads: false, analytics: false });
+  const reloading = useRef(false);
+  const eligible = isAdEligibleRoute(pathname);
+  const { ads: adsAllowed, analytics: analyticsAllowed } = resolveConsent(
+    local,
+    google,
+    hasGlobalPrivacyControl(),
+  );
 
   useEffect(() => {
-    if (isPrivacyPolicy) {
-      if (document.querySelector(CONSENT_REQUIRING_GOOGLE_TAGS)) window.location.reload();
+    const inherited = window as unknown as GoogleWindow;
+    // The locale layout can remount while the document and Google's runtime survive.
+    loaded.current.ads ||= Boolean(
+      inherited.__printreadyAdsLoaded || document.querySelector('script[src*="adsbygoogle.js"]'),
+    );
+    loaded.current.analytics ||= Boolean(
+      inherited.__printreadyAnalyticsLoaded ||
+      document.querySelector('script[src*="googletagmanager.com/gtag/js"]'),
+    );
+    const stopAndReload = () => {
+      if (reloading.current) return;
+      reloading.current = shutdownOptionalRuntime(ga);
+    };
+    const hasError = () => Boolean(document.querySelector('[data-printready-error]'));
+    const previouslyLoaded = loaded.current.ads || loaded.current.analytics;
+    if ((!eligible || hasError()) && previouslyLoaded) {
+      stopAndReload();
       return;
     }
-    if (client && !isPrivacyPolicy) ensureAdSenseScript(client);
-  }, [client, isPrivacyPolicy]);
+    if (!eligible || hasError() || (!client && !ga) || reloading.current) return;
 
-  if (isPrivacyPolicy || (!client && !ga)) return null;
+    const globals = initializeConsentMode();
+    if (client) ensureConsentManager(client);
+    if ((loaded.current.ads && !adsAllowed) || (loaded.current.analytics && !analyticsAllowed)) {
+      stopAndReload();
+      return;
+    }
+    // Never promote a Google CMP denial. Only the intersected state is published.
+    globals.gtag?.(
+      'consent',
+      'update',
+      consentModeParams({ ads: adsAllowed, analytics: analyticsAllowed }),
+    );
+    globals.__printreadyAnalyticsAllowed = analyticsAllowed;
+    if (ga) globals[`ga-disable-${ga}`] = !analyticsAllowed;
+    if (client && adsAllowed && !loaded.current.ads) {
+      ensureAdSenseScript(client);
+      loaded.current.ads = true;
+      globals.__printreadyAdsLoaded = true;
+    }
+    if (ga && analyticsAllowed && !loaded.current.analytics) {
+      globals.gtag?.('js', new Date());
+      globals.gtag?.('config', ga);
+      const script = document.createElement('script');
+      script.id = 'ga-loader';
+      script.async = true;
+      script.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(ga)}`;
+      document.head.appendChild(script);
+      loaded.current.analytics = true;
+      globals.__printreadyAnalyticsLoaded = true;
+    }
 
-  // Regulated regions: denied + wait for the CMP. The region-less default covers the rest (granted).
-  const regional = JSON.stringify({
-    ...consentModeParams(defaultConsent),
-    region: CONSENT_REQUIRED_REGIONS,
-    wait_for_update: 500,
-  });
-  const fallback = JSON.stringify(consentModeParams({ ads: true, analytics: true }));
-  const gpc = JSON.stringify(gpcOptOutParams);
+    // A valid URL may render a runtime error after its initial successful render.
+    const observer = new MutationObserver(() => {
+      if (hasError() && (loaded.current.ads || loaded.current.analytics)) stopAndReload();
+    });
+    observer.observe(document.body, {
+      subtree: true,
+      childList: true,
+      attributes: true,
+      attributeFilter: ['data-printready-error'],
+    });
+    const onHistory = () => {
+      if (
+        !isAdEligibleRoute(window.location.pathname) &&
+        (loaded.current.ads || loaded.current.analytics)
+      )
+        stopAndReload();
+    };
+    window.addEventListener('popstate', onHistory);
+    return () => {
+      observer.disconnect();
+      window.removeEventListener('popstate', onHistory);
+    };
+  }, [client, ga, eligible, adsAllowed, analyticsAllowed]);
 
-  return (
-    <>
-      {/* Consent Mode default must run before any ad/analytics tag fires; beforeInteractive
-          in the (root) locale layout is the documented App Router pattern. A GPC signal
-          (navigator.globalPrivacyControl) then forces ad signals to denied (CCPA opt-out). */}
-      {/* eslint-disable-next-line @next/next/no-before-interactive-script-outside-document */}
-      <Script id="consent-mode-default" strategy="beforeInteractive">
-        {`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('consent','default',${regional});gtag('consent','default',${fallback});if(navigator.globalPrivacyControl){gtag('consent','update',${gpc});}`}
-      </Script>
-
-      {ga && (
-        <>
-          <Script
-            id="ga-loader"
-            strategy="afterInteractive"
-            src={`https://www.googletagmanager.com/gtag/js?id=${ga}`}
-          />
-          <Script id="ga-init" strategy="afterInteractive">
-            {`gtag('js',new Date());gtag('config','${ga}');`}
-          </Script>
-        </>
-      )}
-    </>
-  );
+  return null;
 }

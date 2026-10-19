@@ -8,6 +8,7 @@ import { getDictionary } from '@/i18n/dictionaries';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { ConsentScripts } from '@/components/ads/ConsentScripts';
+import { ConsentPreferences } from '@/components/ads/ConsentPreferences';
 import { WebVitals } from '@/components/analytics/WebVitals';
 import { SITE_URL } from '@/lib/site';
 import { jsonLdScriptProps } from '@/lib/jsonLd';
@@ -38,7 +39,9 @@ export async function generateMetadata({
     }),
     robots: { index: true, follow: true },
     // Naver Search Advisor ownership verification (public token, not a secret).
-    verification: { other: { 'naver-site-verification': '72a59826c05560acc7fd9e3ea0f91e7e47d32903' } },
+    verification: {
+      other: { 'naver-site-verification': '72a59826c05560acc7fd9e3ea0f91e7e47d32903' },
+    },
   };
 }
 
@@ -89,6 +92,7 @@ export default async function LocaleLayout({
         </main>
         <Footer locale={locale} dict={dict} />
         <ConsentScripts />
+        <ConsentPreferences locale={locale} />
         {process.env.NEXT_PUBLIC_GA_ID && <WebVitals />}
       </body>
     </html>

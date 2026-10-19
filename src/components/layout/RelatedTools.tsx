@@ -30,7 +30,7 @@ export function RelatedTools({
               <Link
                 key={tool.id}
                 href={`/${locale}/${tool.id}`}
-                className="flex items-center gap-3 rounded-lg border border-hairline bg-elevated p-4 no-underline transition-colors hover:border-link"
+                className="flex min-w-0 items-center gap-3 rounded-lg border border-hairline bg-elevated p-4 no-underline transition-colors hover:border-link"
               >
                 <span className="flex h-9 w-9 flex-none items-center justify-center rounded-md border border-hairline bg-hairline-soft text-body">
                   {Icon && <Icon size={18} strokeWidth={1.5} />}

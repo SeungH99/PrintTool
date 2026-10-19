@@ -20,7 +20,10 @@ export default function LocaleError({
   const t = getDictionary(locale).error;
 
   return (
-    <section className="mx-auto flex max-w-page flex-col items-center px-6 py-24 text-center">
+    <section
+      data-printready-error
+      className="mx-auto flex max-w-page flex-col items-center px-6 py-24 text-center"
+    >
       <h1 className="m-0 text-2xl font-semibold tracking-tight text-ink sm:text-3xl">{t.title}</h1>
       <p className="mx-auto mt-4 max-w-[460px] text-base leading-relaxed text-body">{t.desc}</p>
       <button

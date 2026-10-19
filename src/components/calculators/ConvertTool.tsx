@@ -354,7 +354,10 @@ export function ConvertTool({ dict, locale, eyebrow, title, desc }: CalculatorPr
                     { label: t.specInput, value: result.input },
                     { label: t.specPages, value: String(result.pages) },
                     { label: t.specSize, value: sizeShort[pageSize] },
-                    { label: t.specColor, value: 'RGB' },
+                    {
+                      label: t.specColor,
+                      value: result.input === 'PDF' ? t.pdfColorsPreserved : 'RGB',
+                    },
                     { label: t.specOutSize, value: formatBytes(result.size) },
                   ].map((row) => (
                     <div

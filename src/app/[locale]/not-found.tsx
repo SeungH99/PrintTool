@@ -16,7 +16,7 @@ export default function NotFound() {
   const t = dict.notFound;
 
   return (
-    <div className="relative overflow-hidden">
+    <div data-printready-error className="relative overflow-hidden">
       <div className="bg-mesh pointer-events-none absolute inset-0 opacity-35" />
       <div className="hero-fade pointer-events-none absolute inset-0" />
 
@@ -46,7 +46,10 @@ export default function NotFound() {
         </div>
       </section>
 
-      <section id="nf-tools" className="relative mx-auto max-w-page px-6 pb-[clamp(72px,9vw,112px)]">
+      <section
+        id="nf-tools"
+        className="relative mx-auto max-w-page px-6 pb-[clamp(72px,9vw,112px)]"
+      >
         <div className="mb-4 text-center font-mono text-[11px] uppercase tracking-[0.06em] text-faint">
           {t.toolsHead}
         </div>

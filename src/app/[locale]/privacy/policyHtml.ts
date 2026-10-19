@@ -2,7 +2,7 @@ import type { Locale } from '@/i18n/config';
 
 const ko = String.raw`
   <h1>개인정보 처리방침</h1>
-  <p><strong>최종 업데이트: 2026년 8월 10일</strong></p>
+  <p><strong>최종 업데이트: 2026년 10월 18일</strong></p>
   <p>Mooni Studio가 운영하는 PrintReady(이하 “서비스”)는 사용자의 개인정보와 작업 파일을 안전하게 처리하는 것을 중요하게 생각합니다. 이 방침은 서비스가 어떤 정보를 처리하고, 왜 사용하며, 사용자가 어떤 선택을 할 수 있는지 설명합니다.</p>
 
   <h2>브라우저 안에서 처리되는 파일</h2>
@@ -17,7 +17,7 @@ const ko = String.raw`
   <p>이 정보는 서비스 제공, 오류 해결, 이용 현황 파악, 보안 유지 및 광고 운영을 위해 사용합니다.</p>
 
   <h2>Google Analytics</h2>
-  <p>동의한 경우 Google Analytics를 통해 익명화·집계된 이용 통계를 확인할 수 있습니다. 사용자는 쿠키 설정에서 분석 동의를 언제든 변경할 수 있습니다.</p>
+  <p>분석을 허용하고 적용되는 Google 지역별 동의 조건도 충족한 경우에만 Google Analytics 태그를 불러옵니다. Google이 처리한 이용 통계는 집계된 형태로 확인합니다. 분석 제공업체가 처리하는 데이터 전체가 익명이라는 의미는 아닙니다. 사용자는 페이지 하단의 쿠키 설정에서 분석 선택을 변경할 수 있습니다.</p>
 
   <section id="google-adsense">
     <h2>Google AdSense 및 광고 쿠키</h2>
@@ -28,7 +28,10 @@ const ko = String.raw`
   </section>
 
   <h2 id="consent-and-cookie-settings">동의 및 쿠키 설정</h2>
-  <p>필수 기능을 제외한 분석 및 광고 저장은 사용자의 선택에 따라 제어됩니다. 서비스의 쿠키 설정에서 동의를 변경하거나 철회할 수 있고, 지원되는 브라우저의 Global Privacy Control 신호도 존중합니다. 브라우저 설정에서 쿠키를 차단하거나 삭제할 수도 있습니다.</p>
+  <p>모든 방문자에게 분석과 광고를 기본적으로 끈 상태로 제공합니다. 첫 방문 안내의 선택 항목 거부·허용·직접 선택, 또는 페이지 하단의 쿠키 설정에서 두 항목을 각각 선택할 수 있습니다. 선택은 이 브라우저의 로컬 저장소에 기록되며 다른 브라우저나 기기로 자동 공유되지 않습니다. 필수적인 선택 저장과 파일 처리 도구는 선택 항목을 거부해도 사용할 수 있습니다.</p>
+  <p>Google의 지역별 동의 관리가 적용되는 경우 해당 선택도 함께 충족해야 합니다. 이 사이트의 선택이 Google에서 거부한 항목을 허용하지는 않습니다. Google 지역별 선택 버튼은 해당 관리 도구가 준비되었을 때 제공됩니다. Google 동의 서비스가 준비되지 않았거나 허용 여부를 확인할 수 없으면 분석·광고 태그는 꺼진 상태로 유지되며 안내를 표시합니다. 동의 확인에 필요한 Google 동의 관리 스크립트는 선택 태그보다 먼저 불러올 수 있습니다.</p>
+  <p>지원 브라우저의 Global Privacy Control 신호가 켜져 있으면 저장된 선택과 관계없이 분석과 광고를 모두 끕니다. 실행 중인 항목을 철회하면 이미 불러온 코드의 동작을 멈추기 위해 페이지를 새로고침합니다. 작업 중인 파일이나 결과는 먼저 다운로드하세요. 철회가 기존 제3자 쿠키를 모두 삭제하는 것은 아닙니다. 쿠키 삭제·차단은 브라우저 설정이나 각 제공업체의 설정에서 별도로 관리할 수 있습니다.</p>
+  <p>광고·분석 태그는 확인된 도구와 가이드 등 콘텐츠 경로에서만 불러오며, 오류·문의·약관·개인정보 화면에서는 불러오지 않습니다.</p>
 
   <h2>공유, 보관 및 보안</h2>
   <p>개인정보를 판매하지 않습니다. 서비스 운영에 필요한 범위에서 Google 등 분석·광고 제공업체 또는 법적 의무를 이행하기 위한 기관과 정보가 처리될 수 있습니다. 문의 기록은 답변과 분쟁 대응에 필요한 기간만 보관하고, 분석·광고 데이터는 각 제공업체의 설정과 정책에 따라 보관됩니다. 합리적인 기술적·관리적 보호조치를 적용하지만 인터넷 전송의 절대적인 안전을 보장할 수는 없습니다.</p>
@@ -43,7 +46,7 @@ const ko = String.raw`
 
 const en = String.raw`
   <h1>Privacy Policy</h1>
-  <p><strong>Last updated: August 10, 2026</strong></p>
+  <p><strong>Last updated: October 18, 2026</strong></p>
   <p>PrintReady, operated by Mooni Studio, respects your privacy and the confidentiality of your production files. This policy explains what information the service processes, why it is used, and the choices available to you.</p>
 
   <h2>Files processed in your browser</h2>
@@ -58,7 +61,7 @@ const en = String.raw`
   <p>We use this information to provide the service, diagnose errors, understand aggregate usage, maintain security, and support advertising.</p>
 
   <h2>Google Analytics</h2>
-  <p>If you consent, Google Analytics helps us understand aggregated usage. You can change your analytics choice at any time through the site's cookie settings.</p>
+  <p>We load Google Analytics only if you allow analytics and any applicable Google regional consent requirements are also satisfied. We review aggregated usage reports; this does not mean all data processed by the analytics provider is anonymous. You can change your analytics choice through Cookie settings in the footer.</p>
 
   <section id="google-adsense">
     <h2>Google AdSense and advertising cookies</h2>
@@ -69,7 +72,10 @@ const en = String.raw`
   </section>
 
   <h2 id="consent-and-cookie-settings">Consent and cookie controls</h2>
-  <p>Except for essential functionality, analytics and advertising storage are controlled by your choices. You can change or withdraw consent through the site's cookie settings. We also respect supported Global Privacy Control signals, and you may block or delete cookies through your browser settings.</p>
+  <p>Analytics and advertising start off for every visitor. Use Reject optional, Accept optional, or Customize in the first-visit notice, or reopen Cookie settings in the footer to choose each category independently. Your choice is stored in this browser's local storage and is not automatically shared with other browsers or devices. Essential choice storage and file-processing tools work without optional tags.</p>
+  <p>Where Google's regional consent management applies, its choices must also permit the category. A local choice cannot override a Google denial. Google regional choices are available when that manager is ready. If Google's consent service is not ready or its permission cannot be confirmed, analytics and advertising tags remain off and the controls explain this. The Google consent-manager script needed to establish regional choices may load before optional tags.</p>
+  <p>A supported Global Privacy Control signal keeps both analytics and advertising off, regardless of stored choices. Withdrawing a category that is already running reloads this page to stop code already loaded. Download any unsaved work first. Withdrawal does not delete all existing third-party cookies. You can separately manage cookie deletion and blocking in browser or provider settings.</p>
+  <p>Advertising and analytics tags load only on recognized content routes such as tools and guides, not on error, contact, terms, or privacy screens.</p>
 
   <h2>Sharing, retention, and security</h2>
   <p>We do not sell personal information. Information may be processed by service providers such as Google where necessary for analytics or advertising, or disclosed when required by law. We retain contact records only as long as needed to respond and handle disputes. Analytics and advertising data are retained according to the applicable provider settings and policies. We use reasonable technical and organizational safeguards, but no internet transmission can be guaranteed completely secure.</p>
