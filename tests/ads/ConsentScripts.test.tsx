@@ -37,6 +37,7 @@ const optionalTags = 'script[src*="adsbygoogle.js"],script[src*="googletagmanage
 
 describe('ConsentScripts actual tag loading', () => {
   beforeEach(() => {
+    vi.stubEnv('NEXT_PUBLIC_ADSENSE_ENABLED', 'true');
     vi.stubEnv('NEXT_PUBLIC_ADSENSE_CLIENT', 'ca-pub-test');
     vi.stubEnv('NEXT_PUBLIC_GA_ID', 'G-TEST');
     localStorage.clear();
@@ -74,6 +75,45 @@ describe('ConsentScripts actual tag loading', () => {
       'event',
       'before-consent',
     ]);
+  });
+
+  it.each([undefined, 'false', '', '1', 'TRUE'])(
+    'keeps advertising off with switch %s despite saved acceptance, without disabling Analytics',
+    (setting) => {
+      vi.stubEnv('NEXT_PUBLIC_ADSENSE_ENABLED', setting);
+      localStorage.setItem(CONSENT_STORAGE_KEY, JSON.stringify({ ads: true, analytics: true }));
+      render(<ConsentScripts />);
+
+      expect(document.querySelector('script[src*="adsbygoogle.js"]')).toBeNull();
+      expect(document.querySelector('script[src*="googletagmanager.com/gtag/js"]')).not.toBeNull();
+      const entries = (window as typeof window & { dataLayer: ArrayLike<unknown>[] }).dataLayer.map(
+        (entry) => Array.from(entry),
+      );
+      expect(
+        entries.filter((entry) => entry[0] === 'consent' && entry[1] === 'update').at(-1),
+      ).toEqual([
+        'consent',
+        'update',
+        {
+          ad_storage: 'denied',
+          ad_user_data: 'denied',
+          ad_personalization: 'denied',
+          analytics_storage: 'granted',
+        },
+      ]);
+    },
+  );
+
+  it('shuts down an already loaded advertising runtime when the switch is turned off', () => {
+    localStorage.setItem(CONSENT_STORAGE_KEY, JSON.stringify({ ads: true, analytics: true }));
+    const { rerender } = render(<ConsentScripts />);
+    expect(document.querySelector('script[src*="adsbygoogle.js"]')).not.toBeNull();
+
+    vi.stubEnv('NEXT_PUBLIC_ADSENSE_ENABLED', 'false');
+    rerender(<ConsentScripts />);
+
+    expect(mocks.hardReload).toHaveBeenCalledOnce();
+    expect(document.querySelectorAll(optionalTags)).toHaveLength(0);
   });
 
   it.each([

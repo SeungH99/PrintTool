@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { ensureAdSenseScript } from '@/lib/ads/loadAdSense';
 
 const ADSENSE_BASE = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js';
@@ -33,7 +33,9 @@ function adSenseScripts(): HTMLScriptElement[] {
   );
 }
 
-function expectNativeScript(script: HTMLScriptElement): void {
+function expectNativeScript(script: HTMLScriptElement | null): asserts script is HTMLScriptElement {
+  expect(script).not.toBeNull();
+  if (!script) throw new Error('Expected an AdSense script');
   expect(adSenseScripts()).toEqual([script]);
   expect(script.src).toBe(ADSENSE_SRC);
   expect(script.async).toBe(true);
@@ -44,7 +46,25 @@ function expectNativeScript(script: HTMLScriptElement): void {
 }
 
 describe('ensureAdSenseScript', () => {
-  beforeEach(() => document.head.replaceChildren());
+  beforeEach(() => {
+    document.head.replaceChildren();
+    vi.stubEnv('NEXT_PUBLIC_ADSENSE_ENABLED', 'true');
+  });
+
+  afterEach(() => {
+    document.head.replaceChildren();
+    vi.unstubAllEnvs();
+  });
+
+  it.each([undefined, 'false', '', 'TRUE', '1', ' true '])(
+    'does not create a loader unless explicitly enabled (value: %s)',
+    (value) => {
+      vi.stubEnv('NEXT_PUBLIC_ADSENSE_ENABLED', value);
+
+      expect(ensureAdSenseScript('ca-pub-123')).toBeNull();
+      expect(adSenseScripts()).toHaveLength(0);
+    },
+  );
 
   it('adds one exact Google-supported async script and reuses it', () => {
     const first = ensureAdSenseScript('ca-pub-123');
@@ -58,10 +78,12 @@ describe('ensureAdSenseScript', () => {
     const first = ensureAdSenseScript('ca-pub-A');
     const second = ensureAdSenseScript('ca-pub-B');
 
+    expect(first).not.toBeNull();
+    expect(second).not.toBeNull();
     expect(second).not.toBe(first);
-    expect(first.isConnected).toBe(false);
+    expect(first!.isConnected).toBe(false);
     expect(adSenseScripts()).toEqual([second]);
-    expect(second.src).toBe(`${ADSENSE_BASE}?client=ca-pub-B`);
+    expect(second!.src).toBe(`${ADSENSE_BASE}?client=ca-pub-B`);
     expect(second).not.toHaveAttribute('data-printready-adsense');
   });
 
@@ -89,7 +111,8 @@ describe('ensureAdSenseScript', () => {
   it('encodes reserved client characters in the canonical script URL', () => {
     const script = ensureAdSenseScript('ca pub&?/+#');
 
-    expect(script.src).toBe(`${ADSENSE_BASE}?client=ca%20pub%26%3F%2F%2B%23`);
+    expect(script).not.toBeNull();
+    expect(script!.src).toBe(`${ADSENSE_BASE}?client=ca%20pub%26%3F%2F%2B%23`);
   });
 
   it('replaces a same-URL Next.js managed script', () => {

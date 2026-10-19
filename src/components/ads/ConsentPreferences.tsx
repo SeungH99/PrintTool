@@ -14,6 +14,7 @@ import {
   type ConsentState,
 } from '@/lib/consent/consent';
 import { consentMessages } from '@/lib/consent/messages';
+import { isAdSenseEnabled } from '@/lib/ads/config';
 
 const actionClass =
   'rounded-md border border-hairline bg-elevated px-4 py-2 text-sm font-medium text-ink transition-colors hover:bg-hairline-soft focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent';
@@ -29,6 +30,7 @@ export function ConsentPreferences({ locale }: { locale: Locale }) {
   const [error, setError] = useState('');
   const dialog = useRef<HTMLElement>(null);
   const gpc = hasGlobalPrivacyControl();
+  const advertisingEnabled = isAdSenseEnabled();
 
   useEffect(() => {
     const open = () => {
@@ -73,7 +75,9 @@ export function ConsentPreferences({ locale }: { locale: Locale }) {
   }, [customize]);
 
   const save = (choice: ConsentState) => {
-    if (!writeConsent(gpc ? defaultConsent : choice)) {
+    if (
+      !writeConsent(gpc ? defaultConsent : { ...choice, ads: advertisingEnabled && choice.ads })
+    ) {
       setError(t.storageError);
       return;
     }
@@ -124,6 +128,7 @@ export function ConsentPreferences({ locale }: { locale: Locale }) {
       >
         <h2 className="m-0 text-base font-semibold">{t.title}</h2>
         <p className="my-2 text-sm leading-relaxed text-body">{t.description}</p>
+        {!advertisingEnabled && <p className="my-2 text-sm text-body">{t.adsPaused}</p>}
         {status && (
           <p role="status" className="my-2 text-sm text-body">
             {status}
@@ -174,15 +179,17 @@ export function ConsentPreferences({ locale }: { locale: Locale }) {
               <label className="flex items-center gap-3 text-sm font-medium">
                 <input
                   type="checkbox"
-                  checked={!gpc && draft[category]}
-                  disabled={gpc}
+                  checked={!gpc && (category !== 'ads' || advertisingEnabled) && draft[category]}
+                  disabled={gpc || (category === 'ads' && !advertisingEnabled)}
                   onChange={(event) => setDraft({ ...draft, [category]: event.target.checked })}
                   className="h-4 w-4 accent-accent"
                 />
                 {t[category]}
               </label>
               <p className="mb-0 ml-7 mt-1 text-sm text-body">
-                {t[category === 'ads' ? 'adsDescription' : 'analyticsDescription']}
+                {category === 'ads' && !advertisingEnabled
+                  ? t.adsPaused
+                  : t[category === 'ads' ? 'adsDescription' : 'analyticsDescription']}
               </p>
             </div>
           ))}

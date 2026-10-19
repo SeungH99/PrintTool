@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from 'react';
 import { useConsent } from '@/hooks/useConsent';
+import { isAdSenseEnabled } from '@/lib/ads/config';
 
 /**
  * Manual ad-unit placeholder — currently UNUSED. The live strategy is Auto ads
@@ -12,11 +13,12 @@ import { useConsent } from '@/hooks/useConsent';
  */
 export function AdSlot({ label, note }: { label: string; note: string }) {
   const { ads } = useConsent();
+  const adsEnabled = isAdSenseEnabled();
   const client = process.env.NEXT_PUBLIC_ADSENSE_CLIENT;
   const pushed = useRef(false);
 
   useEffect(() => {
-    if (!ads || !client || pushed.current) return;
+    if (!adsEnabled || !ads || !client || pushed.current) return;
     try {
       (window as unknown as { adsbygoogle?: unknown[] }).adsbygoogle ??= [];
       (window as unknown as { adsbygoogle: unknown[] }).adsbygoogle.push({});
@@ -24,7 +26,9 @@ export function AdSlot({ label, note }: { label: string; note: string }) {
     } catch {
       // adsbygoogle.js not ready yet; will retry on next consent/mount change.
     }
-  }, [ads, client]);
+  }, [adsEnabled, ads, client]);
+
+  if (!adsEnabled) return null;
 
   if (!ads || !client) {
     return (

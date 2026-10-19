@@ -19,6 +19,7 @@ function controls(locale: 'en' | 'ko' = 'en') {
 describe('working local cookie controls', () => {
   beforeEach(() => {
     localStorage.clear();
+    vi.stubEnv('NEXT_PUBLIC_ADSENSE_ENABLED', 'true');
     vi.stubEnv('NEXT_PUBLIC_ADSENSE_CLIENT', 'ca-pub-test');
   });
   afterEach(() => {
@@ -35,6 +36,25 @@ describe('working local cookie controls', () => {
     expect(within(notice).getByRole('button', { name: 'Accept optional' })).toBeVisible();
     expect(within(notice).getByRole('button', { name: 'Customize' })).toBeVisible();
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+  });
+
+  it('keeps the advertising choice disabled while allowing Analytics during the site pause', () => {
+    vi.stubEnv('NEXT_PUBLIC_ADSENSE_ENABLED', 'false');
+    localStorage.setItem(CONSENT_STORAGE_KEY, JSON.stringify({ ads: true, analytics: false }));
+    controls();
+    fireEvent.click(screen.getByRole('button', { name: 'Cookie settings' }));
+    const dialog = screen.getByRole('dialog', { name: 'Cookie choices' });
+    const advertising = within(dialog).getByRole('checkbox', { name: 'Advertising' });
+    expect(advertising).toBeDisabled();
+    expect(advertising).not.toBeChecked();
+    expect(within(dialog).getByText('Advertising is currently paused on this site.')).toBeVisible();
+
+    fireEvent.click(within(dialog).getByRole('checkbox', { name: 'Analytics' }));
+    fireEvent.click(within(dialog).getByRole('button', { name: 'Save choices' }));
+    expect(JSON.parse(localStorage.getItem(CONSENT_STORAGE_KEY)!)).toEqual({
+      ads: false,
+      analytics: true,
+    });
   });
 
   it('persists rejection, stays dismissed after remount, and reopens from the footer', () => {

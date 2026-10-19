@@ -1,3 +1,5 @@
+import { isAdSenseEnabled } from '@/lib/ads/config';
+
 const ADSENSE_URL = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js';
 const SUPPORTED_ATTRIBUTES = new Set(['async', 'crossorigin', 'src']);
 
@@ -24,8 +26,10 @@ function isNativeAdSenseScript(script: HTMLScriptElement, src: string): boolean 
   );
 }
 
-/** Adds the AdSense loader once, without Next.js script-management attributes. */
-export function ensureAdSenseScript(client: string): HTMLScriptElement {
+/** Adds the enabled AdSense loader once, without Next.js script-management attributes. */
+export function ensureAdSenseScript(client: string): HTMLScriptElement | null {
+  if (!isAdSenseEnabled()) return null;
+
   const src = adSenseScriptUrl(client);
   const existing = Array.from(document.head.querySelectorAll<HTMLScriptElement>('script')).filter(
     isAdSenseLoader,

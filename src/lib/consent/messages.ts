@@ -14,6 +14,7 @@ export const consentMessages = {
     ads: 'Advertising',
     analyticsDescription: 'Allow Google Analytics to measure visits and tool use.',
     adsDescription: 'Allow Google AdSense advertising and its storage and personalization signals.',
+    adsPaused: 'Advertising is currently paused on this site.',
     essential:
       'Essential: your choice is stored on this browser. Tools work without optional tags.',
     pending: 'Optional tags stay off while Google checks regional choices.',
@@ -44,6 +45,7 @@ export const consentMessages = {
     ads: '광고',
     analyticsDescription: 'Google Analytics로 방문과 도구 사용을 측정하도록 허용합니다.',
     adsDescription: 'Google AdSense 광고 및 관련 저장·맞춤 설정 신호를 허용합니다.',
+    adsPaused: '현재 이 사이트의 광고는 꺼져 있습니다.',
     essential:
       '필수: 이 브라우저에 선택 내용을 저장합니다. 선택 항목을 거부해도 도구를 사용할 수 있습니다.',
     pending: 'Google이 지역별 선택을 확인하는 동안 선택 태그는 꺼져 있습니다.',
