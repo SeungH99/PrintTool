@@ -12,6 +12,8 @@ coverage/
 # env (secrets — never commit)
 .env
 .env*.local
+.env.*
+!.env.example
 
 # typescript / next generated
 next-env.d.ts
@@ -27,3 +29,16 @@ cloudflare-env.d.ts
 test-results/
 playwright-report/
 playwright/.cache/
+
+# Local notes, agent metadata, and generated review output
+.gstack/
+.code-review-graph/
+.superpowers/
+/Bases/
+/Ideas/
+/Logs/
+/_CLAUDE.md
+/index.md
+/log.md
+/tmp/
+/output/
