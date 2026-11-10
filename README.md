@@ -100,9 +100,22 @@ npm run e2e
 
 - Vitest: 계산식·입력값 경계, PDF 검사·변환·터잡기, ICC 변환, UI·동의 처리 등을 검사합니다.
 - Playwright: 한국어·영어 도구 화면, 파일 처리 흐름, 가이드의 재현 자료와 접근성 등을 확인합니다. E2E 설정은 별도의 프로덕션 빌드와 서버를 실행합니다.
-- [GitHub Actions CI](.github/workflows/ci.yml): 의존성 설치 → lint → build → typecheck → 단위 테스트 → Chromium 설치 → E2E 순서로 구성되어 있습니다.
+- [GitHub Actions CI](.github/workflows/ci.yml): 의존성 설치·보안 감사 → lint → build → typecheck → 단위 테스트 → 일반 E2E와 광고 중단 모드 → Cloudflare 빌드·Worker 실행 검사 순서로 구성되어 있습니다.
 
 테스트 코드는 [`tests/`](tests), [`e2e/`](e2e), 일부 기능 옆의 `*.test.ts(x)`에 있습니다. 실행 결과는 해당 커밋의 CI 로그로 확인할 수 있습니다.
+
+```bash
+npm audit --audit-level=moderate
+NEXT_PUBLIC_ADSENSE_ENABLED=false npm run e2e -- e2e/ads-paused.spec.ts
+npx opennextjs-cloudflare build
+node scripts/worker-smoke.mjs
+```
+
+환경변수 지정 예시는 Bash 기준입니다. PowerShell에서는 `$env:NEXT_PUBLIC_ADSENSE_ENABLED='false'`를 설정한 뒤 같은 E2E 명령을 실행합니다. Worker 검사는 배포 없이 로컬 미리보기를 실행하고, 한국어·영어 경로와 JS/WASM/ICC 정적 파일의 응답을 확인합니다.
+
+### 전이 의존성 보안 패치
+
+`package.json`의 `overrides`는 OpenNext·node-minify가 사용하는 `glob`과 typescript-eslint가 사용하는 `minimatch` 경로에만 적용합니다. 상위 패키지의 사용 API와 Node.js 24 호환 범위를 확인한 패치이며, 다른 패키지의 구형 API까지 전역으로 교체하지 않습니다. 상위 의존성을 갱신할 때 해당 override의 필요 여부와 Worker 빌드 결과를 함께 확인합니다.
 
 ### 샘플로 확인하기
 
